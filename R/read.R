@@ -1,4 +1,4 @@
-#' Read an extended Newick file
+#' Read an extended Newick file (via ape)
 #'
 #' @param file Path to an extended Newick file.
 #'
@@ -8,6 +8,10 @@
 #' @examples
 #' print("EXAMPLE HERE")
 read.enewick <- function(file=""){
-  ape::read.evonet(file)
+  if (grepl("#", readLines(file))){
+    ape::read.evonet(file)
+  }else{
+  stop("No reticulation edges found.")
+  }
 }
 
