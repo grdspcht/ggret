@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.R
 \name{read.enewick}
 \alias{read.enewick}
-\title{Read an extended Newick file}
+\title{Read an extended Newick file (via ape)}
 \usage{
 read.enewick(file = "")
 }
@@ -13,7 +13,7 @@ read.enewick(file = "")
 ape evonet object
 }
 \description{
-Read an extended Newick file
+Read an extended Newick file (via ape)
 }
 \examples{
 print("EXAMPLE HERE")
