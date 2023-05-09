@@ -1,0 +1,83 @@
+##' @importFrom ape ladderize
+##' @importFrom ape as.evonet
+##' @importFrom treeio as.phylo
+##' @importFrom treeio Nnode
+##' @importFrom dplyr full_join
+##' @importFrom dplyr mutate
+##' @importFrom tidytree as_tibble
+##' @method fortify evonet
+##' @export
+##'
+library(treeio)
+fortify.evonet <- function(model, data,
+                          layout        = "rectangular",
+                          ladderize     = TRUE,
+                          right         = FALSE,
+                          branch.length = "branch.length",
+                          mrsd          = NULL,
+                          as.Date       = FALSE,
+                          yscale        = "none",
+                          root.position = 0,
+                          ...) {
+  x <- model
+  x$edge <- rbind(x$edge, x$reticulation)
+  x$edge.length <- c(x$edge.length, x$ret.length)
+
+
+  x <- as.phylo(model) ## reorder.phylo(get.tree(model), "postorder")
+  if (ladderize == TRUE) {
+    x <- ladderize(x, right=right)
+  }
+
+  if (! is.null(x$edge.length)) {
+    if (anyNA(x$edge.length)) {
+      warning("'edge.length' contains NA values...\n## setting 'edge.length' to NULL automatically when plotting the tree...")
+      x$edge.length <- NULL
+    }
+  }
+
+  if (layout %in% c("equal_angle", "daylight", "ape")) {
+    res <- layout.unrooted(model, layout.method = layout, branch.length = branch.length, ...)
+  } else {
+    ypos <- getYcoord(x)
+    N <- Nnode(x, internal.only=FALSE)
+    if (is.null(x$edge.length) || branch.length == "none") {
+      if (layout == 'slanted'){
+        sbp <- .convert_tips2ancestors_sbp(x, include.root = TRUE)
+        xpos <- getXcoord_no_length_slanted(sbp)
+        ypos <- getYcoord_no_length_slanted(sbp)
+      }else{
+        xpos <- getXcoord_no_length(x)
+      }
+    } else {
+      xpos <- getXcoord(x)
+    }
+
+    xypos <- tibble::tibble(node=1:N, x=xpos + root.position, y=ypos)
+
+    df <- as_tibble(model) %>%
+      mutate(isTip = ! .data$node %in% .data$parent)
+
+    res <- full_join(df, xypos, by = "node")
+  }
+
+  ## add branch mid position
+  #res <- calculate_branch_mid(res, layout=layout)
+  res <- calculate_branch_mid(res)
+
+  if (!is.null(mrsd)) {
+    res <- scaleX_by_time_from_mrsd(res, mrsd, as.Date)
+  }
+
+  if (layout == "slanted") {
+    res <- add_angle_slanted(res)
+  } else {
+    ## angle for all layout, if 'rectangular', user use coord_polar, can still use angle
+    res <- calculate_angle(res)
+  }
+  res <- scaleY(as.phylo(model), res, yscale, layout, ...)
+  res <- adjust_hclust_tip.edge.len(res, x)
+  class(res) <- c("tbl_tree", class(res))
+  attr(res, "layout") <- layout
+  return(res)
+}

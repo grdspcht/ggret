@@ -9,6 +9,15 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-Imports: ape, ggplot2, ggtree
+Imports: 
+    ape,
+    dplyr,
+    ggplot2,
+    ggtree,
+    magrittr,
+    rlang,
+    tibble,
+    tidytree,
+    treeio
 URL: https://github.com/grdspcht/ggarg
 BugReports: https://github.com/grdspcht/ggarg/issues
