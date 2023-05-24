@@ -41,3 +41,8 @@ adjust_hclust_tip.edge.len <- function(df, phylo){
   }
   return(df)
 }
+
+getRoot <- function(phylo){
+  ape::Ntip(phylo)+1
+}
+

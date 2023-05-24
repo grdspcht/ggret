@@ -20,11 +20,8 @@ fortify.evonet <- function(model, data,
                           root.position = 0,
                           ...) {
   x <- model
-  x$edge <- rbind(x$edge, x$reticulation)
-  x$edge.length <- c(x$edge.length, x$ret.length)
 
-
-  x <- as.phylo(model) ## reorder.phylo(get.tree(model), "postorder")
+  #x <- as.phylo(x) ## reorder.phylo(get.tree(model), "postorder")
   if (ladderize == TRUE) {
     x <- ladderize(x, right=right)
   }
@@ -41,6 +38,7 @@ fortify.evonet <- function(model, data,
   } else {
     ypos <- getYcoord(x)
     N <- Nnode(x, internal.only=FALSE)
+
     if (is.null(x$edge.length) || branch.length == "none") {
       if (layout == 'slanted'){
         sbp <- .convert_tips2ancestors_sbp(x, include.root = TRUE)
@@ -58,8 +56,20 @@ fortify.evonet <- function(model, data,
     df <- as_tibble(model) %>%
       mutate(isTip = ! .data$node %in% .data$parent)
 
+    isRet <- logical(N)
+    donor <- rep(NA, N)
+    ret.length <- rep(NA, N)
+
+    retIndex <- which(xypos$node %in% x$reticulation[,2])
+    isRet[retIndex] <- TRUE
+    ret.length[retIndex] <- x$ret.length
+    donor[retIndex] <- x$reticulation[,1]
+
+    reticulations <- tibble::tibble(node=1:N, isRet=isRet, donor=donor, ret.length=ret.length)
+
     res <- full_join(df, xypos, by = "node")
-  }
+    res <- full_join(res, reticulations, by = "node")
+    }
 
   ## add branch mid position
   #res <- calculate_branch_mid(res, layout=layout)
@@ -81,3 +91,4 @@ fortify.evonet <- function(model, data,
   attr(res, "layout") <- layout
   return(res)
 }
+
