@@ -555,39 +555,55 @@ setup_tree_data <- function(data) {
 ##' add tree layer
 ##'
 # ##'
-# ##' @title geom_tree2
-# ##' @param layout one of 'rectangular', 'slanted', 'circular', 'radial' or 'unrooted'
-# ##' @param ... additional parameter
-# ##' @return tree layer
-# ##' @importFrom ggplot2 geom_segment
-# ##' @importFrom ggplot2 aes
-# ##' @export
-# ##' @author Yu Guangchuang
-# geom_tree2 <- function(layout="rectangular", ...) {
-#   x <- y <- parent <- NULL
-#   lineend  = "round"
-#   if (layout == "rectangular" || layout == "fan" || layout == "circular") {
-#     list(
-#       geom_segment(aes(x    = x[parent],
-#                        xend = x,
-#                        y    = y,
-#                        yend = y),
-#                    lineend  = lineend, ...),
-#
-#       geom_segment(aes(x    = x[parent],
-#                        xend = x[parent],
-#                        y    = y[parent],
-#                        yend = y),
-#                    lineend  = lineend, ...)
-#     )
-#   } else if (layout == "slanted" || layout == "radial" || layout == "unrooted") {
-#     geom_segment(aes(x    = x[parent],
-#                      xend = x,
-#                      y    = y[parent],
-#                      yend = y),
-#                  lineend  = lineend, ...)
-#   }
-# }
+##' @title geom_tree2
+##' @param layout one of 'rectangular', 'slanted', 'circular', 'radial' or 'unrooted'
+##' @param ... additional parameter
+##' @return tree layer
+##' @importFrom ggplot2 geom_segment
+##' @importFrom ggplot2 aes
+##' @export
+##' @author Yu Guangchuang
+geom_arg <- function(layout="rectangular", ...) {
+  x <- y <- parent <- NULL
+  lineend  = "round"
+  if (layout == "rectangular" || layout == "fan" || layout == "circular") {
+    list(
+      geom_segment(aes(x    = x[parent],
+                       xend = x,
+                       y    = y,
+                       yend = y),
+                   lineend  = lineend, ...),
+
+      geom_segment(aes(x    = x[parent],
+                       xend = x[parent],
+                       y    = y[parent],
+                       yend = y),
+                   lineend  = lineend, ...),
+      # S-Segment Horizontal
+      geom_segment(aes(x    = x[donor],
+                       xend = x,
+                       y    = (y[donor] + y)/2,
+                       yend = (y[donor] + y)/2),
+                   lineend  = lineend,
+                   linetype = 2, ...),
+      # S-Segment Vertical Donator
+      geom_segment(aes(x    = x[donor],
+                       xend = x[donor],
+                       y    = y[donor],
+                       yend = (y[donor] + y)/2),
+                   lineend  = lineend,
+                   linetype = 2, ...),
+      # S-Segment Vertical Receiver
+      geom_segment(aes(x    = x,
+                       xend = x,
+                       y    = (y[donor] + y)/2,
+                       yend = y),
+                   lineend  = lineend,
+                   linetype = 2, ...)
+
+    )
+  }
+}
 
 # setup_data_continuous_color_size <- function(x, xend, y, yend, col, col2, size1, size2,
 #                                              xrange = NULL, nsplit = 100, extend = 0.002) {
@@ -1715,5 +1731,5 @@ theme_tree2_internal <- function(bgcolor="white", fgcolor="black",
 }
 
 #tr <- read.evonet("../ARG.newick")
-tr <- ape::rtree(10)
-ggplot(tr) + geom_tree()
+# tr <- ape::rtree(10)
+# ggplot(tr) + geom_tree()
