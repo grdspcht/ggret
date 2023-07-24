@@ -563,9 +563,15 @@ setup_tree_data <- function(data) {
 ##' @importFrom ggplot2 aes
 ##' @export
 ##' @author Yu Guangchuang
-geom_arg <- function(layout="rectangular", ...) {
+geom_arg <- function(layout="rectangular", retcol = retcol, arrow = FALSE, ...) {
   x <- y <- parent <- NULL
   lineend  = "round"
+  if (arrow == TRUE){
+    arrowtype = arrow(length = unit(0.03, "npc"))
+  }else{
+    arrowtype = NULL
+  }
+
   if (layout == "rectangular" || layout == "fan" || layout == "circular") {
     list(
       geom_segment(aes(x    = x[parent],
@@ -585,6 +591,7 @@ geom_arg <- function(layout="rectangular", ...) {
                        y    = (y[donor] + y)/2,
                        yend = (y[donor] + y)/2),
                    lineend  = lineend,
+                   colour = retcol,
                    linetype = 2, ...),
       # S-Segment Vertical Donator
       geom_segment(aes(x    = x[donor],
@@ -592,6 +599,7 @@ geom_arg <- function(layout="rectangular", ...) {
                        y    = y[donor],
                        yend = (y[donor] + y)/2),
                    lineend  = lineend,
+                   colour = retcol,
                    linetype = 2, ...),
       # S-Segment Vertical Receiver
       geom_segment(aes(x    = x,
@@ -599,6 +607,8 @@ geom_arg <- function(layout="rectangular", ...) {
                        y    = (y[donor] + y)/2,
                        yend = y),
                    lineend  = lineend,
+                   colour = retcol,
+                   arrow = arrowtype,
                    linetype = 2, ...)
 
     )

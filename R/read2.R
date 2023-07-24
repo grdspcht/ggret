@@ -9,9 +9,9 @@
 #' print("EXAMPLE HERE")
 
 
-read.enewick2 <- function(file = "")
+read.enewick2 <- function(file = "", text = NULL)
 {
-  tr <- ape::read.tree(file = file)
+  tr <- ape::read.tree(file = file, text = text)
   ret_index <- grep("#", tr$tip.label)
   rets <- match(ret_index, tr$edge[, 2])
   ret_len <- tr$edge.length[rets]
