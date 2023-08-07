@@ -4,6 +4,7 @@
 ggarg <- function(arg, retcol = 'black', lty = "dashed", rty = "rectangular"){
   plot <- ggplot(arg) + geom_tree()  + geom_tiplab()
   ret <- as.data.frame(arg$reticulation)
+  ret <- as.data.frame(ret[order(ret[,2]),])
   fromx <- c()
   fromy <- c()
   tox <- c()
@@ -17,7 +18,6 @@ ggarg <- function(arg, retcol = 'black', lty = "dashed", rty = "rectangular"){
     fromy <- c(fromy, plot$data$y[which(plot$data$node == from)])
     tox <- c(tox, plot$data$x[which(plot$data$node == to)])
     toy <- c(toy, plot$data$y[which(plot$data$node == to)])
-
   }
 
   ret <- cbind(ret, fromx, fromy, tox, toy)

@@ -20,6 +20,7 @@ fortify.evonet <- function(model, data,
                           root.position = 0,
                           ...) {
   x <- model
+  x$reticulation <- x$reticulation[order(x$reticulation[,2]),]
 
   #x <- as.phylo(x) ## reorder.phylo(get.tree(model), "postorder")
   if (ladderize == TRUE) {
@@ -62,10 +63,16 @@ fortify.evonet <- function(model, data,
 
     retIndex <- which(xypos$node %in% x$reticulation[,2])
     isRet[retIndex] <- TRUE
-    ret.length[retIndex] <- x$ret.length
+
     donor[retIndex] <- x$reticulation[,1]
 
-    reticulations <- tibble::tibble(node=1:N, isRet=isRet, donor=donor, ret.length=ret.length)
+    if(!is.null(x$ret.length)){
+      ret.length[retIndex] <- x$ret.length
+      reticulations <- tibble::tibble(node=1:N, isRet=isRet, donor=donor, ret.length=ret.length)
+    }else{
+      reticulations <- tibble::tibble(node=1:N, isRet=isRet, donor=donor)
+    }
+
 
     res <- full_join(df, xypos, by = "node")
     res <- full_join(res, reticulations, by = "node")

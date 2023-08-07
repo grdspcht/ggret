@@ -15,12 +15,44 @@ get.colnames <- function (treeTexts){
   return(extrUni)
 }
 
-file <- normalizePath("../Data/HVB_upd_bact_max10_new.summary.acg")
+get_ret_parentlab <- function(phylo, nodelabel){
+  childid <- nodeid(phylo, nodelabel)
+  row <- which(phylo$reticulation[,2] == childid)
+  parentid <- phylo$reticulation[row ,1]
+  parentlab <- nodelab(phylo, parentid)
+  return(parentlab)
+}
+
+fix_nodeids <- function(phylo, nodesindex, phylonodes){
+  ret_nodesindex <- which(grepl("#",nodesindex))
+  ret_nodelabs <- unique(nodesindex[ret_nodesindex])
+
+  for(lab in ret_nodelabs){
+    receivernodes <- which(nodesindex == lab)
+    if (length(receivernodes == 2)){
+      donorlab <- get_ret_parentlab(phylo, lab)
+      donorindex <- which(nodesindex == donorlab)
+      if(length(donorindex) != 1){
+        warning("More than one reticulation donor node found. Breaking...")
+        break
+      }else{
+        retbased <- which(receivernodes + 1 == donorindex)
+        retbased <- receivernodes[retbased]
+        phylonodes[retbased] <- nodeid(phylo, donorlab)
+      }
+    }else{
+      warning("Number of reticulation receiver nodes is not 2. Skipping...")
+      next
+    }
+  }
+  return(phylonodes)
+}
+
+file <- normalizePath("../Data/HVB_upd_bact_max5.summary.acg")
 treefile <- readLines(file)
 
 treesIndex <- grep("tree .* = ", treefile)
 treeTexts <- treefile[treesIndex]
-#treeNames <- sub("^tree (.*) = ",  "", treeTexts, invert= TRUE)
 
 # get trees
 treeTexts <- sub("^tree (.*) = ",  "", treeTexts)
@@ -44,10 +76,9 @@ phyLabel <- read.enewick2(text=pwl)
 extrdCols <- get.colnames(treeTexts)
 cleanCols <- clean.colnames(extrdCols)
 
-
 nodesindex <- str_extract_all(pwl, "([[:alnum:]]+):|(#[[:alnum:]]+):")
 nodesindex <- unlist(nodesindex)
-
+nodesindex <- gsub("\\:", "", nodesindex)
 
 # returns a vector of the positions of
 labels <-  c(phyLabel$tip.label, phyLabel$node.label)
@@ -58,11 +89,72 @@ for (col in cleanCols){
   dynlist[[col]] <- rep(NA, length(nodesindex))
 }
 
-for (node in nodesindex){
-  if(grepl("#", node)){
-    next
-  }else
-  searchstring <- paste0(node, "\\[.*?\\]")
-  nodedata <- str_extract_all(treeTexts, searchstring)
+nodedata <- unlist(str_extract_all(treeTexts, "\\[.*?\\]"))
+nodedata <- gsub("^\\[&|]$","", nodedata)
+nodedata <- str_split(nodedata, ", ")
+
+phylonodes <- rep(NA, length(nodesindex))
+for(i in 1:length(nodesindex)){
+  phylonodes[i] <- nodeid(phylo, nodesindex[i])
 }
 
+phylonodes2 <- fix_nodeids(phylo, nodesindex, phylonodes)
+
+for (k in 1:length(nodedata)){
+  for (j in nodedata[[k]]){
+    keyval <- j
+    keyval <- str_split_1(keyval, "=")
+    key <- keyval[1]
+    val <- keyval[2]
+    if (grepl("\\{|\\}", val)){
+      val <- gsub("^\\{|\\}$", "", val)
+      val <- str_split(val, ",")
+    }
+    dynlist[[key]][k] <- val
+  }
+}
+# set appropriate type for data
+dynlist <- type.convert(dynlist, as.is = TRUE)
+dyndf <- as_tibble(dynlist)
+dyndf <- add_column(dyndf, phylonodes2)
+
+# unlist all columns which only have single values
+# for (k in 1:ncol(dyndf)){
+#   if(is.list(dyndf[,k])){
+#     if (max(lengths(dyndf[,k][[1]])) == 1){
+#       dyndf[,k] <- unlist(dyndf[,k])
+#     }
+#   }
+# }
+
+if(grep("Translate", treefile, ignore.case = T)){
+  start <- grep("^Translate$", treefile, ignore.case = T) + 1
+  semicolon <- grep("^;$", treefile)
+  end <- semicolon[which(grep("^;$", treefile) > start)[1]]-1
+  dflen <- end-start
+
+  nodes <- c()
+  labels <- c()
+
+  for (i in start:end){
+      label <- treefile[i]
+      label <- sub(" ", ";", label)
+      splitlab <- str_split_1(label, ";")
+      nodes <- c(nodes, splitlab[1])
+      labels <-c(labels, splitlab[2])
+  }
+nodes <- as.numeric(nodes)
+labels <- gsub(",$", "", labels)
+
+tr_df <- data.frame(nodes=nodes, labels=labels) }
+tiplabels <- as.numeric(phylo$tip.label)
+tr_df <- tr_df[match(tiplabels, tr_df$nodes),]
+phylo$tip.label <- tr_df$labels
+
+# Clean up (temporary) node labels
+phylo$node.label <- gsub("^[0-9]+$", "", phylo$node.label)
+phylo$node.label <- gsub("^Node[0-9]+$", "", phylo$node.label)
+
+# TODO: extension of treedata that allows for evonet as phylo
+class(phylo) <- c("phylo", "evonet")
+fin <- new("treedata", treetext = treeTexts, phylo = phylo, data = dyndf, file = file)
