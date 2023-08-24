@@ -563,14 +563,15 @@ setup_tree_data <- function(data) {
 ##' @importFrom ggplot2 aes
 ##' @export
 ##' @author Yu Guangchuang
-geom_arg <- function(layout="rectangular", retcol = retcol, arrow = FALSE, ...) {
+geom_arg <- function(layout="rectangular", retcol = retcol, arrows = FALSE, ...) {
   x <- y <- parent <- NULL
-  lineend  = "round"
-  if (arrow == TRUE){
-    arrowtype = arrow(length = unit(0.03, "npc"))
+  lend  = "round"
+  if (arrows == TRUE){
+    arrowtype = arrow(length = unit(0.03, "npc"), type = "closed")
   }else{
     arrowtype = NULL
   }
+
 
   if (layout == "rectangular" || layout == "fan" || layout == "circular") {
     list(
@@ -578,19 +579,19 @@ geom_arg <- function(layout="rectangular", retcol = retcol, arrow = FALSE, ...) 
                        xend = x,
                        y    = y,
                        yend = y),
-                   lineend  = lineend, ...),
+                   lineend = lend, ...),
 
       geom_segment(aes(x    = x[parent],
                        xend = x[parent],
                        y    = y[parent],
                        yend = y),
-                   lineend  = lineend, ...),
+                   lineend = lend, ...),
       # S-Segment Horizontal
       geom_segment(aes(x    = x[donor],
                        xend = x,
                        y    = (y[donor] + y)/2,
                        yend = (y[donor] + y)/2),
-                   lineend  = lineend,
+                   lineend = lend,
                    colour = retcol,
                    linetype = 2, ...),
       # S-Segment Vertical Donator
@@ -598,7 +599,7 @@ geom_arg <- function(layout="rectangular", retcol = retcol, arrow = FALSE, ...) 
                        xend = x[donor],
                        y    = y[donor],
                        yend = (y[donor] + y)/2),
-                   lineend  = lineend,
+                   lineend = lend,
                    colour = retcol,
                    linetype = 2, ...),
       # S-Segment Vertical Receiver
@@ -606,9 +607,9 @@ geom_arg <- function(layout="rectangular", retcol = retcol, arrow = FALSE, ...) 
                        xend = x,
                        y    = (y[donor] + y)/2,
                        yend = y),
-                   lineend  = lineend,
+                   lineend = lend,
                    colour = retcol,
-                   arrow = arrowtype,
+                   #arrow = arrowtype,
                    linetype = 2, ...)
 
     )
@@ -1739,7 +1740,3 @@ theme_tree2_internal <- function(bgcolor="white", fgcolor="black",
           axis.text.y=axis.text.y,
           ...)
 }
-
-#tr <- read.evonet("../ARG.newick")
-# tr <- ape::rtree(10)
-# ggplot(tr) + geom_tree()

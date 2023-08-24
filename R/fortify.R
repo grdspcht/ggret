@@ -60,11 +60,18 @@ fortify.evonet <- function(model, data,
     isRet <- logical(N)
     donor <- rep(NA, N)
     ret.length <- rep(NA, N)
+    if (is.null(dim(x$reticulation))){
+      retIndex <- which(xypos$node %in% x$reticulation[2])
+      isRet[retIndex] <- TRUE
+      donor[retIndex] <- x$reticulation[1]
+    }else{
+      retIndex <- which(xypos$node %in% x$reticulation[,2])
+      isRet[retIndex] <- TRUE
+      donor[retIndex] <- x$reticulation[,1]
 
-    retIndex <- which(xypos$node %in% x$reticulation[,2])
-    isRet[retIndex] <- TRUE
+    }
 
-    donor[retIndex] <- x$reticulation[,1]
+
 
     if(!is.null(x$ret.length)){
       ret.length[retIndex] <- x$ret.length

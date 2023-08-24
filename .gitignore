@@ -3,3 +3,8 @@
 .Rdata
 .httr-oauth
 .DS_Store
+.beast
+.tree
+.trees
+.newick
+.acg
