@@ -702,7 +702,7 @@ ggproto_formals <- function(x) formals(environment(x)$f)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point(colour = alpha("blue", 0.5))
-scales::alpha
+#scales::alpha
 
 "%||%" <- function(a, b) {
   if (!is.null(a)) a else b

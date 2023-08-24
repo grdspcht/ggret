@@ -4,7 +4,7 @@
 \alias{read.enewick2}
 \title{Read an extended Newick file (via ape)}
 \usage{
-read.enewick2(file = "")
+read.enewick2(file = "", text = NULL)
 }
 \arguments{
 \item{file}{Path to an extended Newick file.}

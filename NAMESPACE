@@ -2,11 +2,12 @@
 
 S3method(single_value,default)
 S3method(single_value,factor)
+export("%||%")
 export()
-export(alpha)
 export(flip_data)
 export(flipped_names)
 export(geom_aline)
+export(geom_arg)
 export(geom_segment2)
 export(get.path)
 export(has_name)
