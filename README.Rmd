@@ -1,0 +1,30 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# ggarg
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+ggarg is an in-development R package for the visualisation and annotation of Ancestral Recombination Graphs (ARGs) and other tree-based phylogenetic networks. It extends the functionality of ggtree and ggplot2.
+
+![ggarg logo](man/ggarg_logo_light.png)
+
+
+## Installation
+
+Installation of ggarg is currently not advised due to the fact that its still in development. 
+We encourage however to watch this space as we plan to release official public versions soon!
+
