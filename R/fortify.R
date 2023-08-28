@@ -10,24 +10,24 @@
 ##'
 library(treeio)
 fortify.evonet <- function(model, data,
-                          layout        = "rectangular",
-                          ladderize     = TRUE,
-                          right         = FALSE,
-                          branch.length = "branch.length",
-                          mrsd          = NULL,
-                          as.Date       = FALSE,
-                          yscale        = "none",
-                          root.position = 0,
-                          ...) {
+                           layout = "rectangular",
+                           ladderize = TRUE,
+                           right = FALSE,
+                           branch.length = "branch.length",
+                           mrsd = NULL,
+                           as.Date = FALSE,
+                           yscale = "none",
+                           root.position = 0,
+                           ...) {
   x <- model
-  x$reticulation <- x$reticulation[order(x$reticulation[,2]),]
+  x$reticulation <- x$reticulation[order(x$reticulation[, 2]), ]
 
-  #x <- as.phylo(x) ## reorder.phylo(get.tree(model), "postorder")
+  # x <- as.phylo(x) ## reorder.phylo(get.tree(model), "postorder")
   if (ladderize == TRUE) {
-    x <- ladderize(x, right=right)
+    x <- ladderize(x, right = right)
   }
 
-  if (! is.null(x$edge.length)) {
+  if (!is.null(x$edge.length)) {
     if (anyNA(x$edge.length)) {
       warning("'edge.length' contains NA values...\n## setting 'edge.length' to NULL automatically when plotting the tree...")
       x$edge.length <- NULL
@@ -38,55 +38,54 @@ fortify.evonet <- function(model, data,
     res <- layout.unrooted(model, layout.method = layout, branch.length = branch.length, ...)
   } else {
     ypos <- getYcoord(x)
-    N <- Nnode(x, internal.only=FALSE)
+    N <- Nnode(x, internal.only = FALSE)
 
     if (is.null(x$edge.length) || branch.length == "none") {
-      if (layout == 'slanted'){
+      if (layout == "slanted") {
         sbp <- .convert_tips2ancestors_sbp(x, include.root = TRUE)
         xpos <- getXcoord_no_length_slanted(sbp)
         ypos <- getYcoord_no_length_slanted(sbp)
-      }else{
+      } else {
         xpos <- getXcoord_no_length(x)
       }
     } else {
       xpos <- getXcoord(x)
     }
 
-    xypos <- tibble::tibble(node=1:N, x=xpos + root.position, y=ypos)
+    xypos <- tibble::tibble(node = 1:N, x = xpos + root.position, y = ypos)
 
     df <- as_tibble(model) %>%
-      mutate(isTip = ! .data$node %in% .data$parent)
+      mutate(isTip = !.data$node %in% .data$parent)
 
     isRet <- logical(N)
     donor <- rep(NA, N)
     ret.length <- rep(NA, N)
-    if (is.null(dim(x$reticulation))){
+    if (is.null(dim(x$reticulation))) {
       retIndex <- which(xypos$node %in% x$reticulation[2])
       isRet[retIndex] <- TRUE
       donor[retIndex] <- x$reticulation[1]
-    }else{
-      retIndex <- which(xypos$node %in% x$reticulation[,2])
+    } else {
+      retIndex <- which(xypos$node %in% x$reticulation[, 2])
       isRet[retIndex] <- TRUE
-      donor[retIndex] <- x$reticulation[,1]
-
+      donor[retIndex] <- x$reticulation[, 1]
     }
 
 
 
-    if(!is.null(x$ret.length)){
+    if (!is.null(x$ret.length)) {
       ret.length[retIndex] <- x$ret.length
-      reticulations <- tibble::tibble(node=1:N, isRet=isRet, donor=donor, ret.length=ret.length)
-    }else{
-      reticulations <- tibble::tibble(node=1:N, isRet=isRet, donor=donor)
+      reticulations <- tibble::tibble(node = 1:N, isRet = isRet, donor = donor, ret.length = ret.length)
+    } else {
+      reticulations <- tibble::tibble(node = 1:N, isRet = isRet, donor = donor)
     }
 
 
     res <- full_join(df, xypos, by = "node")
     res <- full_join(res, reticulations, by = "node")
-    }
+  }
 
   ## add branch mid position
-  #res <- calculate_branch_mid(res, layout=layout)
+  # res <- calculate_branch_mid(res, layout=layout)
   res <- calculate_branch_mid(res)
 
   if (!is.null(mrsd)) {
@@ -104,5 +103,24 @@ fortify.evonet <- function(model, data,
   class(res) <- c("tbl_tree", class(res))
   attr(res, "layout") <- layout
   return(res)
+}
+
+fortify.treedata <- function(model, data,
+                             layout = "rectangular",
+                             ladderize = TRUE,
+                             right = FALSE,
+                             branch.length = "branch.length",
+                             mrsd = NULL,
+                             as.Date = FALSE,
+                             yscale = "none",
+                             root.position = 0,
+                             ...) {
+
+
+  x <- fortify.evonet(model@phylo)
+
+  xx <- merge(x, model@data, by="node")
+
+  xx
 }
 
