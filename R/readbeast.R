@@ -111,7 +111,6 @@ read.beast <- function(file){
     phylonodes[i] <- nodeid(phylo, nodesindex[i])
   }
 
-  #phylonodes2 <- fix_nodeids(phylo, nodesindex, phylonodes)
   for (k in 1:length(nodedata)) {
     for (j in nodedata[[k]]) {
       keyval <- j
@@ -128,7 +127,7 @@ read.beast <- function(file){
   # set appropriate type for data
   dynlist <- type.convert(dynlist, as.is = TRUE)
   dyndf <- as_tibble(dynlist)
-  dyndf <- add_column(dyndf, phylonodes)
+  dyndf <- add_column(dyndf, node=phylonodes)
 
   # unlist all columns which only have single values
   # for (k in 1:ncol(dyndf)){
