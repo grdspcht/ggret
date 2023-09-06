@@ -369,74 +369,6 @@ StatTreeHorizontal <- ggproto("StatTreeHorizontal", Stat,
                               }
 )
 
-
-# StatTreeVertical <- ggproto("StatTreeVertical", Stat,
-#                             required_aes = c("node", "parent", "x", "y"),
-#                             compute_group = function(data, params) {
-#                               data
-#                             },
-#                             compute_panel = function(self, data, scales, params, layout, lineend,
-#                                                      continuous = "none", nsplit=100,
-#                                                      extend=0.002, rootnode = TRUE) {
-#                               .fun <- function(data) {
-#                                 df <- setup_tree_data(data)
-#                                 x <- df$x
-#                                 y <- df$y
-#                                 ii <- with(df, match(parent, node))
-#                                 df$x <- x[ii]
-#                                 df$y <- y[ii]
-#                                 df$xend <- x[ii]
-#                                 df$yend <- y
-#
-#                                 if (!rootnode) {
-#                                   df <- dplyr::filter(df, .data$node != rootnode.tbl_tree(df)$node)
-#                                 }
-#
-#                                 if (continuous != "none"){
-#                                   # using ggnewscale new_scale("color") for multiple color scales
-#                                   if (length(grep("colour_new", names(df)))==1 && !"colour" %in% names(df)){
-#                                     names(df)[grep("colour_new", names(df))] <- "colour"
-#                                   }
-#                                   if (!is.null(df$colour)){
-#                                     if (any(is.na(df$colour))){
-#                                       df$colour[is.na(df$colour)] <- 0
-#                                     }
-#                                     df$colour <- df$colour[ii]
-#                                   }
-#                                   # using ggnewscale new_scale("size") for multiple size scales
-#                                   if (length(grep("size_new", names(df)))==1 && !"size" %in% names(df)){
-#                                     names(df)[grep("size_new", names(df))] <- "size"
-#                                   }
-#                                   if (!is.null(df$size)){
-#                                     if (any(is.na(df$size))){
-#                                       df$size[is.na(df$size)] <- 0
-#                                     }
-#                                     df$size <- df$size[ii]
-#                                   }
-#                                 }
-#                                 return(df)
-#                               }
-#
-#                               if ('.id' %in% names(data)) {
-#                                 ldf <- split(data, data$.id)
-#                                 df <- do.call(rbind, lapply(ldf, .fun))
-#                               } else {
-#                                 df <- .fun(data)
-#                               }
-#
-#                               # using ggnewscale new_scale for multiple color or size scales
-#                               if (length(grep("colour_new", names(data)))==1 && continuous != "none"){
-#                                 names(df)[match("colour", names(df))] <- names(data)[grep("colour_new", names(data))]
-#                               }
-#                               if (length(grep("size_new", names(data)))==1 && continuous != "none"){
-#                                 names(df)[match("size", names(df))] <- names(data)[grep("size_new", names(data))]
-#                               }
-#                               return(df)
-#                             }
-# )
-
-
-
 StatTree <- ggproto("StatTree", Stat,
                     required_aes = c("node", "parent", "x", "y"),
                     compute_group = function(data, params) {
@@ -563,7 +495,7 @@ setup_tree_data <- function(data) {
 ##' @importFrom ggplot2 aes
 ##' @export
 ##' @author Yu Guangchuang
-geom_arg <- function(layout="rectangular", retcol = retcol, arrows = FALSE, ...) {
+geom_arg <- function(layout="rectangular", retcol = "black", arrows = FALSE, ...) {
   x <- y <- parent <- NULL
   lend  = "round"
   if (arrows == TRUE){
@@ -616,83 +548,6 @@ geom_arg <- function(layout="rectangular", retcol = retcol, arrows = FALSE, ...)
   }
 }
 
-# setup_data_continuous_color_size <- function(x, xend, y, yend, col, col2, size1, size2,
-#                                              xrange = NULL, nsplit = 100, extend = 0.002) {
-#   if (is.null(xrange))
-#     xrange <- c(x, xend)
-#
-#   ## xstep <- diff(xrange)/nsplit
-#   ## xn <- floor((xend - x)/xstep)
-#   xn <- floor((xend - x) * nsplit /diff(xrange))
-#   ## slope <- (yend - y)/(xend - x)
-#   ydiff <- yend - y
-#   xdiff <- xend - x
-#
-#   if (xn > 0) {
-#     ## x <- x + 0:xn * xstep
-#     x <- x + 0:xn * diff(xrange) / nsplit
-#     tmp <- x[-1] * (1 + extend)
-#     tmp[tmp > xend] <- xend
-#     xend <- c(tmp, xend)
-#     ## y <- y + 0:xn * xstep * slope
-#     y <- y + 0:xn * diff(xrange) * ydiff / (nsplit * xdiff)
-#     ## yend <- y + (xend - x) * slope
-#     yend <- y + (xend - x) * ydiff / xdiff
-#   }
-#
-#   n <- length(x)
-#   if (is.numeric(col) && is.numeric(col2)) {
-#     colour <- seq(col, col2, length.out = n)
-#   } else if (is.character(col) && is.character(col2)) {
-#     colour <- grDevices::colorRampPalette(c(col, col2))(n)
-#   } else if (is.null(col) && is.null(col2)){
-#     colour <- "black"
-#   }else {
-#     stop("col and col2 should be both numeric or character..." )
-#   }
-#   if (is.numeric(size1) && is.numeric(size2)){
-#     size <- seq(size1, size2, length.out=n)
-#   }else if (is.null(size1) && is.null(size2)){
-#     size <- 0.5
-#   }
-#   dat <- data.frame(x = x,
-#                     xend = xend,
-#                     y = y,
-#                     yend = yend,
-#                     colour = colour,
-#                     size = size)
-#   return(dat)
-# }
-
-# setup_data_continuous_color_size_tree <- function(df, nsplit = 100, extend = 0.002, continuous = "colour") {
-#   lapply(1:nrow(df), function(i) {
-#     df2 <- setup_data_continuous_color_size(x = df$x[i],
-#                                             xend = df$xend[i],
-#                                             y = df$y[i],
-#                                             yend = df$yend[i],
-#                                             col = df$col[i],
-#                                             col2 = df$col2[i],
-#                                             size1 = df$size1[i],
-#                                             size2 = df$size2[i],
-#                                             xrange = range(df$x),
-#                                             nsplit = nsplit,
-#                                             extend = extend)
-#     df2$node <- df$node[i]
-#     # for aes(size=I(variable)) etc.
-#     if (continuous %in% c("color", "colour")){
-#       j <- match(c('x', 'xend', 'y', 'yend', 'col', 'col2', 'colour', 'size1', 'size2'), colnames(df))
-#       df2$size <- NULL
-#     }else if (continuous == "size"){
-#       j <- match(c("x", "xend", "y", "yend", "col", "col2", "size1", "size2", "size"), colnames(df))
-#       df2$colour <- NULL
-#     }else if (continuous == "all"){
-#       j <- match(c('x', 'xend', 'y', 'yend', 'col', 'col2', 'colour', 'size1', 'size2', 'size'), colnames(df))
-#     }
-#     j <- j[!is.na(j)]
-#     merge(df[i, -j, drop = FALSE], df2, by = "node")
-#   }) %>% do.call('rbind', .)
-# }
-########
 ggproto_formals <- function(x) formals(environment(x)$f)
 
 #' @export

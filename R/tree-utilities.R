@@ -1,11 +1,10 @@
 ##' @importFrom ape reorder.phylo
 ##' @importFrom treeio Nnode
-layout.unrooted <- function(model, branch.length="branch.length", layout.method="equal_angle", MAX_COUNT=5, ...) {
-
+layout.unrooted <- function(model, branch.length = "branch.length", layout.method = "equal_angle", MAX_COUNT = 5, ...) {
   df <- switch(layout.method,
-               equal_angle = layoutEqualAngle(model, branch.length),
-               daylight = layoutDaylight(model, branch.length, MAX_COUNT),
-               ape = layoutApe(model, branch.length)
+    equal_angle = layoutEqualAngle(model, branch.length),
+    daylight = layoutDaylight(model, branch.length, MAX_COUNT),
+    ape = layoutApe(model, branch.length)
   )
 
   return(df)
@@ -15,7 +14,7 @@ set_branch_length_cladogram <- function(tree) {
   phylo <- as.phylo(tree)
   edge <- phylo$edge
   xpos <- getXcoord_no_length(phylo)
-  phylo$edge.length <- xpos[edge[,2]] - xpos[edge[,1]]
+  phylo$edge.length <- xpos[edge[, 2]] - xpos[edge[, 1]]
 
   if (is(tree, "phylo")) {
     return(phylo)
@@ -37,12 +36,12 @@ set_branch_length_cladogram <- function(tree) {
 ##' @param branch.length set to 'none' for edge length of 1. Otherwise the phylogenetic tree edge length is used.
 ##' @return tree as data.frame with equal angle layout.
 getNodeNum <- function(tree) {
-  Nnode(tree, internal.only=FALSE)
+  Nnode(tree, internal.only = FALSE)
 }
-layoutEqualAngle <- function(model, branch.length = "branch.length"){
+layoutEqualAngle <- function(model, branch.length = "branch.length") {
   tree <- as.phylo(model)
 
-  if (! is.null(tree$edge.length)) {
+  if (!is.null(tree$edge.length)) {
     if (anyNA(tree$edge.length)) {
       warning("'edge.length' contains NA values...\n## setting 'edge.length' to NULL automatically when plotting the tree...")
       tree$edge.length <- NULL
@@ -54,13 +53,13 @@ layoutEqualAngle <- function(model, branch.length = "branch.length"){
   }
   N <- treeio::Nnode2(tree)
   brlen <- numeric(N)
-  brlen[tree$edge[,2]] <- tree$edge.length
+  brlen[tree$edge[, 2]] <- tree$edge.length
 
   root <- tidytree::rootnode(tree)
   ## Convert Phylo tree to data.frame.
   ## df <- as.data.frame.phylo_(tree)
   df <- as_tibble(model) %>%
-    mutate(isTip = ! .data$node %in% .data$parent)
+    mutate(isTip = !.data$node %in% .data$parent)
 
   ## NOTE: Angles (start, end, angle) are in half-rotation units (radians/pi or degrees/180)
 
@@ -68,13 +67,13 @@ layoutEqualAngle <- function(model, branch.length = "branch.length"){
   df$x <- 0
   df$y <- 0
   df$start <- 0 # Start angle of segment of subtree.
-  df$end   <- 0 # End angle of segment of subtree
+  df$end <- 0 # End angle of segment of subtree
   df$angle <- 0 # Orthogonal angle to beta for tip labels.
   ## Initialize root node position and angles.
   df[root, "x"] <- 0
   df[root, "y"] <- 0
   df[root, "start"] <- 0 # 0-degrees
-  df[root, "end"]   <- 2 # 360-degrees
+  df[root, "end"] <- 2 # 360-degrees
   df[root, "angle"] <- 0 # Angle label.
 
   df$branch.length <- brlen[df$node] # for cladogram
@@ -87,7 +86,7 @@ layoutEqualAngle <- function(model, branch.length = "branch.length"){
   ## Get list of node id's.
   nodes <- getNodes_by_postorder(tree)
 
-  for(curNode in nodes) {
+  for (curNode in nodes) {
     ## Get number of tips for current node.
     curNtip <- nb.sp[curNode]
     ## Get array of child node indexes of current node.
@@ -97,8 +96,8 @@ layoutEqualAngle <- function(model, branch.length = "branch.length"){
     ## Get "start" and "end" angles of a segment for current node in the data.frame.
     start <- df[curNode, "start"]
     end <- df[curNode, "end"]
-    cur_x = df[curNode, "x"]
-    cur_y = df[curNode, "y"]
+    cur_x <- df[curNode, "x"]
+    cur_y <- df[curNode, "y"]
     for (child in children) {
       ## Get the number of tips for child node.
       ntip.child <- nb.sp[child]
@@ -149,7 +148,7 @@ layoutEqualAngle <- function(model, branch.length = "branch.length"){
 ##' nodes = remove tip nodes.
 ##'
 ##' ```
-layoutDaylight <- function(model, branch.length, MAX_COUNT=5 ){
+layoutDaylight <- function(model, branch.length, MAX_COUNT = 5) {
   tree <- as.phylo(model)
 
   ## How to set optimal
@@ -169,7 +168,7 @@ layoutDaylight <- function(model, branch.length, MAX_COUNT=5 ){
 
   nodes <- getNodesBreadthFirst.df(tree_df)
   ## select only internal nodes
-  internal_nodes <- tree_df[!tree_df$isTip,]$node
+  internal_nodes <- tree_df[!tree_df$isTip, ]$node
   ## Remove tips from nodes list, but keeping order.
   nodes <- intersect(nodes, internal_nodes)
 
@@ -177,14 +176,14 @@ layoutDaylight <- function(model, branch.length, MAX_COUNT=5 ){
   for (i in seq_len(MAX_COUNT)) {
     ## Reset max_change after iterating over tree.
     total_max <- 0.0
-    for(currentNode_id in nodes){
+    for (currentNode_id in nodes) {
       result <- applyLayoutDaylight(tree_df, currentNode_id)
       tree_df <- result$tree
       total_max <- total_max + result$max_change
     }
     # Calculate the running average of angle changes.
     ave_change <- total_max / length(nodes)
-    message('Average angle change [',i,'] ', ave_change)
+    message("Average angle change [", i, "] ", ave_change)
     if (ave_change <= MINIMUM_AVERAGE_ANGLE_CHANGE) break
   }
 
@@ -237,30 +236,32 @@ layoutDaylight <- function(model, branch.length, MAX_COUNT=5 ){
 ##   }
 ## }
 ## ```
-applyLayoutDaylight <- function(df, node_id){
+applyLayoutDaylight <- function(df, node_id) {
   # Get lists of node ids for each subtree, including  rest of unrooted tree.
   subtrees <- getSubtreeUnrooted.df(df, node_id)
 
   # Return tree if only 2 or less subtrees to adjust.
-  if(length(subtrees) <= 2){
-    return( list(tree = df, max_change = 0.0) )
+  if (length(subtrees) <= 2) {
+    return(list(tree = df, max_change = 0.0))
   }
 
   # Find start and end angles for each subtree.
   #   subtrees = get subtrees of node
   #   for i-th subtree in subtrees {
-  angle_list = purrr::map_dfr(subtrees, ~{
+  angle_list <- purrr::map_dfr(subtrees, ~ {
     getTreeArcAngles(df, node_id, .x) %>% dplyr::bind_rows()
-  }) %>% dplyr::transmute(
-    left = .data$left,
-    beta = .data$left - .data$right,
-    beta = ifelse(.data$beta < 0, .data$beta + 2, .data$beta),
-    subtree_id = seq_len(nrow(.))
-  ) %>% dplyr::arrange(.data$left)
+  }) %>%
+    dplyr::transmute(
+      left = .data$left,
+      beta = .data$left - .data$right,
+      beta = ifelse(.data$beta < 0, .data$beta + 2, .data$beta),
+      subtree_id = seq_len(nrow(.))
+    ) %>%
+    dplyr::arrange(.data$left)
   #   sort angle_list by 'left angle' column in ascending order.
   #   D = 360 - sum( angle_list['beta'] ) # total day
   #   d = D / |subtrees| # equal daylight angle.
-  total_daylight <- 2 - sum(angle_list[['beta']])
+  total_daylight <- 2 - sum(angle_list[["beta"]])
   d <- total_daylight / length(subtrees)
 
   # Initialise new left-angle as first subtree left-angle.
@@ -270,14 +271,14 @@ applyLayoutDaylight <- function(df, node_id){
   # for n-th row in angle_list{
   # Skip the first subtree as it is not adjusted.
   max_change <- 0.0
-  for (i in 2:nrow(angle_list) ) {
+  for (i in 2:nrow(angle_list)) {
     # Calculate angle to rotate subtree/leaf to create correct daylight angle.
     new_left_angle <- new_left_angle + d + angle_list$beta[i]
     # Calculate the difference between the old and new left angles.
     adjust_angle <- new_left_angle - angle_list$left[i]
 
     max_change <- max(max_change, abs(adjust_angle))
-    #cat('Adjust angle:', abs(adjust_angle), ' Max change:', max_change ,'\n')
+    # cat('Adjust angle:', abs(adjust_angle), ' Max change:', max_change ,'\n')
 
     # rotate subtree[index] wrt current node
     subtree_id <- angle_list$subtree_id[i]
@@ -286,8 +287,7 @@ applyLayoutDaylight <- function(df, node_id){
     df <- rotateTreePoints.df(df, node_id, subtree_nodes, adjust_angle)
   }
 
-  return( list(tree = df, max_change = max_change) )
-
+  return(list(tree = df, max_change = max_change))
 }
 
 
@@ -300,10 +300,10 @@ applyLayoutDaylight <- function(df, node_id){
 ##' @param subtree named list of root id of subtree (node) and list of node ids for given subtree (subtree).
 ##' @return named list with right and left angles in range `[0,2]` i.e 1 = 180 degrees, 1.5 = 270 degrees.
 getTreeArcAngles <- function(df, origin_id, subtree) {
-  df_x = df$x
-  df_y = df$y
-  x_origin = df_x[origin_id]
-  y_origin = df_y[origin_id]
+  df_x <- df$x
+  df_y <- df$y
+  x_origin <- df_x[origin_id]
+  y_origin <- df_y[origin_id]
   ## Initialise variables
   theta_child <- 0.0
   subtree_root_id <- subtree$node
@@ -315,32 +315,32 @@ getTreeArcAngles <- function(df, origin_id, subtree) {
     ## get angle from original node to parent of subtree.
     theta_left <- getNodeAngle.vector(x_origin, y_origin, df_x[subtree_root_id], df_y[subtree_root_id])
     theta_right <- theta_left
-  } else if( subtree_root_id == origin_id ){
+  } else if (subtree_root_id == origin_id) {
     ## Special case.
     ## get angle from parent of subtree to children
     ## children_ids <- getChild.df(df, subtree_root_id)
     children_ids <- tidytree:::child.tbl_tree(df, subtree_root_id)$node
-    if(length(children_ids) == 2){
+    if (length(children_ids) == 2) {
       ## get angles from parent to it's two children.
       theta1 <- getNodeAngle.vector(x_origin, y_origin, df_x[children_ids[1]], df_y[children_ids[1]])
       theta2 <- getNodeAngle.vector(x_origin, y_origin, df_x[children_ids[2]], df_y[children_ids[2]])
       delta <- theta1 - theta2
       ## correct delta for points crossing 180/-180 quadrant.
-      if(delta > 1){
-        delta_adj = delta - 2
-      } else if(delta < -1){
-        delta_adj = delta + 2
-      } else{
+      if (delta > 1) {
+        delta_adj <- delta - 2
+      } else if (delta < -1) {
+        delta_adj <- delta + 2
+      } else {
         delta_adj <- delta
       }
-      if(delta_adj >= 0){
-        theta_left = theta1
-        theta_right = theta2
-      } else if(delta_adj < 0){
-        theta_left = theta2
-        theta_right = theta1
+      if (delta_adj >= 0) {
+        theta_left <- theta1
+        theta_right <- theta2
+      } else if (delta_adj < 0) {
+        theta_left <- theta2
+        theta_right <- theta1
       }
-    }else{
+    } else {
       ## subtree only has one child node.
       theta_left <- getNodeAngle.vector(x_origin, y_origin, df_x[children_ids[1]], df_y[children_ids[1]])
       theta_right <- theta_left
@@ -348,42 +348,42 @@ getTreeArcAngles <- function(df, origin_id, subtree) {
   } else {
     ## get the real root of df tree to initialise left and right angles.
     tree_root <- getRoot.df(df)
-    if( !is.na(tree_root) & is.numeric(tree_root) ){
+    if (!is.na(tree_root) & is.numeric(tree_root)) {
       theta_left <- getNodeAngle.vector(x_origin, y_origin, df_x[tree_root], df_y[tree_root])
       theta_right <- theta_left
-    } else{
-      print('ERROR: no root found!')
+    } else {
+      print("ERROR: no root found!")
       theta_left <- NA
     }
   }
   # no parent angle found.
   # Subtree has to have 1 or more nodes to compare.
-  if (is.na(theta_left) || (length(subtree_node_ids) == 0)){
-    return(c('left' = 0, 'right' = 0))
+  if (is.na(theta_left) || (length(subtree_node_ids) == 0)) {
+    return(c("left" = 0, "right" = 0))
   }
   # create vector with named columns
   # left-hand and right-hand angles between origin node and the extremities of the tree nodes.
-  arc <- c('left' = theta_left, 'right' = theta_right)
+  arc <- c("left" = theta_left, "right" = theta_right)
 
   # Calculate the angle from the origin node to each child node.
   # Moving from parent to children in depth-first traversal.
   # Skip if parent_id is a tip or parent and child node are the same.
-  subtree_node_ids = subtree_node_ids[subtree_node_ids %in% df$parent]
-  subtree_node_ids = subtree_node_ids[subtree_node_ids != origin_id]
-  for(parent_id in subtree_node_ids){
+  subtree_node_ids <- subtree_node_ids[subtree_node_ids %in% df$parent]
+  subtree_node_ids <- subtree_node_ids[subtree_node_ids != origin_id]
+  for (parent_id in subtree_node_ids) {
     # Get angle from origin node to parent node.
     theta_parent <- getNodeAngle.vector(x_origin, y_origin, df_x[parent_id], df_y[parent_id])
     ## children_ids <- getChild.df(df, parent_id)
     children_ids <- tidytree:::child.tbl_tree(df, parent_id)$node
     # Skip if child is parent node of subtree.
-    children_ids = children_ids[children_ids != origin_id]
-    for(child_id in children_ids){
+    children_ids <- children_ids[children_ids != origin_id]
+    for (child_id in children_ids) {
       theta_child <- getNodeAngle.vector(x_origin, y_origin, df_x[child_id], df_y[child_id])
       # Skip if child node is already inside arc.
       # if left < right angle (arc crosses 180/-180 quadrant) and child node is not inside arc of tree.
       # OR if left > right angle (arc crosses 0/360 quadrant) and child node is inside gap
-      if ((arc['left'] < arc['right'] & !(theta_child > arc['left'] & theta_child < arc['right'])) |
-          (arc['left'] > arc['right'] &  (theta_child < arc['left'] & theta_child > arc['right'])) ){
+      if ((arc["left"] < arc["right"] & !(theta_child > arc["left"] & theta_child < arc["right"])) |
+        (arc["left"] > arc["right"] & (theta_child < arc["left"] & theta_child > arc["right"]))) {
         # child node inside arc.
         next
       }
@@ -391,49 +391,49 @@ getTreeArcAngles <- function(df, origin_id, subtree) {
       delta_adj <- delta
       # Correct the delta if parent and child angles cross the 180/-180 half of circle.
       # If delta > 180
-      if( delta > 1){ # Edge between parent and child cross upper and lower quadrants of cirlce on 180/-180 side.
+      if (delta > 1) { # Edge between parent and child cross upper and lower quadrants of cirlce on 180/-180 side.
         delta_adj <- delta - 2 # delta' = delta - 360
         # If delta < -180
-      }else if( delta < -1){ # Edge between parent and child cross upper and lower quadrants of cirlce
+      } else if (delta < -1) { # Edge between parent and child cross upper and lower quadrants of cirlce
         delta_adj <- delta + 2 # delta' = delta - 360
       }
       theta_child_adj <- theta_child
       # If angle change from parent to node is positive (anti-clockwise), check left angle
-      if(delta_adj > 0){
+      if (delta_adj > 0) {
         # If child/parent edges cross the -180/180 quadrant (angle between them is > 180),
         # check if right angle and child angle are different signs and adjust if needed.
-        if( abs(delta) > 1){
-          if( arc['left'] > 0 & theta_child < 0){
+        if (abs(delta) > 1) {
+          if (arc["left"] > 0 & theta_child < 0) {
             theta_child_adj <- theta_child + 2
-          }else if (arc['left'] < 0 & theta_child > 0){
+          } else if (arc["left"] < 0 & theta_child > 0) {
             theta_child_adj <- theta_child - 2
           }
         }
         # check if left angle of arc is less than angle of child. Update if true.
-        if( arc['left'] < theta_child_adj ){
-          arc['left'] <- theta_child
+        if (arc["left"] < theta_child_adj) {
+          arc["left"] <- theta_child
         }
         # If angle change from parent to node is negative (clockwise), check right angle
-      }else if(delta_adj < 0){
+      } else if (delta_adj < 0) {
         # If child/parent edges cross the -180/180 quadrant (angle between them is > 180),
         # check if right angle and child angle are different signs and adjust if needed.
-        if( abs(delta) > 1){
+        if (abs(delta) > 1) {
           # Else change in angle from parent to child is negative, then adjust child angle if right angle is a different sign.
-          if( arc['right'] > 0 & theta_child < 0){
+          if (arc["right"] > 0 & theta_child < 0) {
             theta_child_adj <- theta_child + 2
-          }else if (arc['right'] < 0 & theta_child > 0){
+          } else if (arc["right"] < 0 & theta_child > 0) {
             theta_child_adj <- theta_child - 2
           }
         }
         # check if right angle of arc is greater than angle of child. Update if true.
-        if( arc['right'] > theta_child_adj  ){
-          arc['right'] <- theta_child
+        if (arc["right"] > theta_child_adj) {
+          arc["right"] <- theta_child
         }
       }
     }
   }
   # Convert arc angles of [1, -1] to [2,0] domain.
-  arc[arc<0] <- arc[arc<0] + 2
+  arc[arc < 0] <- arc[arc < 0] + 2
   arc
 }
 
@@ -446,31 +446,34 @@ getTreeArcAngles <- function(df, origin_id, subtree) {
 ##' @param nodes list of node numbers that are to be rotated by angle around the pivot_node
 ##' @param angle in range `[0,2]`, ie degrees/180, radians/pi
 ##' @return updated tree data.frame with points rotated by angle
-rotateTreePoints.df <- function(df, pivot_node, nodes, angle){
+rotateTreePoints.df <- function(df, pivot_node, nodes, angle) {
   # Rotate nodes around pivot_node.
   # x' = cos(angle)*delta_x - sin(angle)*delta_y + delta_x
   # y' = sin(angle)*delta_x + cos(angle)*delta_y + delta_y
   cospitheta <- cospi(angle)
   sinpitheta <- sinpi(angle)
-  pivot_x = df$x[pivot_node]
-  pivot_y = df$y[pivot_node]
-  delta_x = df$x - pivot_x
-  delta_y = df$y - pivot_y
-  df = mutate.data.frame(df,
-                         x = ifelse(.data$node %in% nodes, cospitheta * delta_x - sinpitheta * delta_y + pivot_x, .data$x),
-                         y = ifelse(.data$node %in% nodes, sinpitheta * delta_x + cospitheta * delta_y + pivot_y, .data$y)
+  pivot_x <- df$x[pivot_node]
+  pivot_y <- df$y[pivot_node]
+  delta_x <- df$x - pivot_x
+  delta_y <- df$y - pivot_y
+  df <- mutate.data.frame(df,
+    x = ifelse(.data$node %in% nodes, cospitheta * delta_x - sinpitheta * delta_y + pivot_x, .data$x),
+    y = ifelse(.data$node %in% nodes, sinpitheta * delta_x + cospitheta * delta_y + pivot_y, .data$y)
   )
-  x_parent = df$x[df$parent]
-  y_parent = df$y[df$parent]
+  x_parent <- df$x[df$parent]
+  y_parent <- df$y[df$parent]
   # Now update tip labels of rotated tree.
   # angle is in range [0, 360]
   # Update label angle of tipnode if not root node.
-  nodes = nodes[! nodes %in% df$parent]
+  nodes <- nodes[!nodes %in% df$parent]
   df %>% mutate.data.frame(
     angle = ifelse(.data$node %in% nodes,
-                   getNodeAngle.vector(x_parent, y_parent, .data$x, .data$y) %>%
-                     {180 * ifelse(. < 0, 2 + ., .)},
-                   .data$angle)
+      getNodeAngle.vector(x_parent, y_parent, .data$x, .data$y) %>%
+        {
+          180 * ifelse(. < 0, 2 + ., .)
+        },
+      .data$angle
+    )
   )
 }
 
@@ -481,12 +484,12 @@ rotateTreePoints.df <- function(df, pivot_node, nodes, angle){
 ##' @param origin_node_id origin node id number
 ##' @param node_id end node id number
 ##' @return angle in range `[-1, 1]`, i.e. degrees/180, radians/pi
-getNodeAngle.df <- function(df, origin_node_id, node_id){
+getNodeAngle.df <- function(df, origin_node_id, node_id) {
   if (origin_node_id != node_id) {
-    df_x = df$x
-    df_y = df$y
+    df_x <- df$x
+    df_y <- df$y
     atan2(df_y[node_id] - df_y[origin_node_id], df_x[node_id] - df_x[origin_node_id]) / pi
-  }else{
+  } else {
     NA
   }
 }
@@ -495,13 +498,13 @@ getNodeAngle.vector <- function(x_origin, y_origin, x, y) {
   atan2(y - y_origin, x - x_origin) / pi
 }
 
-euc.dist <- function(x1, x2) sqrt(sum((x1 - x2) ^ 2))
+euc.dist <- function(x1, x2) sqrt(sum((x1 - x2)^2))
 
 ## Get the distances from the node to all other nodes in data.frame (including itself if in df)
-getNodeEuclDistances <- function(df, node){
+getNodeEuclDistances <- function(df, node) {
   # https://stackoverflow.com/questions/24746892/how-to-calculate-euclidian-distance-between-two-points-defined-by-matrix-contain#24747155
   dist <- NULL
-  for(i in 1:nrow(df)) dist[i] <- euc.dist(df[df$node==node, c('x', 'y')], df[i, c('x', 'y')])
+  for (i in 1:nrow(df)) dist[i] <- euc.dist(df[df$node == node, c("x", "y")], df[i, c("x", "y")])
   return(dist)
 }
 
@@ -512,8 +515,7 @@ getNodeEuclDistances <- function(df, node){
 ##' @param tree ape phylo tree object
 ##' @param node is the tree node id from which the tree is derived.
 ##' @return list of all child node id's from starting node.
-getSubtree <- function(tree, node){
-
+getSubtree <- function(tree, node) {
   ## subtree <- c(node)
   ## i <- 1
   ## while( i <= length(subtree)){
@@ -532,7 +534,7 @@ getSubtree <- function(tree, node){
 ##' @param df tree data.frame
 ##' @param node id of starting node.
 ##' @return list of all child node id's from starting node.
-getSubtree.df <- function(df, node){
+getSubtree.df <- function(df, node) {
   ## subtree <- node[node != 0]
   ## i <- 1
   ## while( i <= length(subtree)){
@@ -541,7 +543,7 @@ getSubtree.df <- function(df, node){
   ##   i <- i + 1
   ## }
   ## subtree
-  #tidytree:::offspring.tbl_tree(df, node, self_include = TRUE)$node
+  # tidytree:::offspring.tbl_tree(df, node, self_include = TRUE)$node
   offspring.tbl_tree(df, node, self_include = TRUE)$node
 }
 
@@ -552,9 +554,9 @@ getSubtree.df <- function(df, node){
 ##' @param tree ape phylo tree object
 ##' @param node is the tree node id from which the subtrees are derived.
 ##' @return named list of subtrees with the root id of subtree and list of node id's making up subtree.
-getSubtreeUnrooted <- function(tree, node){
+getSubtreeUnrooted <- function(tree, node) {
   # if node leaf, return nothing.
-  if( treeio::isTip(tree, node) ){
+  if (treeio::isTip(tree, node)) {
     # return NA
     return(NA)
   }
@@ -570,20 +572,20 @@ getSubtreeUnrooted <- function(tree, node){
   remaining_nodes <- setdiff(remaining_nodes, node)
 
 
-  for( child in children_ids ){
+  for (child in children_ids) {
     # Append subtree nodes to list if not 0 (root).
     subtree <- getSubtree(tree, child)
-    subtrees[[length(subtrees)+1]] <- list( node = child, subtree = subtree)
+    subtrees[[length(subtrees) + 1]] <- list(node = child, subtree = subtree)
     # remove subtree nodes from remaining nodes.
-    remaining_nodes <- setdiff(remaining_nodes, as.integer(unlist(subtrees[[length(subtrees)]]['subtree']) ))
+    remaining_nodes <- setdiff(remaining_nodes, as.integer(unlist(subtrees[[length(subtrees)]]["subtree"])))
   }
 
   # The remaining nodes that are not found in the child subtrees are the remaining subtree nodes.
   # ie, parent node and all other nodes. We don't care how they are connect, just their ids.
   parent_id <- parent(tree, node)
   # If node is not root, add remainder of tree nodes as subtree.
-  if( parent_id != 0 & length(remaining_nodes) >= 1){
-    subtrees[[length(subtrees)+1]] <- list( node = parent_id, subtree = remaining_nodes)
+  if (parent_id != 0 & length(remaining_nodes) >= 1) {
+    subtrees[[length(subtrees) + 1]] <- list(node = parent_id, subtree = remaining_nodes)
   }
 
   return(subtrees)
@@ -597,35 +599,36 @@ getSubtreeUnrooted <- function(tree, node){
 ##' @param node is the tree node id from which the subtrees are derived.
 ##' @importFrom tidytree parent
 ##' @return named list of subtrees with the root id of subtree and list of node id's making up subtree.
-getSubtreeUnrooted.df <- function(df, node){
+getSubtreeUnrooted.df <- function(df, node) {
   # get subtree for each child node.
   # children_ids <- getChild.df(df, node)
   children_ids <- child.tbl_tree(df, node)$node
-  if (length(children_ids) == 0L) return(NULL)
+  if (length(children_ids) == 0L) {
+    return(NULL)
+  }
   # if node leaf, return nothing.
 
-  subtrees = tibble::tibble(
+  subtrees <- tibble::tibble(
     node = children_ids,
-    subtree = purrr::map(.data$node, ~getSubtree.df(df, .x))
+    subtree = purrr::map(.data$node, ~ getSubtree.df(df, .x))
   )
-  remaining_nodes = setdiff(df$node, purrr::flatten_int(subtrees$subtree))
+  remaining_nodes <- setdiff(df$node, purrr::flatten_int(subtrees$subtree))
 
   # The remaining nodes that are not found in the child subtrees are the remaining subtree nodes.
   # ie, parent node and all other nodes. We don't care how they are connected, just their id.
   parent_id <- parent.tbl_tree(df, node)$node
   # If node is not root.
   if ((length(parent_id) > 0) & (length(remaining_nodes) > 0)) {
-    subtrees = tibble::add_row(subtrees, node = parent_id, subtree = list(remaining_nodes))
+    subtrees <- tibble::add_row(subtrees, node = parent_id, subtree = list(remaining_nodes))
   }
   purrr::transpose(subtrees)
 }
 
 
-getRoot.df <- function(df, node){
-
+getRoot.df <- function(df, node) {
   root <- which(is.na(df$parent))
   # Check if root was found.
-  if(length(root) == 0){
+  if (length(root) == 0) {
     ## Alternatively, root can self reference, eg node = 10, parent = 10
     root <- df$node[df$parent == df$node]
     ## root <- unlist(apply(df, 1, function(x){ if(x['node'] == x['parent']){ x['node'] } }))
@@ -646,10 +649,9 @@ mutate.data.frame <- getFromNamespace("mutate.data.frame", "dplyr")
 ##' @title getNodesBreadthFirst.df
 ##' @param df tree data.frame
 ##' @return list of node id's in breadth-first order.
-getNodesBreadthFirst.df <- function(df){
-
+getNodesBreadthFirst.df <- function(df) {
   root <- getRoot.df(df)
-  if(treeio::isTip(df, root)){
+  if (treeio::isTip(df, root)) {
     return(root)
   }
 
@@ -658,25 +660,23 @@ getNodesBreadthFirst.df <- function(df){
   res <- root
 
   i <- 1
-  while(length(res) < tree_size){
+  while (length(res) < tree_size) {
     parent <- res[i]
     i <- i + 1
 
     # Skip if parent is a tip.
-    if(treeio::isTip(df, parent)){
+    if (treeio::isTip(df, parent)) {
       next
     }
 
     # get children of current parent.
-    children <- tidytree::child(df,parent)$node
+    children <- tidytree::child(df, parent)$node
 
     # add children to result
     res <- c(res, children)
-
   }
 
   return(res)
-
 }
 
 
@@ -689,8 +689,7 @@ getNodeName <- function(tr) {
     n <- length(tr$tip.label)
     nl <- (n + 1):(2 * n - 2)
     nl <- as.character(nl)
-  }
-  else {
+  } else {
     nl <- tr$node.label
   }
   nodeName <- c(tr$tip.label, nl)
@@ -701,7 +700,7 @@ getNodeName <- function(tr) {
 
 get.trunk <- function(tr) {
   root <- getRoot(tr)
-  path_length <- sapply(1:(root-1), function(x) get.path_length(tr, root, x))
+  path_length <- sapply(1:(root - 1), function(x) get.path_length(tr, root, x))
   i <- which.max(path_length)
   return(get.path(tr, root, i))
 }
@@ -727,31 +726,31 @@ get.path <- function(phylo, from, to) {
   i <- which(anc_from == mrca)
   j <- which(anc_to == mrca)
 
-  path <- c(anc_from[1:i], rev(anc_to[1:(j-1)]))
+  path <- c(anc_from[1:i], rev(anc_to[1:(j - 1)]))
   return(path)
 }
 
 
-get.path_length <- function(phylo, from, to, weight=NULL) {
+get.path_length <- function(phylo, from, to, weight = NULL) {
   path <- get.path(phylo, from, to)
   if (is.null(weight)) {
-    return(length(path)-1)
+    return(length(path) - 1)
   }
 
   df <- fortify(phylo)
-  if ( ! (weight %in% colnames(df))) {
+  if (!(weight %in% colnames(df))) {
     stop("weight should be one of numerical attributes of the tree...")
   }
 
   res <- 0
 
   get_edge_index <- function(df, from, to) {
-    which((df[,1] == from | df[,2] == from) &
-            (df[,1] == to | df[,2] == to))
+    which((df[, 1] == from | df[, 2] == from) &
+      (df[, 1] == to | df[, 2] == to))
   }
 
-  for(i in 1:(length(path)-1)) {
-    ee <- get_edge_index(df, path[i], path[i+1])
+  for (i in 1:(length(path) - 1)) {
+    ee <- get_edge_index(df, path[i], path[i + 1])
     res <- res + df[ee, weight]
   }
 
@@ -761,12 +760,12 @@ get.path_length <- function(phylo, from, to, weight=NULL) {
 ##' @importFrom ape reorder.phylo
 getNodes_by_postorder <- function(tree) {
   tree <- reorder.phylo(tree, "postorder")
-  unique(rev(as.vector(t(tree$edge[,c(2,1)]))))
+  unique(rev(as.vector(t(tree$edge[, c(2, 1)]))))
 }
 
-getXcoord2 <- function(x, root, parent, child, len, start=0, rev=FALSE) {
+getXcoord2 <- function(x, root, parent, child, len, start = 0, rev = FALSE) {
   x[root] <- start
-  x[-root] <- NA  ## only root is set to start, by default 0
+  x[-root] <- NA ## only root is set to start, by default 0
 
   currentNode <- root
   direction <- 1
@@ -774,10 +773,10 @@ getXcoord2 <- function(x, root, parent, child, len, start=0, rev=FALSE) {
     direction <- -1
   }
 
-  while(anyNA(x)) {
+  while (anyNA(x)) {
     idx <- which(parent %in% currentNode)
     newNode <- child[idx]
-    x[newNode] <- x[parent[idx]]+len[idx] * direction
+    x[newNode] <- x[parent[idx]] + len[idx] * direction
     currentNode <- newNode
   }
 
@@ -791,8 +790,8 @@ getXcoord2 <- function(x, root, parent, child, len, start=0, rev=FALSE) {
 
 getXcoord_no_length <- function(tr) {
   edge <- tr$edge
-  parent <- edge[,1]
-  child <- edge[,2]
+  parent <- edge[, 1]
+  child <- edge[, 2]
   root <- getRoot(tr)
 
   len <- tr$edge.length
@@ -807,7 +806,7 @@ getXcoord_no_length <- function(tr) {
   child_list <- list()
   child_list[as.numeric(names(cl))] <- cl
 
-  while(anyNA(x)) {
+  while (anyNA(x)) {
     idx <- match(currentNode, child)
     pNode <- parent[idx]
     ## child number table
@@ -828,7 +827,6 @@ getXcoord_no_length <- function(tr) {
     ## currentNode %<>% c(., newNode) %>% unique
     currentNode <- currentNode[!currentNode %in% exclude]
     currentNode <- unique(c(currentNode, newNode))
-
   }
   x <- x - min(x)
   return(x)
@@ -839,8 +837,8 @@ getXcoord_no_length <- function(tr) {
 
 getXcoord <- function(tr) {
   edge <- tr$edge
-  parent <- edge[,1]
-  child <- edge[,2]
+  parent <- edge[, 1]
+  child <- edge[, 2]
   root <- getRoot(tr)
 
   len <- tr$edge.length
@@ -877,13 +875,13 @@ getXcoord <- function(tr) {
 
 ## @importFrom magrittr %>%
 ##' @importFrom magrittr equals
-getYcoord <- function(tr, step=1, tip.order = NULL) {
+getYcoord <- function(tr, step = 1, tip.order = NULL) {
   Ntip <- length(tr[["tip.label"]])
   N <- getNodeNum(tr)
 
   edge <- tr[["edge"]]
-  parent <- edge[,1]
-  child <- edge[,2]
+  parent <- edge[, 1]
+  child <- edge[, 2]
 
   cl <- split(child, parent)
   child_list <- list()
@@ -902,10 +900,10 @@ getYcoord <- function(tr, step=1, tip.order = NULL) {
 
   ## use lookup table
   pvec <- integer(max(tr$edge))
-  pvec[child] = parent
+  pvec[child] <- parent
 
   currentNode <- 1:Ntip
-  while(anyNA(y)) {
+  while (anyNA(y)) {
     ## pNode <- unique(parent[child %in% currentNode])
     pNode <- unique(pvec[currentNode])
 
@@ -918,8 +916,8 @@ getYcoord <- function(tr, step=1, tip.order = NULL) {
     newNode <- pNode[idx]
 
     y[newNode] <- sapply(newNode, function(i) {
-      mean(y[child_list[[i]]], na.rm=TRUE)
-      ##child[parent == i] %>% y[.] %>% mean(na.rm=TRUE)
+      mean(y[child_list[[i]]], na.rm = TRUE)
+      ## child[parent == i] %>% y[.] %>% mean(na.rm=TRUE)
     })
 
     currentNode <- c(currentNode[!currentNode %in% unlist(child_list[newNode])], newNode)
@@ -934,7 +932,6 @@ getYcoord <- function(tr, step=1, tip.order = NULL) {
 
 
 getYcoord_scale <- function(tr, df, yscale) {
-
   N <- getNodeNum(tr)
   y <- numeric(N)
 
@@ -943,11 +940,11 @@ getYcoord_scale <- function(tr, df, yscale) {
   y[-root] <- NA
 
   edge <- tr$edge
-  parent <- edge[,1]
-  child <- edge[,2]
+  parent <- edge[, 1]
+  child <- edge[, 2]
 
   currentNodes <- root
-  while(anyNA(y)) {
+  while (anyNA(y)) {
     newNodes <- c()
     for (currentNode in currentNodes) {
       idx <- which(parent %in% currentNode)
@@ -978,7 +975,7 @@ getYcoord_scale2 <- function(tr, df, yscale) {
   ordered_tip <- order(pathLength, decreasing = TRUE)
   ii <- 1
   ntip <- length(ordered_tip)
-  while(ii < ntip) {
+  while (ii < ntip) {
     sib <- tidytree::sibling(tr, ordered_tip[ii])
     if (length(sib) == 0) {
       ii <- ii + 1
@@ -993,16 +990,16 @@ getYcoord_scale2 <- function(tr, df, yscale) {
     ordered_tip <- ordered_tip[-jj]
     nn <- length(sib)
     if (ii < length(ordered_tip)) {
-      ordered_tip <- c(ordered_tip[1:ii],sib, ordered_tip[(ii+1):length(ordered_tip)])
+      ordered_tip <- c(ordered_tip[1:ii], sib, ordered_tip[(ii + 1):length(ordered_tip)])
     } else {
-      ordered_tip <- c(ordered_tip[1:ii],sib)
+      ordered_tip <- c(ordered_tip[1:ii], sib)
     }
 
     ii <- ii + nn + 1
   }
 
 
-  long_branch <- ancestor(tr, ordered_tip[1]) %>% rev
+  long_branch <- ancestor(tr, ordered_tip[1]) %>% rev()
   long_branch <- c(long_branch, ordered_tip[1])
 
   N <- getNodeNum(tr)
@@ -1015,20 +1012,22 @@ getYcoord_scale2 <- function(tr, df, yscale) {
   ## yy[is.na(yy)] <- 0
 
   for (i in 2:length(long_branch)) {
-    y[long_branch[i]] <- y[long_branch[i-1]] + df[long_branch[i], yscale]
+    y[long_branch[i]] <- y[long_branch[i - 1]] + df[long_branch[i], yscale]
   }
 
   parent <- df[, "parent"]
   child <- df[, "node"]
 
   currentNodes <- root
-  while(anyNA(y)) {
+  while (anyNA(y)) {
     newNodes <- c()
     for (currentNode in currentNodes) {
       idx <- which(parent %in% currentNode)
       newNode <- child[idx]
-      newNode <- c(newNode[! newNode %in% ordered_tip],
-                   rev(ordered_tip[ordered_tip %in% newNode]))
+      newNode <- c(
+        newNode[!newNode %in% ordered_tip],
+        rev(ordered_tip[ordered_tip %in% newNode])
+      )
       direction <- -1
       for (i in seq_along(newNode)) {
         if (is.na(y[newNode[i]])) {
@@ -1085,7 +1084,7 @@ getYcoord_scale_numeric <- function(tr, df, yscale, ...) {
 }
 
 
-.assign_child_status <- function(tr, df, variable, yscale_mapping=NULL) {
+.assign_child_status <- function(tr, df, variable, yscale_mapping = NULL) {
   yy <- df[[variable]]
   if (!is.null(yscale_mapping)) {
     yy <- yscale_mapping[yy]
@@ -1103,7 +1102,7 @@ getYcoord_scale_numeric <- function(tr, df, yscale, ...) {
       idx <- which(is.na(yy[parent]))
       if (length(idx) > 0) {
         child <- treeio::child(tree, parent)
-        yy[parent[idx]] <- mean(yy[child], na.rm=TRUE)
+        yy[parent[idx]] <- mean(yy[child], na.rm = TRUE)
       }
     }
   }
@@ -1112,13 +1111,13 @@ getYcoord_scale_numeric <- function(tr, df, yscale, ...) {
 }
 
 
-getYcoord_scale_category <- function(tr, df, yscale, yscale_mapping=NULL, ...) {
+getYcoord_scale_category <- function(tr, df, yscale, yscale_mapping = NULL, ...) {
   if (is.null(yscale_mapping)) {
     stop("yscale is category variable, user should provide yscale_mapping,
              which is a named vector, to convert yscale to numberical values...")
   }
-  if (! is(yscale_mapping, "numeric") ||
-      is.null(names(yscale_mapping))) {
+  if (!is(yscale_mapping, "numeric") ||
+    is.null(names(yscale_mapping))) {
     stop("yscale_mapping should be a named numeric vector...")
   }
 
@@ -1127,7 +1126,7 @@ getYcoord_scale_category <- function(tr, df, yscale, yscale_mapping=NULL, ...) {
     ii <- which(is.na(yy))
     if (length(ii)) {
       ## df[ii, yscale] <- df[ii, "node"]
-      df[[yscale]][ii] <- as.character(df[['node']][ii])
+      df[[yscale]][ii] <- as.character(df[["node"]][ii])
     }
   }
 
@@ -1150,11 +1149,11 @@ add_angle_slanted <- function(res) {
   y <- res[["y"]]
   dy <- (y - y[match(res$parent, res$node)]) / diff(range(y))
   dx <- (x - x[match(res$parent, res$node)]) / diff(range(x))
-  theta <- atan(dy/dx)
+  theta <- atan(dy / dx)
   theta[is.na(theta)] <- 0 ## root node
-  res$angle <- theta/pi * 180
+  res$angle <- theta / pi * 180
 
-  branch.y <- (y[match(res$parent, res$node)] + y)/2
+  branch.y <- (y[match(res$parent, res$node)] + y) / 2
   idx <- is.na(branch.y)
   branch.y[idx] <- y[idx]
   res[, "branch.y"] <- branch.y
@@ -1163,8 +1162,8 @@ add_angle_slanted <- function(res) {
 
 
 calculate_branch_mid <- function(res) {
-  res$branch <- with(res, (x[match(parent, node)] + x)/2)
-  if (!is.null(res[['branch.length']])) {
+  res$branch <- with(res, (x[match(parent, node)] + x) / 2)
+  if (!is.null(res[["branch.length"]])) {
     res$branch.length[is.na(res$branch.length)] <- 0
   }
   res$branch[is.na(res$branch)] <- 0
@@ -1173,27 +1172,28 @@ calculate_branch_mid <- function(res) {
 
 
 re_assign_ycoord_df <- function(df, currentNode) {
-  while(anyNA(df$y)) {
-    pNode <- with(df, parent[match(currentNode, node)]) %>% unique
+  while (anyNA(df$y)) {
+    pNode <- with(df, parent[match(currentNode, node)]) %>% unique()
     idx <- sapply(pNode, function(i) with(df, all(node[parent == i & parent != node] %in% currentNode)))
     newNode <- pNode[idx]
     ## newNode <- newNode[is.na(df[match(newNode, df$node), "y"])]
-    if (length(newNode) == 0)
+    if (length(newNode) == 0) {
       break
+    }
     df[match(newNode, df$node), "y"] <- sapply(newNode, function(i) {
       with(df, mean(y[parent == i], na.rm = TRUE))
     })
     traced_node <- as.vector(sapply(newNode, function(i) with(df, node[parent == i])))
-    currentNode <- c(currentNode[! currentNode %in% traced_node], newNode)
+    currentNode <- c(currentNode[!currentNode %in% traced_node], newNode)
   }
   return(df)
 }
 
 
-layoutApe <- function(model, branch.length="branch.length") {
+layoutApe <- function(model, branch.length = "branch.length") {
   tree <- as.phylo(model) %>% stats::reorder("postorder")
 
-  if (! is.null(tree$edge.length)) {
+  if (!is.null(tree$edge.length)) {
     if (anyNA(tree$edge.length)) {
       warning("'edge.length' contains NA values...\n## setting 'edge.length' to NULL automatically when plotting the tree...")
       tree$edge.length <- NULL
@@ -1209,16 +1209,18 @@ layoutApe <- function(model, branch.length="branch.length") {
   nb.sp <- ape::node.depth(tree)
 
   df <- as_tibble(model) %>%
-    mutate(isTip = ! .data$node %in% .data$parent)
+    mutate(isTip = !.data$node %in% .data$parent)
   df$branch.length <- edge.length[df$node] # for cladogram
 
   # unrooted layout from cran/ape
-  M <- ape::unrooted.xy(Ntip(tree),
-                        Nnode(tree),
-                        tree$edge,
-                        tree$edge.length,
-                        nb.sp,
-                        0)$M
+  M <- ape::unrooted.xy(
+    Ntip(tree),
+    Nnode(tree),
+    tree$edge,
+    tree$edge.length,
+    nb.sp,
+    0
+  )$M
   xx <- M[, 1]
   yy <- M[, 2]
 

@@ -1,3 +1,12 @@
+#' Read Beast2 output
+#'
+#' @param file
+#'
+#' @return treedata
+#' @export
+#'
+#' @examples
+
 read.beast <- function(file){
   library(treeio)
   library(ape)

@@ -7,11 +7,10 @@
 #'
 #' @examples
 #' print("EXAMPLE HERE")
-read.enewick <- function(file=""){
-  if (grepl("#", readLines(file))){
+read.enewick <- function(file = "") {
+  if (grepl("#", readLines(file))) {
     ape::read.evonet(file)
-  }else{
-  stop("No reticulation edges found.")
+  } else {
+    stop("No reticulation edges found.")
   }
 }
-
