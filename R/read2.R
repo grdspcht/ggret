@@ -1,15 +1,13 @@
-#' Read an extended Newick file (via ape)
+#' Read Network in Extended Newick Format
 #'
-#' @param file Path to an extended Newick file.
+#' @param file extended newick file
+#' @param text character string
 #'
-#' @return ape evonet object
+#' @return evonet object
 #' @export
-#'
-#' @examples
-#' print("EXAMPLE HERE")
-
 
 read.enewick2 <- function(file = "", text = NULL)
+
 {
   tr <- ape::read.tree(file = file, text = text)
   ret_index <- grep("#", tr$tip.label)

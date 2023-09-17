@@ -5,7 +5,6 @@
 #' @return treedata
 #' @export
 #'
-#' @examples
 
 read.beast <- function(file){
   library(treeio)

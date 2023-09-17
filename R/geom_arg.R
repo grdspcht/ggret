@@ -524,7 +524,6 @@ geom_arg <- function(layout="rectangular", retcol = "black", arrows = FALSE, ...
                        y    = (y[donor] + y)/2,
                        yend = (y[donor] + y)/2),
                    lineend = lend,
-                   colour = retcol,
                    linetype = 2, ...),
       # S-Segment Vertical Donator
       geom_segment(aes(x    = x[donor],
@@ -532,7 +531,6 @@ geom_arg <- function(layout="rectangular", retcol = "black", arrows = FALSE, ...
                        y    = y[donor],
                        yend = (y[donor] + y)/2),
                    lineend = lend,
-                   colour = retcol,
                    linetype = 2, ...),
       # S-Segment Vertical Receiver
       geom_segment(aes(x    = x,
@@ -540,7 +538,6 @@ geom_arg <- function(layout="rectangular", retcol = "black", arrows = FALSE, ...
                        y    = (y[donor] + y)/2,
                        yend = y),
                    lineend = lend,
-                   colour = retcol,
                    #arrow = arrowtype,
                    linetype = 2, ...)
 

@@ -9,6 +9,24 @@
 ##' @export
 ##'
 library(treeio)
+#' Fortify evonet objects
+#'
+#' Transforms evonet objects into dataframes that can be passed to ggplot2
+#'
+#' @param model evonet object to convert to data frame
+#' @param data original data
+#' @param layout Currently only 'rectangular' layout is supported
+#' @param ladderize if TRUE it reorganizes the backbone tree to get an laddered structure
+#' @param right specifies whether the smallest clade should be on the right or left
+#' @param branch.length specifies branch length attribute
+#' @param mrsd specifies mrsd attribute
+#' @param as.Date specifies as.Date attribute
+#' @param yscale specifies y scale attribute
+#' @param root.position specifies root attribute
+#' @param ...
+#'
+#' @return fortified data frame
+#' @export
 fortify.evonet <- function(model, data,
                            layout = "rectangular",
                            ladderize = TRUE,
@@ -105,6 +123,22 @@ fortify.evonet <- function(model, data,
   return(res)
 }
 
+#' Transforms treedata objects into data frames that can be passed to ggplot2
+#'
+#' @param model treedata object to convert to data frame
+#' @param data original data
+#' @param layout Currently only 'rectangular' layout is supported
+#' @param ladderize if TRUE it reorganizes the backbone tree into a ladder-like structure
+#' @param right specifies whether the smallest clade should be on the right or left
+#' @param branch.length specifies branch length attribute
+#' @param mrsd specifies mrsd attribute
+#' @param as.Date specifies as.Date attribute
+#' @param yscale specifies y scale attribute
+#' @param root.position specifies root attribute
+#' @param ...
+#'
+#' @return fortified data frame
+#' @export
 fortify.treedata <- function(model, data,
                              layout = "rectangular",
                              ladderize = TRUE,

@@ -4,7 +4,7 @@
 \alias{geom_arg}
 \title{geom_tree2}
 \usage{
-geom_arg(layout = "rectangular", retcol = retcol, arrows = FALSE, ...)
+geom_arg(layout = "rectangular", retcol = "black", arrows = FALSE, ...)
 }
 \arguments{
 \item{layout}{one of 'rectangular', 'slanted', 'circular', 'radial' or 'unrooted'}
