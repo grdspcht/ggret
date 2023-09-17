@@ -11,7 +11,7 @@ annotation of Ancestral Recombination Graphs (ARGs) and other tree-based
 phylogenetic networks. It extends the functionality of ggtree and
 ggplot2.
 
-![ggarg logo](man/ggarg_logo_light.png)
+![ggarg logo](man/figures/ggarg_logo_light.png)
 
 ## Installation
 
