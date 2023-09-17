@@ -2,16 +2,16 @@
 % Please edit documentation in R/readbeast.R
 \name{read.beast}
 \alias{read.beast}
-\title{Read Beast2 output}
+\title{Read Beast2 files with phylogenetic network data}
 \usage{
 read.beast(file)
 }
 \arguments{
-\item{file}{}
+\item{file}{Beast2 file}
 }
 \value{
-treedata
+treedata object
 }
 \description{
-Read Beast2 output
+Read Beast2 files with phylogenetic network data
 }

@@ -1,11 +1,9 @@
-#' Read Beast2 output
+#' Read Beast2 files with phylogenetic network data
 #'
-#' @param file
+#' @param file Beast2 file
 #'
-#' @return treedata
+#' @return treedata object
 #' @export
-#'
-
 read.beast <- function(file){
   library(treeio)
   library(ape)
