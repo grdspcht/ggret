@@ -27,14 +27,14 @@ colorClade <- function(data, nodes, cladename, tiponly = FALSE) {
   return(data)
 }
 
-##TEST SCRIPT
+#TEST SCRIPT
 # library(ggtree)
 # MCC.arg=read.beast("../arthur.tree")
 # #MCC.arg=MCC.arg@phylo
 #
-# MCC.arg <- colorClade(MCC.arg, nodes = c("3", "2"), "clade1")
+# MCC.arg <- colorClade(MCC.arg, nodes = c("2", "3"), "clade1")
 #
 # MCC.arg <- fortify.treedata(MCC.arg)
 #
-# ggplot(MCC.arg, aes(color=clade)) + geom_arg(retcol = "black")  + geom_tiplab(size=2) + geom_nodelab(size=2, vjust=-0.5, hjust=-.1) + theme_tree()
+# ggplot(MCC.arg, aes(color=clade)) + geom_arg()  + geom_tiplab() + geom_nodelab(size=2, vjust=-0.5, hjust=-.1) + theme_tree()
 # # geom_nodelab(aes(label=posterior), color= "black",hjust=1.5,vjust=-0.5) +

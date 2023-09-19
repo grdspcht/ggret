@@ -5,8 +5,7 @@
 ##' @importFrom dplyr full_join
 ##' @importFrom dplyr mutate
 ##' @importFrom tidytree as_tibble
-##' @method fortify evonet
-##' @export
+##' @importFrom ggplot2 fortify
 ##'
 library(treeio)
 #' Fortify evonet objects
@@ -26,6 +25,7 @@ library(treeio)
 #' @param ...
 #'
 #' @return fortified data frame
+#' @method fortify evonet
 #' @export
 fortify.evonet <- function(model, data,
                            layout = "rectangular",
@@ -123,8 +123,8 @@ fortify.evonet <- function(model, data,
   return(res)
 }
 
+
 #' Transforms treedata objects into data frames that can be passed to ggplot2
-#'
 #' @param model treedata object to convert to data frame
 #' @param data original data
 #' @param layout Currently only 'rectangular' layout is supported
@@ -138,6 +138,7 @@ fortify.evonet <- function(model, data,
 #' @param ...
 #'
 #' @return fortified data frame
+#' @method fortify treedata
 #' @export
 fortify.treedata <- function(model, data,
                              layout = "rectangular",
@@ -154,7 +155,7 @@ fortify.treedata <- function(model, data,
   x <- fortify.evonet(model@phylo)
 
   xx <- merge(x, model@data, by="node")
-
+  attr(xx, "layout") <- layout
   xx
 }
 
