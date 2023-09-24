@@ -495,7 +495,12 @@ setup_tree_data <- function(data) {
 ##' @importFrom ggplot2 aes
 ##' @export
 ##' @author Yu Guangchuang
-geom_arg <- function(layout="rectangular", retcol = "black", arrows = FALSE, ...) {
+geom_arg <- function(layout= "rectangular",
+                     retcol = "black",
+                     arrows = FALSE,
+                     retlinetype = 2,
+                     rettype = "snake",
+                     ...) {
   x <- y <- parent <- NULL
   lend  = "round"
   if (arrows == TRUE){
@@ -506,7 +511,7 @@ geom_arg <- function(layout="rectangular", retcol = "black", arrows = FALSE, ...
 
 
   if (layout == "rectangular" || layout == "fan" || layout == "circular") {
-    list(
+    backbone <- list(
       geom_segment(aes(x    = x[parent],
                        xend = x,
                        y    = y,
@@ -517,31 +522,48 @@ geom_arg <- function(layout="rectangular", retcol = "black", arrows = FALSE, ...
                        xend = x[parent],
                        y    = y[parent],
                        yend = y),
-                   lineend = lend, ...),
-      # S-Segment Horizontal
-      geom_segment(aes(x    = x[donor],
-                       xend = x,
-                       y    = (y[donor] + y)/2,
-                       yend = (y[donor] + y)/2),
-                   lineend = lend,
-                   linetype = 2, ...),
-      # S-Segment Vertical Donator
-      geom_segment(aes(x    = x[donor],
-                       xend = x[donor],
-                       y    = y[donor],
-                       yend = (y[donor] + y)/2),
-                   lineend = lend,
-                   linetype = 2, ...),
-      # S-Segment Vertical Receiver
-      geom_segment(aes(x    = x,
-                       xend = x,
-                       y    = (y[donor] + y)/2,
-                       yend = y),
-                   lineend = lend,
-                   #arrow = arrowtype,
-                   linetype = 2, ...)
+                   lineend = lend, ...))
+      if (rettype == "snake"){
+        append(backbone,
+        # S-Segment Horizontal
+        list(
+        geom_segment(aes(x    = x[donor],
+                         xend = x,
+                         y    = (y[donor] + y)/2,
+                         yend = (y[donor] + y)/2),
+                     lineend = lend,
+                     linetype = retlinetype,
+                     ...),
+        # S-Segment Vertical Donor
+        geom_segment(aes(x    = x[donor],
+                         xend = x[donor],
+                         y    = y[donor],
+                         yend = (y[donor] + y)/2),
+                     lineend = lend,
+                     linetype = retlinetype,
+                     ...),
+        # S-Segment Vertical Receiver
+        geom_segment(aes(x    = x,
+                         xend = x,
+                         y    = (y[donor] + y)/2,
+                         yend = y),
+                     lineend = lend,
+                     #arrow = arrowtype,
+                     linetype = retlinetype,
+                     ...)))
+      } else if (rettype == "straight"){
+        append(backbone,
+        list(
+        geom_segment(aes(x    = x[donor],
+                         xend = x,
+                         y    = y[donor],
+                         yend = y),
+                         lineend = lend,
+                         #arrow = arrowtype,
+                         linetype = retlinetype,
+                         ...)))
 
-    )
+      }
   }
 }
 
