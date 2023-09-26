@@ -40,7 +40,6 @@ fortify.evonet <- function(model, data,
   x <- model
   x$reticulation <- x$reticulation[order(x$reticulation[, 2]), ]
 
-  # x <- as.phylo(x) ## reorder.phylo(get.tree(model), "postorder")
   if (ladderize == TRUE) {
     x <- ladderize(x, right = right)
   }
@@ -156,6 +155,6 @@ fortify.treedata <- function(model, data,
 
   xx <- merge(x, model@data, by="node")
   attr(xx, "layout") <- layout
-  xx
+  return(xx)
 }
 
