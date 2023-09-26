@@ -4,7 +4,8 @@
 #'
 #' @return treedata object
 #' @export
-read.beast <- function(file){
+
+read.beast <- function(file) {
   library(treeio)
   library(ape)
   library(tibble)
@@ -64,116 +65,136 @@ read.beast <- function(file){
   # get trees
   treeTexts <- sub("^tree (.*) = ",  "", treeTexts)
 
-  phylo <- read.enewick2(text = treeTexts)
+  # check if tree block contains extended newick
+  tt <- gsub("\\[(.*?)\\]", "", treeTexts) # remove comments
+  if (grepl("#", tt)) {
+    phylo <- read.enewick2(text = treeTexts)
 
-  # add temporary node and tip labels to network if needed
-  if (any(phylo$node.label == "")) {
-    emptyNodes <- which(phylo$node.label == "")
-    phylo$node.label[emptyNodes] <-
-      paste0("Node", seq(1:length(emptyNodes)))
-  }
+    # add temporary node and tip labels to network if needed
+    if (any(phylo$node.label == "")) {
+      emptyNodes <- which(phylo$node.label == "")
+      phylo$node.label[emptyNodes] <-
+        paste0("Node", seq(1:length(emptyNodes)))
+    }
 
-  if (any(phylo$tip.label == "")) {
-    emptyTips <- which(phylo$tip.label == "")
-    phylo$tip.label[emptyTips] <-
-      paste0("Tip", seq(1:length(emptyTips)))
-  }
-  pwl <- write.evonet(phylo)
-  phyLabel <- read.enewick2(text = pwl)
+    if (any(phylo$tip.label == "")) {
+      emptyTips <- which(phylo$tip.label == "")
+      phylo$tip.label[emptyTips] <-
+        paste0("Tip", seq(1:length(emptyTips)))
+    }
+    pwl <- write.evonet(phylo)
+    phyLabel <- read.enewick2(text = pwl)
 
-  # Get metadata attributes (column names)
-  extrdCols <- get.colnames(treeTexts)
-  cleanCols <- clean.colnames(extrdCols)
+    # Get metadata attributes (column names)
+    extrdCols <- get.colnames(treeTexts)
+    cleanCols <- clean.colnames(extrdCols)
 
-  nodesindex <-
-    str_extract_all(pwl, "([[:alnum:]]+):|(#[[:alnum:]]+):")
-  nodesindex <- unlist(nodesindex)
-  nodesindex <- gsub("\\:", "", nodesindex)
+    nodesindex <-
+      str_extract_all(pwl, "([[:alnum:]]+):|(#[[:alnum:]]+):")
+    nodesindex <- unlist(nodesindex)
+    nodesindex <- gsub("\\:", "", nodesindex)
 
-  # returns a vector of the positions of
-  labels <-  c(phyLabel$tip.label, phyLabel$node.label)
-  ordered <- match(nodesindex, labels)
+    # returns a vector of the positions of
+    labels <-  c(phyLabel$tip.label, phyLabel$node.label)
+    ordered <- match(nodesindex, labels)
 
-  dynlist <- list()
-  for (col in cleanCols) {
-    dynlist[[col]] <- rep(NA, length(nodesindex))
-  }
+    dynlist <- list()
+    for (col in cleanCols) {
+      dynlist[[col]] <- rep(NA, length(nodesindex))
+    }
 
-  nodedata <- unlist(str_extract_all(treeTexts, "\\[.*?\\]"))
-  nodedata <- gsub("^\\[&|]$", "", nodedata)
-  nodedata <- str_split(nodedata, ", ")
+    nodedata <- unlist(str_extract_all(treeTexts, "\\[.*?\\]"))
+    nodedata <- gsub("^\\[&|]$", "", nodedata)
+    nodedata <- str_split(nodedata, ", ")
 
-  phylonodes <- rep(NA, length(nodesindex))
-  for (i in 1:length(nodesindex)) {
-    phylonodes[i] <- nodeid(phylo, nodesindex[i])
-  }
+    phylonodes <- rep(NA, length(nodesindex))
+    for (i in 1:length(nodesindex)) {
+      phylonodes[i] <- nodeid(phylo, nodesindex[i])
+    }
 
-  for (k in 1:length(nodedata)) {
-    for (j in nodedata[[k]]) {
-      keyval <- j
-      keyval <- str_split_1(keyval, "=")
-      key <- keyval[1]
-      val <- keyval[2]
-      if (grepl("\\{|\\}", val)) {
-        val <- gsub("^\\{|\\}$", "", val)
-        val <- str_split(val, ",")
+    for (k in 1:length(nodedata)) {
+      for (j in nodedata[[k]]) {
+        keyval <- j
+        keyval <- str_split_1(keyval, "=")
+        key <- keyval[1]
+        val <- keyval[2]
+        if (grepl("\\{|\\}", val)) {
+          val <- gsub("^\\{|\\}$", "", val)
+          val <- str_split(val, ",")
+        }
+        dynlist[[key]][k] <- val
       }
-      dynlist[[key]][k] <- val
     }
-  }
-  # set appropriate type for data
-  dynlist <- type.convert(dynlist, as.is = TRUE)
-  dyndf <- as_tibble(dynlist)
-  dyndf <- add_column(dyndf, node=phylonodes)
+    # set appropriate type for data
+    dynlist <- type.convert(dynlist, as.is = TRUE)
+    dyndf <- as_tibble(dynlist)
+    dyndf <- add_column(dyndf, node = phylonodes)
 
-  # unlist all columns which only have single values
-  # for (k in 1:ncol(dyndf)){
-  #   if(is.list(dyndf[,k])){
-  #     if (max(lengths(dyndf[,k][[1]])) == 1){
-  #       dyndf[,k] <- unlist(dyndf[,k])
-  #     }
-  #   }
-  # }
 
-  if (grep("Translate", treefile, ignore.case = T)) {
-    start <- grep("^Translate$", treefile, ignore.case = T) + 1
-    semicolon <- grep("^;$", treefile)
-    end <- semicolon[which(grep("^;$", treefile) > start)[1]] - 1
-    dflen <- end - start
+    # merge rows by nodeid (hybrid nodes appear twice in the data frame) to avoud
+    # inconsistencies in plotting and fortified df structure
+    dyndf <- dyndf %>%
+      group_by(node) %>% # group df by nodes that duplicated (reticulation nodes)
+      summarise(across(everything(), # merge rows with identical node attribute
+                       ~ coalesce(.x) %>% # first non-NA element
+                         `[`(!is.na(.)) %>%
+                         `[`(1)))
 
-    nodes <- c()
-    labels <- c()
 
-    for (i in start:end) {
-      label <- treefile[i]
-      label <- sub(" ", ";", label)
-      splitlab <- str_split_1(label, ";")
-      nodes <- c(nodes, splitlab[1])
-      labels <- c(labels, splitlab[2])
+    # unlist all columns which only have single values
+    # for (k in 1:ncol(dyndf)){
+    #   if(is.list(dyndf[,k])){
+    #     if (max(lengths(dyndf[,k][[1]])) == 1){
+    #       dyndf[,k] <- unlist(dyndf[,k])
+    #     }
+    #   }
+    # }
+
+    if (grep("Translate", treefile, ignore.case = T)) {
+      start <- grep("^Translate$", treefile, ignore.case = T) + 1
+      semicolon <- grep("^;$", treefile)
+      end <- semicolon[which(grep("^;$", treefile) > start)[1]] - 1
+      dflen <- end - start
+
+      nodes <- c()
+      labels <- c()
+
+      for (i in start:end) {
+        label <- treefile[i]
+        label <- sub(" ", ";", label)
+        splitlab <- str_split_1(label, ";")
+        nodes <- c(nodes, splitlab[1])
+        labels <- c(labels, splitlab[2])
+      }
+      nodes <- as.numeric(nodes)
+      labels <- gsub(",$", "", labels)
+
+      tr_df <- data.frame(nodes = nodes, labels = labels)
     }
-    nodes <- as.numeric(nodes)
-    labels <- gsub(",$", "", labels)
+    tiplabels <- as.numeric(phylo$tip.label)
+    tr_df <- tr_df[match(tiplabels, tr_df$nodes),]
+    phylo$tip.label <- tr_df$labels
 
-    tr_df <- data.frame(nodes = nodes, labels = labels)
+    # Clean up (temporary) node labels
+    phylo$node.label <- gsub("^[0-9]+$", "", phylo$node.label)
+    phylo$node.label <- gsub("^Node[0-9]+$", "", phylo$node.label)
+
+    # TODO: extension of treedata that allows for evonet as phylo
+    class(phylo) <- c("phylo", "evonet")
+    fin <-
+      new(
+        "treedata",
+        treetext = treeTexts,
+        phylo = phylo,
+        data = dyndf,
+        file = file
+      )
+
+
+    return(fin)
+  } else {
+    warning("No extended Newick in tree block detected.")
+    fin <- treeio::read.beast(file = file)
+    return(fin)
   }
-  tiplabels <- as.numeric(phylo$tip.label)
-  tr_df <- tr_df[match(tiplabels, tr_df$nodes), ]
-  phylo$tip.label <- tr_df$labels
-
-  # Clean up (temporary) node labels
-  phylo$node.label <- gsub("^[0-9]+$", "", phylo$node.label)
-  phylo$node.label <- gsub("^Node[0-9]+$", "", phylo$node.label)
-
-  # TODO: extension of treedata that allows for evonet as phylo
-  class(phylo) <- c("phylo", "evonet")
-  fin <-
-    new(
-      "treedata",
-      treetext = treeTexts,
-      phylo = phylo,
-      data = dyndf,
-      file = file
-    )
-
-  fin
 }
