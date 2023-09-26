@@ -4,18 +4,17 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Gerd", "Specht", , "specht@gea.mpg.de", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Visualisation and annotation of Ancestral Recombination Graphs 
-(ARGs) and other tree-based phylogenetic networks. 
-It extends the functionality of 'ggtree' and 'ggplot2'.
+Description: Visualisation and annotation of Ancestral Recombination Graphs and other tree-based phylogenetic networks. It extends the functionality of 'ggtree' and 'ggplot2'.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Depends: 
+    ggplot2,
+    ggtree
 Imports: 
     ape,
     dplyr,
-    ggplot2,
-    ggtree,
     magrittr,
     rlang,
     tibble,
