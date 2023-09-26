@@ -500,6 +500,7 @@ geom_arg <- function(layout= "rectangular",
                      arrows = FALSE,
                      retlinetype = 2,
                      rettype = "snake",
+                     na.rm = TRUE,
                      ...) {
   x <- y <- parent <- NULL
   lend  = "round"
