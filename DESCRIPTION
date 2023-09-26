@@ -1,10 +1,12 @@
 Package: ggarg
-Title: What the Package Does (One Line, Title Case)
+Title:  Visualisation of Tree-based Phylogenetic Networks 
 Version: 0.0.0.9000
 Authors@R: 
-    person("Gerd", "Specht", , "specht@shh.mpg.de", role = c("aut", "cre"),
+    person("Gerd", "Specht", , "specht@gea.mpg.de", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: Visualisation and annotation of Ancestral Recombination Graphs 
+(ARGs) and other tree-based phylogenetic networks. 
+It extends the functionality of 'ggtree' and 'ggplot2'.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
