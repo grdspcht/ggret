@@ -22,7 +22,7 @@ library(treeio)
 #' @param as.Date specifies as.Date attribute
 #' @param yscale specifies y scale attribute
 #' @param root.position specifies root attribute
-#' @param ...
+#' @param ... other arguments passed to methods
 #'
 #' @return fortified data frame
 #' @method fortify evonet
@@ -134,7 +134,7 @@ fortify.evonet <- function(model, data,
 #' @param as.Date specifies as.Date attribute
 #' @param yscale specifies y scale attribute
 #' @param root.position specifies root attribute
-#' @param ...
+#' @param ... other arguments passed to methods
 #'
 #' @return fortified data frame
 #' @method fortify treedata

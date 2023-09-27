@@ -39,7 +39,7 @@
 
 \item{root.position}{specifies root attribute}
 
-\item{...}{}
+\item{...}{other arguments passed to methods}
 }
 \value{
 fortified data frame

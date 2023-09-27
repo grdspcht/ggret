@@ -1,9 +1,8 @@
 Package: ggarg
-Title:  Visualisation of Tree-based Phylogenetic Networks 
+Title: Visualisation of Tree-based Phylogenetic Networks 
 Version: 0.0.0.9000
 Authors@R: 
-    person("Gerd", "Specht", , "specht@gea.mpg.de", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    person("Gerd", "Specht", , "specht@gea.mpg.de", role = c("aut", "cre"))
 Description: Visualisation and annotation of Ancestral Recombination Graphs and other tree-based phylogenetic networks. It extends the functionality of 'ggtree' and 'ggplot2'.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -14,11 +13,16 @@ Depends:
     ggtree
 Imports: 
     ape,
+    cli,
     dplyr,
+    lifecycle,
     magrittr,
+    purrr,
     rlang,
+    stringr,
     tibble,
     tidytree,
-    treeio
+    treeio,
+    withr
 URL: https://github.com/grdspcht/ggarg
 BugReports: https://github.com/grdspcht/ggarg/issues

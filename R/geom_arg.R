@@ -1,77 +1,3 @@
-##' add tree layer
-##'
-##'
-##' @title geom_tree
-##' @param mapping aesthetic mapping
-##' @param data data of the tree
-##' @param layout one of 'rectangular', 'dendrogram', 'slanted', 'ellipse', 'roundrect',
-##' 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'
-##' @param multiPhylo logical, whether input data contains multiple phylo class, defaults to "FALSE".
-##' @param continuous character, continuous transition for selected aesthethic ('size'
-##' or 'color'('colour')). It should be one of 'color' (or 'colour'), 'size', 'all'
-##' and 'none', default is 'none'
-##' @param position Position adjustment, either as a string, or the result of a
-##' call to a position adjustment function, default is "identity".
-##' @param ... additional parameter
-##'
-##' some dot arguments:
-##' \itemize{
-##'    \item \code{nsplit} integer, the number of branch blocks divided when 'continuous' is not "none", default is 200.
-##' }
-##' @return tree layer
-##' @section Aesthetics:
-#' \code{geom_tree()} understands the following aesthethics:
-##'     \itemize{
-##'        \item \code{color} character, control the color of line, default is black (\code{continuous} is "none").
-##'        \item \code{linetype} control the type of line, default is 1 (solid).
-##'        \item \code{size} numeric, control the width of line, default is 0.5 (\code{continuous} is "none").
-##'     }
-##' @importFrom ggplot2 geom_segment
-##' @importFrom ggplot2 aes
-##' @export
-##' @author Yu Guangchuang
-##' @examples
-##' tree <- rtree(10)
-##' ggplot(tree) + geom_tree()
-##' @references
-##' For demonstration of this function, please refer to chapter 4.2.1 of
-##' *Data Integration, Manipulation and Visualization of Phylogenetic Trees*
-##' <http://yulab-smu.top/treedata-book/index.html> by Guangchuang Yu.
-##'
-library(rlang)
-library(vctrs)
-library(dplyr)
-library(ggplot2)
-library(ape)
-
-##' add horizontal align lines layer to a tree
-##'
-##' 'geom_aline'align all tips to the longest one by adding
-##' padding characters to the right side of the tip.
-##'
-##'
-##' @title geom_aline
-##' @param mapping aes mapping
-##' @param linetype set line type of the line, defaults to "dotted"
-##' @param linewidth set width of the line, defaults to 1
-##' @param ... additional parameter
-##' @return aline layer
-##' @export
-##' @author Yu Guangchuang
-geom_aline <- function(mapping=NULL, linetype="dotted", linewidth = 1, ...) {
-  x <- y <- isTip <- NULL
-  dot_mapping <- aes(xend=x+diff(range(x))/200, x=max(x), yend=y, subset=isTip)
-  if (!is.null(mapping)) {
-    dot_mapping <- modifyList(dot_mapping, mapping)
-  }
-
-  geom_segment2(dot_mapping,
-                linetype=linetype,
-                linewidth = linewidth, stat = StatTreeData, ...)
-}
-
-
-
 ##' geom_segment2 support aes(subset) via setup_data
 ##'
 ##' 'geom_segment2' is a modified version of geom_segment, with subset aesthetic supported
@@ -484,13 +410,18 @@ setup_tree_data <- function(data) {
 }
 
 
-##' add tree layer
+##'
 ##'
 # ##'
-##' @title geom_tree2
+##' @title Explicit phylogenetic network
 ##' @param layout one of 'rectangular', 'slanted', 'circular', 'radial' or 'unrooted'
+##' @param retcol reticulation edge colour
+##' @param arrows if TRUE reticulation edges end with arrows
+##' @param retlinetype line type aesthetic for reticulations
+##' @param na.rm logical
+##' @param rettype Either 'straight' or 'snake'. Determines in which style reticulations are drawn
 ##' @param ... additional parameter
-##' @return tree layer
+##' @return phylogenetic network layer
 ##' @importFrom ggplot2 geom_segment
 ##' @importFrom ggplot2 aes
 ##' @export
@@ -534,6 +465,7 @@ geom_arg <- function(layout= "rectangular",
                          yend = (y[donor] + y)/2),
                      lineend = lend,
                      linetype = retlinetype,
+                     na.rm = na.rm,
                      ...),
         # S-Segment Vertical Donor
         geom_segment(aes(x    = x[donor],
@@ -542,6 +474,7 @@ geom_arg <- function(layout= "rectangular",
                          yend = (y[donor] + y)/2),
                      lineend = lend,
                      linetype = retlinetype,
+                     na.rm = na.rm,
                      ...),
         # S-Segment Vertical Receiver
         geom_segment(aes(x    = x,
@@ -549,8 +482,9 @@ geom_arg <- function(layout= "rectangular",
                          y    = (y[donor] + y)/2,
                          yend = y),
                      lineend = lend,
-                     #arrow = arrowtype,
+                     arrow = arrowtype,
                      linetype = retlinetype,
+                     na.rm = na.rm,
                      ...)))
       } else if (rettype == "straight"){
         append(backbone,
@@ -560,8 +494,9 @@ geom_arg <- function(layout= "rectangular",
                          y    = y[donor],
                          yend = y),
                          lineend = lend,
-                         #arrow = arrowtype,
+                         arrow = arrowtype,
                          linetype = retlinetype,
+                         na.rm = na.rm,
                          ...)))
 
       }
@@ -569,15 +504,6 @@ geom_arg <- function(layout= "rectangular",
 }
 
 ggproto_formals <- function(x) formals(environment(x)$f)
-
-#' @export
-#' @examples
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point(alpha = 0.5, colour = "blue")
-#'
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point(colour = alpha("blue", 0.5))
-#scales::alpha
 
 "%||%" <- function(a, b) {
   if (!is.null(a)) a else b
@@ -1056,28 +982,6 @@ has_flipped_aes <- function(data, params = list(), main_is_orthogonal = NA,
 
   # default to no
   FALSE
-}
-#' @rdname bidirection
-#' @export
-flip_data <- function(data, flip = NULL) {
-  flip <- flip %||% any(data$flipped_aes) %||% FALSE
-  if (isTRUE(flip)) {
-    names(data) <- switch_orientation(names(data))
-  }
-  data
-}
-#' @rdname bidirection
-#' @export
-flipped_names <- function(flip = FALSE) {
-  x_aes <- ggplot_global$x_aes
-  y_aes <- ggplot_global$y_aes
-  if (flip) {
-    ret <- as.list(c(y_aes, x_aes))
-  } else {
-    ret <- as.list(c(x_aes, y_aes))
-  }
-  names(ret) <- c(x_aes, y_aes)
-  ret
 }
 
 split_with_index <- function(x, f, n = max(f)) {

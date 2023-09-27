@@ -26,15 +26,6 @@ set_branch_length_cladogram <- function(tree) {
   return(tree)
 }
 
-##' 'Equal-angle layout algorithm for unrooted trees'
-##'
-##' @references
-##' "Inferring Phylogenies" by Joseph Felsenstein.
-##'
-##' @title layoutEqualAngle
-##' @param model tree object, e.g. phylo or treedata
-##' @param branch.length set to 'none' for edge length of 1. Otherwise the phylogenetic tree edge length is used.
-##' @return tree as data.frame with equal angle layout.
 getNodeNum <- function(tree) {
   Nnode(tree, internal.only = FALSE)
 }

@@ -13,7 +13,7 @@ colorClade <- function(data, nodes, cladename, tiponly = FALSE) {
     attr(data, "clade") <- clades
   } else if (is(data, "treedata")) {
     labs <- c(data@phylo[["tip.label"]], data@phylo[["node.label"]])
-    clades <- rep("Undefined", length(labs))
+    clades <- rep(NA, length(labs))
     for (u in cladename) {
       clades[which(labs %in% nodelab(data@phylo, offsprings))] <- u
     }
@@ -21,20 +21,8 @@ colorClade <- function(data, nodes, cladename, tiponly = FALSE) {
     attr(data@phylo, "clade") <- clades
   } else{
     warning("Function only supports evonet and treedata objects.")
-    break()
+    stop()
   }
 
   return(data)
 }
-
-#TEST SCRIPT
-# library(ggtree)
-# MCC.arg=read.beast("../arthur.tree")
-# #MCC.arg=MCC.arg@phylo
-#
-# MCC.arg <- colorClade(MCC.arg, nodes = c("2", "3"), "clade1")
-#
-# MCC.arg <- fortify.treedata(MCC.arg)
-#
-# ggplot(MCC.arg, aes(color=clade)) + geom_arg()  + geom_tiplab() + geom_nodelab(size=2, vjust=-0.5, hjust=-.1) + theme_tree()
-# # geom_nodelab(aes(label=posterior), color= "black",hjust=1.5,vjust=-0.5) +

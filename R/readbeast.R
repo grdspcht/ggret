@@ -6,10 +6,6 @@
 #' @export
 
 read.beast <- function(file) {
-  library(treeio)
-  library(ape)
-  library(tibble)
-  library(stringr)
 
   clean.colnames <- function(colnames) {
     clean <- gsub("^\\[&|, |=$", "", colnames)

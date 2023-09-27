@@ -2,7 +2,7 @@
 % Please edit documentation in R/geom_arg.R
 \name{geom_arg}
 \alias{geom_arg}
-\title{geom_tree2}
+\title{Explicit phylogenetic network}
 \usage{
 geom_arg(
   layout = "rectangular",
@@ -17,13 +17,23 @@ geom_arg(
 \arguments{
 \item{layout}{one of 'rectangular', 'slanted', 'circular', 'radial' or 'unrooted'}
 
+\item{retcol}{reticulation edge colour}
+
+\item{arrows}{if TRUE reticulation edges end with arrows}
+
+\item{retlinetype}{line type aesthetic for reticulations}
+
+\item{rettype}{Either 'straight' or 'snake'. Determines in which style reticulations are drawn}
+
+\item{na.rm}{logical}
+
 \item{...}{additional parameter}
 }
 \value{
-tree layer
+phylogenetic network layer
 }
 \description{
-add tree layer
+Explicit phylogenetic network
 }
 \author{
 Yu Guangchuang
