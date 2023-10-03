@@ -1,5 +1,16 @@
 # TODO how to deal with reticulations within and outside of clades?
 
+#' group clades
+#'
+#' @param data evonet or treedata object
+#' @param nodes nodes that define the clade
+#' @param cladename
+#' @param tiponly
+#'
+#' @return
+#' @export
+#'
+#' @examples
 colorClade <- function(data, nodes, cladename, tiponly = FALSE) {
   mrca = treeio::MRCA(data, nodes)
   offsprings = treeio::offspring(data, mrca, tiponly)

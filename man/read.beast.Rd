@@ -2,7 +2,7 @@
 % Please edit documentation in R/readbeast.R
 \name{read.beast}
 \alias{read.beast}
-\title{Read Beast2 files with phylogenetic network data}
+\title{read beast}
 \usage{
 read.beast(file)
 }
@@ -13,5 +13,5 @@ read.beast(file)
 treedata object
 }
 \description{
-Read Beast2 files with phylogenetic network data
+read beast
 }

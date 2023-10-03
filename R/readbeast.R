@@ -1,5 +1,12 @@
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarise
+#' @importFrom dplyr across
+#' @importFrom dplyr everything
+#' @importFrom dplyr coalesce
+#' @importFrom ape write.evonet
+
 #' Read Beast2 files with phylogenetic network data
-#'
+#' @title read beast
 #' @param file Beast2 file
 #'
 #' @return treedata object
@@ -129,6 +136,8 @@ read.beast <- function(file) {
 
     # merge rows by nodeid (hybrid nodes appear twice in the data frame) to avoud
     # inconsistencies in plotting and fortified df structure
+
+
     dyndf <- dyndf %>%
       group_by(node) %>% # group df by nodes that duplicated (reticulation nodes)
       summarise(across(everything(), # merge rows with identical node attribute
