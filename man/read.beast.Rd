@@ -13,5 +13,5 @@ read.beast(file)
 treedata object
 }
 \description{
-read beast
+Read Beast2 files with phylogenetic network data
 }

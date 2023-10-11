@@ -4,8 +4,8 @@
 #'
 #' @param data evonet or treedata object
 #' @param nodes nodes that define the clade
-#' @param cladename
-#' @param tiponly
+#' @param cladename Name of the clade
+#' @param tiponly Should only tips be considered?
 #'
 #' @return
 #' @export

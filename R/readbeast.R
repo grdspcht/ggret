@@ -1,14 +1,13 @@
+#' Read Beast2 files with phylogenetic network data
+#'
+#' @title read beast
+#' @param file Beast2 file
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarise
 #' @importFrom dplyr across
 #' @importFrom dplyr everything
 #' @importFrom dplyr coalesce
 #' @importFrom ape write.evonet
-
-#' Read Beast2 files with phylogenetic network data
-#' @title read beast
-#' @param file Beast2 file
-#'
 #' @return treedata object
 #' @export
 
