@@ -10,7 +10,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Depends: 
     ggplot2,
-    ggtree
+    ggtree,
+    R (>= 2.10)
 Imports: 
     ape,
     cli,
@@ -26,3 +27,4 @@ Imports:
     withr
 URL: https://github.com/grdspcht/ggarg
 BugReports: https://github.com/grdspcht/ggarg/issues
+LazyData: true
