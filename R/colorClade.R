@@ -37,3 +37,77 @@ colorClade <- function(data, nodes, cladename, tiponly = FALSE) {
 
   return(data)
 }
+
+findRetLayer <- function(layer, rets){
+  retrow <- subset(layer[rets,], select = c("x", "y", "xend", "yend"))
+  rest <- subset(layer[-rets,], select = c("x", "y", "xend", "yend"))
+  if (anyNA(retrow) == FALSE & anyNA(rest) == TRUE){
+    return(TRUE)
+  }else{
+    return(FALSE)
+  }
+}
+
+modifyRet <- function(plot, assignto="donor"){
+  # Deassemble ggplot object and extract needed variables
+  decon <- ggplot_build(plot)
+  data <- decon$plot$data
+  layout <- attributes(data)$layout
+  layers <- decon$data
+  rets <- which(data$isRet == TRUE)
+  nnode <- nrow(data)
+  retlayers <- c()
+  lablayers <- c()
+
+# Iterate over plot layers and detect the reticulation layers and
+  for (i in 1:(length(layers))){
+    if(nrow(layers[[i]]) == nnode & all(c("x", "y", "xend", "yend") %in% colnames(layers[[i]]))){
+      if(findRetLayer(layers[[i]], rets) == TRUE){
+        retlayers <- c(retlayers, i)
+      }
+    } else if (all(data[rets, ]$label %in% d$data[[i]]$label)){
+        lablayers <- c(lablayers, i)
+    }
+  }
+  if(length(retlayers) == 0){
+    stop("No reticulation layers detected. Aborting")
+  }
+
+
+  #retlayers <- c(retlayers, lablayers)
+
+
+# reassign colours in reticulation layers
+  for (retl in retlayers){
+    if(assignto == "donor"){
+      donors <- data$donor[rets]
+      layers[[retl]]$colour[rets] <- layers[[retl]]$colour[donors]
+    }else if(assignto == "receiver"){
+      rec <- data$node[rets]
+      layers[[retl]]$colour[rets] <- layers[[retl]]$colour[rec]
+    }else{
+      stop("Reticulations can currently only be reassigned to donors or receivers. Aborting...")
+    }
+  }
+
+  # for (labl in lablayers){
+  #   if(assignto == "donor"){
+  #     donors <- data$donor[rets]
+  #     layers[[retl]]$colour[rets] <- layers[[retl]]$colour[donors]
+  #   }else if(assignto == "parent"){
+  #     parents <- data$parent[rets]
+  #     layers[[retl]]$colour[rets] <- layers[[retl]]$colour[parents]
+  #   }else{
+  #     stop("Reticulations can currently only be reassigned to donors or parents. Aborting...")
+  #   }
+  # }
+
+  decon$data <- layers
+  new <- ggplot_gtable(decon)
+  grid::grid.newpage()
+  grid::grid.draw(new)
+  return(new)
+
+}
+
+
