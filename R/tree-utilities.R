@@ -1,3 +1,10 @@
+# !!!DISCLAIMER!!!
+# This file contains source from the ggtree R package. ggarg serves as an extension
+# of ggtree and therefore frequently interacts with internal objects and functions
+# of ggtree. For the sake of easier access they have been included in this package
+# All rights reserved to the ggtree developers.
+# https://github.com/YuLab-SMU/ggtree
+
 ##' @importFrom ape reorder.phylo
 ##' @importFrom treeio Nnode
 layout.unrooted <- function(model, branch.length = "branch.length", layout.method = "equal_angle", MAX_COUNT = 5, ...) {

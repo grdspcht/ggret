@@ -1,3 +1,10 @@
+# !!!DISCLAIMER!!!
+# This file contains source from the ggtree R package. ggarg serves as an extension
+# of ggtree and therefore frequently interacts with internal objects and functions
+# of ggtree. For the sake of easier access they have been included in this package
+# All rights reserved to the ggtree developers.
+# https://github.com/YuLab-SMU/ggtree
+
 ##' @importFrom ape ladderize
 ##' @importFrom ape as.evonet
 ##' @importFrom treeio as.phylo
