@@ -25,7 +25,7 @@ An evonet object with 2 reticulations, 4 tips and 8 internal nodes:
 retnet
 }
 \description{
-A small reticulation network for testing purposes
+A small reticulation network for testing purposes.
 This object was designed and exported in PhyloSketch.
 Edge length values were added by hand.
 }
