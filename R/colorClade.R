@@ -1,5 +1,3 @@
-# TODO how to deal with reticulations within and outside of clades?
-
 #' group clades
 #'
 #' @param data evonet or treedata object
@@ -48,8 +46,17 @@ findRetLayer <- function(layer, rets){
   }
 }
 
+#' Change reticulation coloring
+#'
+#' @param plot
+#' @param assignto
+#'
+#' @return
+#' @export
+#'
+#' @examples
 modifyRet <- function(plot, assignto="donor"){
-  # Deassemble ggplot object and extract needed variables
+  # Diassemble ggplot object and extract needed variables
   decon <- ggplot_build(plot)
   data <- decon$plot$data
   layout <- attributes(data)$layout
@@ -65,7 +72,8 @@ modifyRet <- function(plot, assignto="donor"){
       if(findRetLayer(layers[[i]], rets) == TRUE){
         retlayers <- c(retlayers, i)
       }
-    } else if (all(data[rets, ]$label %in% d$data[[i]]$label)){
+    } else if (all(data[rets, ]$label %in% data$data[[i]]$label)){
+
         lablayers <- c(lablayers, i)
     }
   }
@@ -73,8 +81,6 @@ modifyRet <- function(plot, assignto="donor"){
     stop("No reticulation layers detected. Aborting")
   }
 
-
-  #retlayers <- c(retlayers, lablayers)
 
 
 # reassign colours in reticulation layers
@@ -90,23 +96,10 @@ modifyRet <- function(plot, assignto="donor"){
     }
   }
 
-  # for (labl in lablayers){
-  #   if(assignto == "donor"){
-  #     donors <- data$donor[rets]
-  #     layers[[retl]]$colour[rets] <- layers[[retl]]$colour[donors]
-  #   }else if(assignto == "parent"){
-  #     parents <- data$parent[rets]
-  #     layers[[retl]]$colour[rets] <- layers[[retl]]$colour[parents]
-  #   }else{
-  #     stop("Reticulations can currently only be reassigned to donors or parents. Aborting...")
-  #   }
-  # }
-
   decon$data <- layers
   new <- ggplot_gtable(decon)
   grid::grid.newpage()
   grid::grid.draw(new)
-  return(new)
 
 }
 

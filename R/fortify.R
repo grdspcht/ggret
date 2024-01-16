@@ -27,7 +27,8 @@ library(treeio)
 #' @return fortified data frame
 #' @method fortify evonet
 #' @export
-fortify.evonet <- function(model, data,
+fortify.evonet <- function(model,
+                           data,
                            layout = "rectangular",
                            ladderize = TRUE,
                            right = FALSE,
@@ -38,7 +39,7 @@ fortify.evonet <- function(model, data,
                            root.position = 0,
                            ...) {
   x <- model
-  x$reticulation <- x$reticulation[order(x$reticulation[, 2]), ]
+  x$reticulation <- x$reticulation[order(x$reticulation[, 2]),]
 
   if (ladderize == TRUE) {
     x <- ladderize(x, right = right)
@@ -46,13 +47,19 @@ fortify.evonet <- function(model, data,
 
   if (!is.null(x$edge.length)) {
     if (anyNA(x$edge.length)) {
-      warning("'edge.length' contains NA values...\n## setting 'edge.length' to NULL automatically when plotting the tree...")
+      warning(
+        "'edge.length' contains NA values...\n## setting 'edge.length' to NULL automatically when plotting the tree..."
+      )
       x$edge.length <- NULL
     }
   }
 
   if (layout %in% c("equal_angle", "daylight", "ape")) {
-    res <- layout.unrooted(model, layout.method = layout, branch.length = branch.length, ...)
+    res <-
+      layout.unrooted(model,
+                      layout.method = layout,
+                      branch.length = branch.length,
+                      ...)
   } else {
     ypos <- getYcoord(x)
     N <- Nnode(x, internal.only = FALSE)
@@ -69,7 +76,10 @@ fortify.evonet <- function(model, data,
       xpos <- getXcoord(x)
     }
 
-    xypos <- tibble::tibble(node = 1:N, x = xpos + root.position, y = ypos)
+    xypos <-
+      tibble::tibble(node = 1:N,
+                     x = xpos + root.position,
+                     y = ypos)
 
     df <- as_tibble(model) %>%
       mutate(isTip = !.data$node %in% .data$parent)
@@ -91,9 +101,18 @@ fortify.evonet <- function(model, data,
 
     if (!is.null(x$ret.length)) {
       ret.length[retIndex] <- x$ret.length
-      reticulations <- tibble::tibble(node = 1:N, isRet = isRet, donor = donor, ret.length = ret.length)
+      reticulations <-
+        tibble::tibble(
+          node = 1:N,
+          isRet = isRet,
+          donor = donor,
+          ret.length = ret.length
+        )
     } else {
-      reticulations <- tibble::tibble(node = 1:N, isRet = isRet, donor = donor)
+      reticulations <-
+        tibble::tibble(node = 1:N,
+                       isRet = isRet,
+                       donor = donor)
     }
 
 
@@ -102,7 +121,6 @@ fortify.evonet <- function(model, data,
   }
 
   ## add branch mid position
-  # res <- calculate_branch_mid(res, layout=layout)
   res <- calculate_branch_mid(res)
 
   if (!is.null(mrsd)) {
@@ -139,7 +157,8 @@ fortify.evonet <- function(model, data,
 #' @return fortified data frame
 #' @method fortify treedata
 #' @export
-fortify.treedata <- function(model, data,
+fortify.treedata <- function(model,
+                             data,
                              layout = "rectangular",
                              ladderize = TRUE,
                              right = FALSE,
@@ -149,13 +168,10 @@ fortify.treedata <- function(model, data,
                              yscale = "none",
                              root.position = 0,
                              ...) {
-
-
   x <- fortify.evonet(model@phylo)
 
-  xx <- merge(x, model@data, by="node")
+  xx <- merge(x, model@data, by = "node")
   class(xx) <- c(class(xx), "tbl_tree", "tbl_df", "tbl")
   attr(xx, "layout") <- layout
   return(xx)
 }
-

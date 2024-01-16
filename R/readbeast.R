@@ -144,16 +144,6 @@ read.beast <- function(file) {
                          `[`(!is.na(.)) %>%
                          `[`(1)))
 
-
-    # unlist all columns which only have single values
-    # for (k in 1:ncol(dyndf)){
-    #   if(is.list(dyndf[,k])){
-    #     if (max(lengths(dyndf[,k][[1]])) == 1){
-    #       dyndf[,k] <- unlist(dyndf[,k])
-    #     }
-    #   }
-    # }
-
     if (grep("Translate", treefile, ignore.case = T)) {
       start <- grep("^Translate$", treefile, ignore.case = T) + 1
       semicolon <- grep("^;$", treefile)
@@ -183,7 +173,7 @@ read.beast <- function(file) {
     phylo$node.label <- gsub("^[0-9]+$", "", phylo$node.label)
     phylo$node.label <- gsub("^Node[0-9]+$", "", phylo$node.label)
 
-    # TODO: extension of treedata that allows for evonet as phylo
+    # Extend classes
     class(phylo) <- c("phylo", "evonet")
     fin <-
       new(
