@@ -33,8 +33,9 @@ affiliations:
    index: 2
  - name: Department of Phylogenomics, Robert Koch Institute, Wildau, Germany
    index: 3
+
 date: 1 March 2024
-bibliography: paper/paper.bib
+# (bibliography: paper/paper.bib)
 ---
 
 <!---
