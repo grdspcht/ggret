@@ -35,7 +35,7 @@ affiliations:
    index: 3
 
 date: 1 March 2024
-# (bibliography: paper/paper.bib)
+bibliography: paper.bib)
 ---
 
 <!---
