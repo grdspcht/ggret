@@ -34,7 +34,7 @@ affiliations:
  - name: Department of Phylogenomics, Robert Koch Institute, Wildau, Germany
    index: 3
 date: 1 March 2024
-bibliography: paper.bib
+bibliography: paper/paper.bib
 ---
 
 <!---
@@ -80,13 +80,14 @@ For a quick reference, the following citation commands can be used:
 -->
 
 # Figures
-
+<!---
 Figures can be included like this:
 ![Caption for example figure.\label{fig:example}](figure.png)
 and referenced from text using \autoref{fig:example}.
 
 Figure sizes can be customized by adding an optional second parameter:
 ![Caption for example figure.](figure.png){ width=20% }
+-->
 
 # Acknowledgements
 
