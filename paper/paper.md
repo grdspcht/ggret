@@ -65,7 +65,7 @@ Evolutionary history is most often visualised in the form of a bifurcating phylo
 
 # Features
 Here we showcase some of `ggarg's` core features. 
-![Rudimentary ARG.\label{fig:arg1}](../rudarg.pdf)
+![Rudimentary ARG.\label{fig:arg1}](rudarg.pdf)
 
 
 <!---
