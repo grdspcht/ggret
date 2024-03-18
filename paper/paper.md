@@ -1,7 +1,7 @@
 ---
 # (This front matter is required by JOSS)
 # (See here for formatting & submission guidelines: https://joss.readthedocs.io/en/latest/submitting.html#how-should-my-paper-be-formatted)
-title: "ggarg: Visualisation of tree‑based phylogenetic networks"
+title: "`ggarg`: Visualisation of tree‑based phylogenetic networks"
 
 tags:
   - R
@@ -63,9 +63,19 @@ Evolutionary history is most often visualised in the form of a bifurcating phylo
 # Statement of need
 `ggarg` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggarg` aims to extend these functionalities by building upon `ggtree's` extensive visualisation capabilites and expanding them with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. 
 
-# Features
-Here we showcase some of `ggarg's` core features. 
-![Rudimentary ARG.\label{fig:arg1}](rudarg.pdf)
+# Usage
+`ggarg` is available on [GitHub](https://github.com/grdspcht/ggarg) and can be installed by using `devtools` `install_github` function.
+
+```r
+# Install from GitHub
+install.packages('devtools') # this may take a minute
+library(devtools)
+install_github('grdspcht/ggarg')
+library(ggarg)
+```
+
+Here we showcase some of `ggarg's` core features.  
+![Rudimentary ARG\label{fig:arg1}](rudarg.pdf){width=20%}
 
 
 <!---
