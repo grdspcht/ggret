@@ -63,8 +63,14 @@ Evolutionary history is most often visualised in the form of a bifurcating phylo
 # Statement of need
 `ggarg` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggarg` aims to extend these functionalities by building upon `ggtree's` extensive visualisation capabilites and expanding them with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. 
 
-# Citations
+# Features
+Here we showcase some of `ggarg's` core features. 
+![Rudimentary ARG.\label{fig:arg1}](../rudarg.pdf)
+
+
 <!---
+# Citations
+
 Citations to entries in paper.bib should be in
 [rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
 format.
@@ -78,8 +84,6 @@ For a quick reference, the following citation commands can be used:
 - `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
 
 -->
-Test citation:
-[@murrell_r_2005]
 
 
 # Figures
