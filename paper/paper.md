@@ -61,7 +61,7 @@ Evolutionary history is most often visualised in the form of a bifurcating phylo
 
 
 # Statement of need
-`ggarg` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges) [@]. The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggarg` aims to extend these functionalities by building upon `ggtree's` extensive visualisation capabilites and expanding them with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. 
+`ggarg` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggarg` aims to extend these functionalities by building upon `ggtree's` extensive visualisation capabilites and expanding them with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. 
 
 # Usage
 `ggarg` is available on [GitHub](https://github.com/grdspcht/ggarg) and can be installed by using `devtools` `install_github` function.
@@ -116,7 +116,7 @@ plot(pg)
 ![Phylogenetic network with added branch colours based on clade information.
 \label{fig:arg3}](colored.pdf){width=66%}
 
-For additional information, refer to `ggarg's` internal documentation or to [github.com/grdspcht/ggarg](https://github.com/grdspcht/ggarg) which also allows to open issues, bug reports or pull requests. 
+For additional information, refer to `ggarg's` internal documentation or to [github.com/grdspcht/ggarg](https://github.com/grdspcht/ggarg) which also gives users the opportunity to open issues, pull requests or make bug reports. 
 
 
 <!---
