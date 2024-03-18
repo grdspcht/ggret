@@ -1,7 +1,7 @@
 ---
 # (This front matter is required by JOSS)
 # (See here for formatting & submission guidelines: https://joss.readthedocs.io/en/latest/submitting.html#how-should-my-paper-be-formatted)
-title: "GGARG: Visualisation of tree‑based phylogenetic networks"
+title: "ggarg: Visualisation of tree‑based phylogenetic networks"
 
 tags:
   - R
@@ -13,26 +13,29 @@ tags:
 
 authors:
   - name: Gerd Specht
-    affiliation: 1
+    affiliation: "1,2"
   - name: Arthur Kocher
     orcid: 0000-0002-9499-6472
-    affiliation: "1, 2"
+    affiliation: "2,3"
   - name: Clemens Schmid
     orcid: 0000-0003-3448-571
     affiliation: 2
   - name: Denise Kühnert
     orcid: 0000-0002-5657-018X
     corresponding: true
-    affiliation: "1,2,3"
+    affiliation: "2,3,4"
 
 
 affiliations:
- - name: Transmission, Infection, Diversification & Evolution Group, Max Planck Institute of Geoanthropology, Jena, Germany
+ 
+ - name: Faculty of Mathematics and Computer Science, Friedrich Schiller University Jena, Germany
    index: 1
- - name: Department of Archogenetics, Max Planck Institute for Evolutionary Anthropology, Leipzig, Germany
+ - name: Transmission, Infection, Diversification & Evolution Group, Max Planck Institute of Geoanthropology, Jena, Germany
    index: 2
- - name: Department of Phylogenomics, Robert Koch Institute, Wildau, Germany
+ - name: Department of Archogenetics, Max Planck Institute for Evolutionary Anthropology, Leipzig, Germany
    index: 3
+ - name: Department of Phylogenomics, Robert Koch Institute, Wildau, Germany
+   index: 4
 
 date: 1 March 2024
 bibliography: paper.bib
@@ -54,11 +57,11 @@ bibliography: paper.bib
 
 # Summary
 
-Evolutionary history is most often visualised in the form of a bifurcating phylogenetic tree. Trees are models for a series of vertical evolutionary events and are constructed from branches or edges which describe a flow of genetic material from direct ancestor to offspring and nodes or vertices which represent ancestral states if they are internal nodes and extant species or individuals if they are external nodes (more commonly called tips or leaves) \cite{yang_phylogeny_2014}. While this mode of representation offers much insight into evolutionary processes and relationships it lacks the ability to visualise evolutionary events that do not fit this vertical model of evolution. These so-called horizontal evolutionary events break with the common concept that genetic material is only transferred from ancestor to offspring and have gained scientific interest in the last decades. Advances in sequencing and computational methods have made it possible to identify horizontal evolutionary events and helped to reveal a more complex image of evolutionary history. Due to horizontal or reticulate (from Latin \textit{reticulatus}, "having a net-like pattern" or from \textit{reticulum}, "little net") evolution it may be in many instances preferable to represent a group's evolutionary history as a phylogenetic network instead of a phylogenetic tree. Horizontal evolutionary events can be mediated by various mechanisms.
+Evolutionary history is most often visualised in the form of a bifurcating phylogenetic tree. Trees are models for a series of vertical evolutionary events and are constructed from branches or edges which describe a flow of genetic material from direct ancestor to offspring and nodes or vertices which represent ancestral states if they are internal nodes and extant species or individuals if they are external nodes (more commonly called tips or leaves) [@yang_phylogeny_2014]. While this mode of representation offers much insight into evolutionary processes and relationships it lacks the ability to visualise evolutionary events that do not fit this vertical model. So-called horizontal evolutionary events break with the common concept that genetic material is only transferred from ancestor to offspring and have gained scientific interest in the last decades. Advances in sequencing and computational methods have made it possible to identify horizontal evolutionary events and helped to reveal a more complex image of evolutionary history. Due to horizontal or reticulate evolution it may be in many instances preferable to represent a group's evolutionary history as a phylogenetic network which requires an efficient visualisation tool that can be integrated into automated workflows.
 
 
 # Statement of need
-
+`ggarg` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggarg` aims to extend these functionalities by building upon `ggtree's` extensive visualisation capabilites and expanding them with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. 
 
 # Citations
 <!---
@@ -92,4 +95,4 @@ Figure sizes can be customized by adding an optional second parameter:
 # Acknowledgements
 
 # References
-
+<!--- Auto-generated, no need to add something here -->
