@@ -74,8 +74,18 @@ install_github('grdspcht/ggarg')
 library(ggarg)
 ```
 
-Here we showcase some of `ggarg's` core features.  
-![Rudimentary ARG\label{fig:arg1}](rudarg.pdf){width=20%}
+
+`ggarg` provides functions for reading extended Newick and (Beast2) NEXUS format. This allows the user to visualise phylogenetic networks inferred from various programs. 
+
+For the sake of reproducibility we showcase some of the visualisation features with the `retnet` object that comes with `ggarg`.
+
+```r
+p <- ggplot(retnet) + geom_arg() + theme_tree()
+plot(p)
+```
+This creates a rudimentary tree-based network without any labelling. Reticulate edges are drawn as dashed lines. 
+
+![A rudimentary tree-based network plotted with `ggarg`\label{fig:arg1}](rudarg.pdf){width=50%}
 
 
 <!---
