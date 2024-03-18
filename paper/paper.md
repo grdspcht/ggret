@@ -57,11 +57,11 @@ bibliography: paper.bib
 
 # Summary
 
-Evolutionary history is most often visualised in the form of a bifurcating phylogenetic tree. Trees are models for a series of vertical evolutionary events and are constructed from branches or edges which describe a flow of genetic material from direct ancestor to offspring and nodes or vertices which represent ancestral states if they are internal nodes and extant species or individuals if they are external nodes (more commonly called tips or leaves) [@yang_phylogeny_2014]. While this mode of representation offers much insight into evolutionary processes and relationships it lacks the ability to visualise evolutionary events that do not fit this vertical model. So-called horizontal evolutionary events break with the common concept that genetic material is only transferred from ancestor to offspring and have gained scientific interest in the last decades. Advances in sequencing and computational methods have made it possible to identify horizontal evolutionary events and helped to reveal a more complex image of evolutionary history. Due to horizontal or reticulate evolution it may be in many instances preferable to represent a group's evolutionary history as a phylogenetic network which requires an efficient visualisation tool that can be integrated into automated workflows.
+Evolutionary history is most often visualised in the form of a bifurcating phylogenetic tree. Trees are models for a series of vertical evolutionary events and are constructed from branches or edges which describe a flow of genetic material from direct ancestor to offspring and nodes or vertices which represent ancestral states if they are internal nodes and extant species or individuals if they are external nodes (more commonly called tips or leaves) [@yang_phylogeny_2014]. While this mode of representation offers much insight into evolutionary processes and relationships it lacks the ability to visualise evolutionary events that do not fit this vertical model. So-called horizontal evolutionary events break with the common concept that genetic material is only transferred from ancestor to offspring and have gained scientific interest in the last decades [@gogarten_horizontal_2000]. Advances in sequencing and computational methods have made it possible to identify horizontal evolutionary events and helped to reveal a more complex image of evolutionary history. Due to horizontal or reticulate evolution it may be in many instances preferable to represent a group's evolutionary history as a phylogenetic network [@huson_application_2006] which requires an efficient visualisation tool that can be integrated into automated workflows.
 
 
 # Statement of need
-`ggarg` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggarg` aims to extend these functionalities by building upon `ggtree's` extensive visualisation capabilites and expanding them with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. 
+`ggarg` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges) [@]. The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggarg` aims to extend these functionalities by building upon `ggtree's` extensive visualisation capabilites and expanding them with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. 
 
 # Usage
 `ggarg` is available on [GitHub](https://github.com/grdspcht/ggarg) and can be installed by using `devtools` `install_github` function.
@@ -75,7 +75,7 @@ library(ggarg)
 ```
 
 
-`ggarg` provides functions for reading extended Newick and (Beast2) NEXUS format. This allows the user to visualise phylogenetic networks inferred from various programs. 
+`ggarg` provides functions for reading extended Newick and (Beast2) NEXUS format [@cardona_extended_2008]. This allows the user to visualise phylogenetic networks inferred from various programs. 
 
 For the sake of reproducibility we showcase some of the visualisation features with the `retnet` object that comes with `ggarg`.
 
@@ -115,6 +115,8 @@ plot(pg)
 
 ![Phylogenetic network with added branch colours based on clade information.
 \label{fig:arg3}](colored.pdf){width=66%}
+
+For additional information, refer to `ggarg's` internal documentation or to [github.com/grdspcht/ggarg](https://github.com/grdspcht/ggarg) which also allows to open issues, bug reports or pull requests. 
 
 
 <!---
