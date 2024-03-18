@@ -35,7 +35,7 @@ affiliations:
    index: 3
 
 date: 1 March 2024
-bibliography: paper.bib)
+bibliography: paper.bib
 ---
 
 <!---
@@ -54,11 +54,7 @@ bibliography: paper.bib)
 
 # Summary
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   
-
-Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   
-
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse
+Evolutionary history is most often visualised in the form of a bifurcating phylogenetic tree. Trees are models for a series of vertical evolutionary events and are constructed from branches or edges which describe a flow of genetic material from direct ancestor to offspring and nodes or vertices which represent ancestral states if they are internal nodes and extant species or individuals if they are external nodes (more commonly called tips or leaves) \cite{yang_phylogeny_2014}. While this mode of representation offers much insight into evolutionary processes and relationships it lacks the ability to visualise evolutionary events that do not fit this vertical model of evolution. These so-called horizontal evolutionary events break with the common concept that genetic material is only transferred from ancestor to offspring and have gained scientific interest in the last decades. Advances in sequencing and computational methods have made it possible to identify horizontal evolutionary events and helped to reveal a more complex image of evolutionary history. Due to horizontal or reticulate (from Latin \textit{reticulatus}, "having a net-like pattern" or from \textit{reticulum}, "little net") evolution it may be in many instances preferable to represent a group's evolutionary history as a phylogenetic network instead of a phylogenetic tree. Horizontal evolutionary events can be mediated by various mechanisms.
 
 
 # Statement of need
