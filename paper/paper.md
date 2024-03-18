@@ -85,7 +85,21 @@ plot(p)
 ```
 This creates a rudimentary tree-based network without any labelling. Reticulate edges are drawn as dashed lines. 
 
-![A rudimentary tree-based network plotted with `ggarg`\label{fig:arg1}](rudarg.pdf){width=50%}
+![A rudimentary tree-based network plotted with `ggarg`\label{fig:arg1}](rudarg.pdf){width=80%}
+
+Annotations can be easily added by appending them to the previous plot object.
+
+```r
+# Adding tip and node labels
+p <- geom_tiplab() + geom_nodelab(aes(vjust=1))
+plot(p)
+```
+
+![An explicit phylogenetic network with added tip labels
+(A-D) and node labels (1-8). Note that node labels for reticulation edges (in dashed
+lines) include a ”#” per extended Newick definition.
+\label{fig:arg1}](labels.pdf){width=80%}
+
 
 
 <!---
@@ -105,9 +119,9 @@ For a quick reference, the following citation commands can be used:
 
 -->
 
-
-# Figures
 <!---
+# Figures
+
 Figures can be included like this:
 ![Caption for example figure.\label{fig:example}](figure.png)
 and referenced from text using \autoref{fig:example}.
