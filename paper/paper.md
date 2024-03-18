@@ -85,7 +85,7 @@ plot(p)
 ```
 This creates a rudimentary tree-based network without any labelling. Reticulate edges are drawn as dashed lines. 
 
-![A rudimentary tree-based network plotted with `ggarg`\label{fig:arg1}](rudarg.pdf){width=80%}
+![A rudimentary tree-based network plotted with `ggarg`\label{fig:arg1}](rudarg.pdf){width=66%}
 
 Annotations can be easily added by appending them to the previous plot object.
 
@@ -98,8 +98,23 @@ plot(p)
 ![An explicit phylogenetic network with added tip labels
 (A-D) and node labels (1-8). Note that node labels for reticulation edges (in dashed
 lines) include a ”#” per extended Newick definition.
-\label{fig:arg1}](labels.pdf){width=80%}
+\label{fig:arg2}](labels.pdf){width=66%}
 
+As a last step, we visually distinguish the clade of tips A and B by defining a list and
+passing it to `ggtree's` `groupOTU()` which applies group information to the network object.
+
+```r
+groups <- list(AB=c("A", "B"))
+tr <- groupOTU(retnet, groups, "Groups")
+pg <- (ggplot(tr, aes(colour=Groups)) + geom_arg()
++ theme_tree() + geom_tiplab()
++ geom_nodelab(aes(vjust=1)))
+
+plot(pg)
+```
+
+![Phylogenetic network with added branch colours based on clade information.
+\label{fig:arg3}](colored.pdf){width=66%}
 
 
 <!---
