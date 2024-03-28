@@ -1,0 +1,26 @@
+#NEXUS
+
+Begin taxa;
+Dimensions ntax=4;
+Taxlabels
+1
+2
+3
+4
+;
+End;
+
+Begin bacter;
+loci locus:3000;
+End;
+
+Begin trees;
+Translate
+1 A,
+2 B,
+3 C
+4 D
+;
+tree STATE_0 = (((1[&posterior=1.0, height_95%_HPD={0.0,0.0}]:2250.0,#0[&conv=0, region={300,550}, locus="locus", relSize=0.0836667, posterior=1.0, startSite_95%_HPD={200,400}, endSite_95%_HPD={500,600}]:1000.0)[&height_95%_HPD={2000.0,2500.0}]:750.0,4[&posterior=1.0, height_95%_HPD={0.0,0.0}]:3000.0)5[&posterior=1.0, height_95%_HPD={0.0,0.0}]:7000.0,((2[&posterior=1.0, height_95%_HPD={0.0,0.0}]:1250.0)#0[&height_95%_HPD={1000.0,1500.0}]:3750.0,3[&posterior=1.0, height_95%_HPD={0.0,0.0}]:5000.0)6[&posterior=1.0, height_95%_HPD={5000.0,5000.0}]:5000.0)7[&posterior=1.0, height_95%_HPD={10000.0,10000.0}]:0.0;
+End;
+
