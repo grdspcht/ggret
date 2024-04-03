@@ -419,7 +419,7 @@ setup_tree_data <- function(data) {
 
 ##'
 ##'
-# ##'
+##'
 ##' @title Explicit phylogenetic network
 ##' @param layout one of 'rectangular', 'slanted', 'circular', 'radial' or 'unrooted'
 ##' @param retcol reticulation edge colour
@@ -433,7 +433,7 @@ setup_tree_data <- function(data) {
 ##' @importFrom ggplot2 aes
 ##' @export
 ##' @author Yu Guangchuang
-geom_arg <- function(layout= "rectangular",
+geom_ret <- function(layout= "rectangular",
                      retcol = "black",
                      arrows = FALSE,
                      retlinetype = 2,
