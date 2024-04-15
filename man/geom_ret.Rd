@@ -5,7 +5,6 @@
 \title{Explicit phylogenetic network}
 \usage{
 geom_ret(
-  layout = "rectangular",
   retcol = "black",
   arrows = FALSE,
   retlinetype = 2,
@@ -15,8 +14,6 @@ geom_ret(
 )
 }
 \arguments{
-\item{layout}{one of 'rectangular', 'slanted', 'circular', 'radial' or 'unrooted'}
-
 \item{retcol}{reticulation edge colour}
 
 \item{arrows}{if TRUE reticulation edges end with arrows}

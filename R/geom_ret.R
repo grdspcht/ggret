@@ -421,7 +421,6 @@ setup_tree_data <- function(data) {
 ##'
 ##'
 ##' @title Explicit phylogenetic network
-##' @param layout one of 'rectangular', 'slanted', 'circular', 'radial' or 'unrooted'
 ##' @param retcol reticulation edge colour
 ##' @param arrows if TRUE reticulation edges end with arrows
 ##' @param retlinetype line type aesthetic for reticulations
@@ -433,8 +432,7 @@ setup_tree_data <- function(data) {
 ##' @importFrom ggplot2 aes
 ##' @export
 ##' @author Yu Guangchuang
-geom_ret <- function(layout= "rectangular",
-                     retcol = "black",
+geom_ret <- function(retcol = "black",
                      arrows = FALSE,
                      retlinetype = 2,
                      rettype = "snake",
@@ -449,7 +447,7 @@ geom_ret <- function(layout= "rectangular",
   }
 
 
-  if (layout == "rectangular" || layout == "fan" || layout == "circular") {
+ # if (layout == "rectangular" || layout == "fan" || layout == "circular") {
     backbone <- list(
       geom_segment(aes(x    = x[parent],
                        xend = x,
@@ -470,6 +468,7 @@ geom_ret <- function(layout= "rectangular",
                          xend = x,
                          y    = (y[donor] + y)/2,
                          yend = (y[donor] + y)/2),
+                     colour = retcol,
                      lineend = lend,
                      linetype = retlinetype,
                      na.rm = na.rm,
@@ -479,6 +478,7 @@ geom_ret <- function(layout= "rectangular",
                          xend = x[donor],
                          y    = y[donor],
                          yend = (y[donor] + y)/2),
+                     colour = retcol,
                      lineend = lend,
                      linetype = retlinetype,
                      na.rm = na.rm,
@@ -488,6 +488,7 @@ geom_ret <- function(layout= "rectangular",
                          xend = x,
                          y    = (y[donor] + y)/2,
                          yend = y),
+                     colour = retcol,
                      lineend = lend,
                      arrow = arrowtype,
                      linetype = retlinetype,
@@ -500,6 +501,7 @@ geom_ret <- function(layout= "rectangular",
                          xend = x,
                          y    = y[donor],
                          yend = y),
+                         colour = retcol,
                          lineend = lend,
                          arrow = arrowtype,
                          linetype = retlinetype,
@@ -508,7 +510,7 @@ geom_ret <- function(layout= "rectangular",
 
       }
   }
-}
+#}
 
 ggproto_formals <- function(x) formals(environment(x)$f)
 
