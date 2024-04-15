@@ -447,7 +447,7 @@ geom_ret <- function(retcol = "black",
   }
 
 
- # if (layout == "rectangular" || layout == "fan" || layout == "circular") {
+
     backbone <- list(
       geom_segment(aes(x    = x[parent],
                        xend = x,
@@ -510,7 +510,7 @@ geom_ret <- function(retcol = "black",
 
       }
   }
-#}
+
 
 ggproto_formals <- function(x) formals(environment(x)$f)
 
