@@ -70,7 +70,7 @@ read.beast <- function(file) {
   # check if tree block contains extended newick
   tt <- gsub("\\[(.*?)\\]", "", treeTexts) # remove comments
   if (grepl("#", tt)) {
-    phylo <- read.enewick2(text = treeTexts)
+    phylo <- read.enewick(text = treeTexts)
 
     # add temporary node and tip labels to network if needed
     if (any(phylo$node.label == "")) {
@@ -85,7 +85,7 @@ read.beast <- function(file) {
         paste0("Tip", seq(1:length(emptyTips)))
     }
     pwl <- write.evonet(phylo)
-    phyLabel <- read.enewick2(text = pwl)
+    phyLabel <- read.enewick(text = pwl)
 
     # Get metadata attributes (column names)
     extrdCols <- get.colnames(treeTexts)
