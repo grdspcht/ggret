@@ -9,20 +9,31 @@
 #' @export
 #'
 #' @examples
-colorClade <- function(data, nodes, cladename, tiponly = FALSE) {
+groupClade <- function(data, nodes, cladename, tiponly = FALSE) {
   mrca = treeio::MRCA(data, nodes)
   offsprings = treeio::offspring(data, mrca, tiponly)
   if (is(data, "evonet")) {
     labs <- c(data$tip.label, data$node.label)
-    clades <- rep("Undefined", length(labs))
+    if("clade" %in% names(attributes(data))){
+      clades <- attributes(data)$clade
+    }else{
+      clades <- rep("Undefined", length(labs))
+    }
+
     for (u in cladename) {
       clades[which(labs %in% nodelab(data, offsprings))] <- u
     }
 
     attr(data, "clade") <- clades
+
   } else if (is(data, "treedata")) {
     labs <- c(data@phylo[["tip.label"]], data@phylo[["node.label"]])
-    clades <- rep(NA, length(labs))
+    if ("clade" %in% names(attributes(data@phylo))){
+      clades <- attributes(data@phylo)$clade
+    } else {
+      clades <- rep(NA, length(labs))
+    }
+
     for (u in cladename) {
       clades[which(labs %in% nodelab(data@phylo, offsprings))] <- u
     }
@@ -35,6 +46,7 @@ colorClade <- function(data, nodes, cladename, tiponly = FALSE) {
 
   return(data)
 }
+
 
 findRetLayer <- function(layer, rets){
   retrow <- subset(layer[rets,], select = c("x", "y", "xend", "yend"))
