@@ -1,0 +1,119 @@
+---
+title: "Testing ggarg"
+output: html_notebook
+author: Arthur Kocher<br>
+date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 2
+  github_document:
+    toc: true
+    toc_depth: 2
+    html_preview: FALSE
+---
+
+<!-- Setup environment  -->
+
+```{r rsetup, include=FALSE}
+#clear R environment and detach packages
+rm(list = ls(all.names = TRUE))
+try(lapply(paste("package:", names(sessionInfo()$otherPkgs), sep=""), 
+       detach, 
+       character.only = TRUE, 
+       unload = TRUE))
+```
+
+#1. Installation
+
+```{r}
+#install and load the package (we test the two installation procedures)
+
+#first using the package devtools
+remove.packages("ggarg")
+library(devtools)
+install_github("grdspcht/ggarg")
+library("ggarg")
+
+##then with the remotes package
+remove.packages("ggarg")
+library(remotes)
+install_github("grdspcht/ggarg")
+library("ggarg")
+
+#load the 
+devtools::load_all()
+```
+
+#1. Tests with simple example ARG in evonet format
+
+```{r}
+#load the evonet object
+retnet = read.enewick("../data/retnet.nwk")
+#we also read a similar toy tree in case we need it for comparison
+tree=ape::read.tree("../data/tree.nwk")
+#plot the network without reticulations
+ggtree(retnet) + theme_tree()
+#add reticulated edges with different options
+ggplot(retnet) + theme_tree() + geom_ret() #I think we should rename geom_arg as geom_ret
+ggtree(retnet) + theme_tree() + geom_ret(layout = "slanted") #doesn't work
+ggtree(retnet) + theme_tree() + geom_ret(retcol = 'blue') #doesn't work
+ggtree(retnet) + theme_tree() + geom_ret(arrows = T) # arrowheads have a weird aspect
+ggtree(retnet) + theme_tree() + geom_ret(retlinetype = 3)
+ggtree(retnet) + theme_tree() + geom_ret(rettype = 'snake') #doesn't work
+#add tip labels and tip points
+ggtree(retnet) + theme_tree() + geom_arg() + geom_tiplab(color="red") + geom_tippoint()
+#add node labels (in this example there is no metadata to be plotted)
+ggtree(retnet) + theme_tree() + geom_arg() + geom_nodelab() + geom_tiplab(color="red")
+#collapse a clade
+collapse(ggtree(retnet) + theme_tree() + geom_arg() + geom_nodelab(),node = 12,mode = "max",fill="black",clade_name = "A_B")
+#collapse a clade containing a reticulation
+collapse(ggtree(retnet) + theme_tree() + geom_arg() + geom_nodelab(),node = 8,mode = "max",fill="black",clade_name = "C_D")
+#collapse a clade containing only the receiver point of reticulation
+retnet2 = read.enewick2("../data/retnet2.nwk") #had to create another example to test this
+p.ret2 = ggtree(retnet2) + theme_tree() + geom_arg() + geom_nodelab() + geom_tiplab(color="red")
+collapse(p.ret2,node = 11,mode = "max",fill="black",clade_name = "D_E") # the reticulation edge is just removed
+#collapse a clade containing only the donor point
+collapse(p.ret2,node = 13,mode = "max",fill="black",clade_name = "C_F") # the reticulation edge is just removed
+#rotate a clade
+ggtree::rotate(ggtree(retnet) + theme_tree() + geom_nodelab() + geom_tiplab(color="red"),node= 4) # the clade is indeed rotated but one branch gets removed from the plot
+ggtree::rotate(ggtree(tree) + theme_tree(),node= 4) # same problem with a regular tree so doesn't seem to be arg specific
+ggtree::rotate(p.ret2,node= 11) #seems to work with a larger arg
+#annotate a clade
+p.ret2 + geom_cladelabel(node=11, label="E_D",col="red", angle=0,offset = 0.2, align=F,fontsize=5)
+#define clades and color by clade
+retnet2=colorClade(data = retnet2, nodes = c("F", "C"), "FC clade")
+retnet2=colorClade(data = retnet2, nodes = c("E", "D"), "ED clade")
+ggtree(retnet2, aes(color=clade)) + theme_tree() + geom_arg(retcol = "black") + geom_nodelab() + geom_tiplab(color="red") #the colorclade function seems to overwrite de clade attribute, so it is not possible to define different clades and the reticulation are still colored according to the receiver point without possibility to change this (since the retcol argument of geom arg doesn't seem to work)
+```
+
+#2. Test with arg in tree data format 
+
+```{r}
+#read arg in nexus format with the read.beast function (it creates a treedata object)
+retnet3=ggarg::read.beast("../data/retnet.nexus")
+#plot the network 
+p.ret3 = ggtree(retnet3) + theme_tree2() + geom_arg() +  geom_tiplab() + geom_tippoint()
+p.ret3
+#plot posterior support
+p.ret3 + geom_nodelab(aes(label=posterior))
+#plot recombining region boundaries
+p.ret3 + geom_nodelab(aes(label=posterior)) + geom_nodelab(aes(label=region))
+#add a clade variable in the treedata object and color the tree by clade
+retnet3@data$clade="Undefined"
+retnet3@data$clade[retnet3@data$node%in%(ggtree::MRCA(retnet3,"A","D") %>% treeio::offspring(retnet3,.node = .))]="A_D"
+retnet3@data$clade[retnet3@data$node%in%(ggtree::MRCA(retnet3,"B","C") %>% treeio::offspring(retnet3,.node = .))]="B_C"
+ggtree(retnet3, aes(color=clade)) + theme_tree() + geom_arg() + geom_nodelab() + geom_tiplab(color="red")
+```
+
+#3. Format conversion
+
+```{r}
+#evonet into treedata
+treeio::as.treedata(retnet) #doesn't work
+#treedata into evonet
+retnet3@phylo -> retnet3.evonet
+#and back to treedata
+treeio::as.treedata(retnet3.evonet) #works
+```
+
