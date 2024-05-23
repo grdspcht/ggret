@@ -431,7 +431,7 @@ setup_tree_data <- function(data) {
 ##' @importFrom ggplot2 geom_segment
 ##' @importFrom ggplot2 aes
 ##' @export
-##' @author Yu Guangchuang
+##' @author Yu Guangchuang, Gerd Specht
 geom_ret <- function(retcol = "black",
                      arrows = FALSE,
                      retlinetype = 2,
