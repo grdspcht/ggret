@@ -2,19 +2,21 @@
 % Please edit documentation in R/groupClade.R
 \name{groupClade}
 \alias{groupClade}
-\title{group clades}
+\title{Group clades}
 \usage{
-groupClade(data, nodes, cladename, tiponly = FALSE)
+groupClade(data, nodes, cladename, tiponly = FALSE, addtotable = FALSE)
 }
 \arguments{
-\item{data}{evonet or treedata object}
+\item{data}{Evonet or treedata object.}
 
-\item{nodes}{nodes that define the clade}
+\item{nodes}{Nodes that define the clade.}
 
-\item{cladename}{Name of the clade}
+\item{cladename}{Name of the clade.}
 
 \item{tiponly}{Should only tips be considered?}
+
+\item{addtotable}{If TRUE, adds group/clade information to the data table of a treedata object.}
 }
 \description{
-group clades
+Group clades
 }

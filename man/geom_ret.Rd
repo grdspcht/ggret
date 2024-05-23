@@ -33,5 +33,5 @@ phylogenetic network layer
 Explicit phylogenetic network
 }
 \author{
-Yu Guangchuang
+Yu Guangchuang, Gerd Specht
 }

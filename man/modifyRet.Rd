@@ -9,7 +9,7 @@ modifyRet(plot, assignto = "donor")
 \arguments{
 \item{plot}{ggplot object}
 
-\item{assignto}{Reticulation colour can be assigned to "donor" or "receiver"}
+\item{assignto}{Reticulation color can be assigned to "donor" or "receiver"}
 }
 \value{
 Modified ggplot object
