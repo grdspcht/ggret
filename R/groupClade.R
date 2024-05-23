@@ -1,15 +1,17 @@
-#' group clades
+#' Group clades
 #'
-#' @param data evonet or treedata object
-#' @param nodes nodes that define the clade
-#' @param cladename Name of the clade
+#' @param data Evonet or treedata object.
+#' @param nodes Nodes that define the clade.
+#' @param cladename Name of the clade.
 #' @param tiponly Should only tips be considered?
+#' @param addtotable  If TRUE, adds group/clade information to the data table of a treedata object.
+#' @importFrom  tibble add_column
 #'
 #' @return
 #' @export
 #'
 #' @examples
-groupClade <- function(data, nodes, cladename, tiponly = FALSE) {
+groupClade <- function(data, nodes, cladename, tiponly = FALSE, addtotable = FALSE) {
   mrca = treeio::MRCA(data, nodes)
   offsprings = treeio::offspring(data, mrca, tiponly)
   if (is(data, "evonet")) {
@@ -39,6 +41,14 @@ groupClade <- function(data, nodes, cladename, tiponly = FALSE) {
     }
 
     attr(data@phylo, "clade") <- clades
+
+    if (addtotable == TRUE){
+      if("Clades" %in% colnames(data@data)){
+        data@data$clade <- clades
+      }else{
+        data@data <- add_column(data@data, "Clades" = clades)
+      }
+    }
   } else{
     warning("Function only supports evonet and treedata objects.")
     stop()
@@ -61,7 +71,7 @@ findRetLayer <- function(layer, rets){
 #' Change reticulation coloring
 #'
 #' @param plot ggplot object
-#' @param assignto  Reticulation colour can be assigned to "donor" or "receiver"
+#' @param assignto  Reticulation color can be assigned to "donor" or "receiver"
 #'
 #' @return Modified ggplot object
 #' @export
