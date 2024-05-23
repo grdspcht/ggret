@@ -16,6 +16,7 @@ read.enewick <- function(file = "", text = NULL)
 
   evo <- ape::as.evonet.phylo(tr)
   evo$ret.length <- ret_len
-  class(evo) <- c("phylo", "evonet")
+  # class(evo) <- c("phylo", "evonet")
+  class(evo) <- c("evonet", "phylo")
   evo
 }
