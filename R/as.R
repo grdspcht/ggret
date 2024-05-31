@@ -24,8 +24,8 @@ as.treedata.evonet <- function(evo, ...){
   # of treedata does not allow for evonet objects in the phylo slot. At some
   # point we will have to do something about this inconsistency (new class?)
 
-  class(x) <- c("phylo", "evonet")
-  trd <- as.treedata(x, ...)
+  class(evo) <- c("phylo", "evonet")
+  trd <- as.treedata(evo, ...)
 
   return(trd)
 }
