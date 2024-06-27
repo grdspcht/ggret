@@ -41,11 +41,11 @@ library(remotes)
 install_github("grdspcht/ggarg")
 library("ggarg")
 
-#load the 
+#load the package from the local repo
 devtools::load_all()
 ```
 
-#1. Tests with simple example ARG in evonet format
+#2. Tests with simple example ARG in evonet format
 
 ```{r}
 #load the evonet object
@@ -55,23 +55,24 @@ tree=ape::read.tree("../data/tree.nwk")
 #plot the network without reticulations
 ggtree(retnet) + theme_tree()
 #add reticulated edges with different options
-ggplot(retnet) + theme_tree() + geom_ret() #I think we should rename geom_arg as geom_ret
-ggtree(retnet) + theme_tree() + geom_ret(layout = "slanted") #doesn't work
-ggtree(retnet) + theme_tree() + geom_ret(retcol = 'blue') #doesn't work
-ggtree(retnet) + theme_tree() + geom_ret(arrows = T) # arrowheads have a weird aspect
+ggplot(retnet) + theme_tree() + geom_ret() #I think we should rename geom_ret as geom_ret
+ggtree(retnet) + theme_tree() + geom_ret(layout = "slanted") #what does this do?
+ggtree(retnet) + theme_tree() + geom_ret(retcol = 'blue')
+ggtree(retnet) + theme_tree() + geom_ret(arrows = T) # arrowheads have a weird aspect but this is do to the line type and comes from geom_segment
 ggtree(retnet) + theme_tree() + geom_ret(retlinetype = 3)
-ggtree(retnet) + theme_tree() + geom_ret(rettype = 'snake') #doesn't work
+ggtree(retnet) + theme_tree() + geom_ret(rettype = 'snake')
+ggtree(retnet) + theme_tree() + geom_ret(rettype = 'straight')
 #add tip labels and tip points
-ggtree(retnet) + theme_tree() + geom_arg() + geom_tiplab(color="red") + geom_tippoint()
+ggtree(retnet) + theme_tree() + geom_ret() + geom_tiplab(color="red") + geom_tippoint()
 #add node labels (in this example there is no metadata to be plotted)
-ggtree(retnet) + theme_tree() + geom_arg() + geom_nodelab() + geom_tiplab(color="red")
+ggtree(retnet) + theme_tree() + geom_ret() + geom_nodelab() + geom_tiplab(color="red")
 #collapse a clade
-collapse(ggtree(retnet) + theme_tree() + geom_arg() + geom_nodelab(),node = 12,mode = "max",fill="black",clade_name = "A_B")
+collapse(ggtree(retnet) + theme_tree() + geom_ret() + geom_nodelab(),node = 12,mode = "max",fill="black",clade_name = "A_B")
 #collapse a clade containing a reticulation
-collapse(ggtree(retnet) + theme_tree() + geom_arg() + geom_nodelab(),node = 8,mode = "max",fill="black",clade_name = "C_D")
+collapse(ggtree(retnet) + theme_tree() + geom_ret() + geom_nodelab(),node = 8,mode = "max",fill="black",clade_name = "C_D")
 #collapse a clade containing only the receiver point of reticulation
-retnet2 = read.enewick2("../data/retnet2.nwk") #had to create another example to test this
-p.ret2 = ggtree(retnet2) + theme_tree() + geom_arg() + geom_nodelab() + geom_tiplab(color="red")
+retnet2 = read.enewick("../data/retnet2.nwk") #had to create another example to test this
+p.ret2 = ggtree(retnet2) + theme_tree() + geom_ret() + geom_nodelab() + geom_tiplab(color="red")
 collapse(p.ret2,node = 11,mode = "max",fill="black",clade_name = "D_E") # the reticulation edge is just removed
 #collapse a clade containing only the donor point
 collapse(p.ret2,node = 13,mode = "max",fill="black",clade_name = "C_F") # the reticulation edge is just removed
@@ -82,18 +83,18 @@ ggtree::rotate(p.ret2,node= 11) #seems to work with a larger arg
 #annotate a clade
 p.ret2 + geom_cladelabel(node=11, label="E_D",col="red", angle=0,offset = 0.2, align=F,fontsize=5)
 #define clades and color by clade
-retnet2=colorClade(data = retnet2, nodes = c("F", "C"), "FC clade")
-retnet2=colorClade(data = retnet2, nodes = c("E", "D"), "ED clade")
-ggtree(retnet2, aes(color=clade)) + theme_tree() + geom_arg(retcol = "black") + geom_nodelab() + geom_tiplab(color="red") #the colorclade function seems to overwrite de clade attribute, so it is not possible to define different clades and the reticulation are still colored according to the receiver point without possibility to change this (since the retcol argument of geom arg doesn't seem to work)
+retnet2=groupClade(data = retnet2, nodes = c("F", "C"), "FC clade")
+retnet2=groupClade(data = retnet2, nodes = c("E", "D"), "ED clade")
+ggtree(retnet2, aes(color=clade)) + theme_tree() + geom_ret(retcol = "black") + geom_nodelab() + geom_tiplab(color="red") #the colorclade function seems to overwrite de clade attribute, so it is not possible to define different clades and the reticulation are still colored according to the receiver point without possibility to change this (since the retcol argument of geom arg doesn't seem to work)
 ```
 
-#2. Test with arg in tree data format 
+#3. Test with arg in tree data format 
 
 ```{r}
 #read arg in nexus format with the read.beast function (it creates a treedata object)
 retnet3=ggarg::read.beast("../data/retnet.nexus")
 #plot the network 
-p.ret3 = ggtree(retnet3) + theme_tree2() + geom_arg() +  geom_tiplab() + geom_tippoint()
+p.ret3 = ggtree(retnet3) + theme_tree2() + geom_ret() +  geom_tiplab() + geom_tippoint()
 p.ret3
 #plot posterior support
 p.ret3 + geom_nodelab(aes(label=posterior))
@@ -103,17 +104,48 @@ p.ret3 + geom_nodelab(aes(label=posterior)) + geom_nodelab(aes(label=region))
 retnet3@data$clade="Undefined"
 retnet3@data$clade[retnet3@data$node%in%(ggtree::MRCA(retnet3,"A","D") %>% treeio::offspring(retnet3,.node = .))]="A_D"
 retnet3@data$clade[retnet3@data$node%in%(ggtree::MRCA(retnet3,"B","C") %>% treeio::offspring(retnet3,.node = .))]="B_C"
-ggtree(retnet3, aes(color=clade)) + theme_tree() + geom_arg() + geom_nodelab() + geom_tiplab(color="red")
+ggtree(retnet3, aes(color=clade)) + theme_tree() + geom_ret() + geom_nodelab() + geom_tiplab(color="red")
+#testing the groupclade method
+retnet3=ggarg::read.beast("../data/retnet.nexus")
+retnet3=groupClade(data = retnet3, nodes = c("A", "D"), "AD clade")
+ggtree(retnet3, aes(color=clade)) + theme_tree() + geom_ret() + geom_nodelab() + geom_tiplab(color="red")
 ```
 
-#3. Format conversion
+#4. Format conversion
+
+From evonet to treedata
 
 ```{r}
 #evonet into treedata
-treeio::as.treedata(retnet) #doesn't work
-#treedata into evonet
-retnet3@phylo -> retnet3.evonet
-#and back to treedata
-treeio::as.treedata(retnet3.evonet) #works
+retnet2 = read.enewick("../data/retnet2.nwk")
+as.treedata.evonet(retnet2) -> retnet2.treedata
+ggtree(retnet2.treedata) + theme_tree() + geom_ret() #doesn't work
 ```
+
+#5. Test with a real world example
+
+```{r}
+retnet.bacter=ggarg::read.beast("../data/HBV_summary.acg")
+#plot the network 
+p.retnet.bacter = ggtree(retnet.bacter) + theme_tree2() + geom_ret() +  geom_tiplab() + geom_tippoint()
+p.retnet.bacter
+#plot posterior support
+p.retnet.bacter + geom_nodelab(aes(label=posterior))
+#plot recombining region boundaries
+p.retnet.bacter + geom_nodelab(aes(label=posterior)) + geom_nodelab(aes(label=region))
+#color the tree by clade using the groupClade method doesn't work
+retnet.bacter=ggarg::read.beast("../data/HBV_summary.acg")
+retnet.bacter=groupClade(data = retnet.bacter, nodes = c("CUN002|Peru|Ancient_American_1|9022", "AY090455|Nicaragua|F|0"), "American branch")
+ggtree(retnet.bacter,aes(color=clade)) + theme_tree2() + geom_ret() +  geom_tiplab() + geom_tippoint() #doesnt work well
+#using the other method, it works
+retnet.bacter=ggarg::read.beast("../data/HBV_summary.acg")
+retnet.bacter@data$clade="Undefined"
+retnet.bacter@data$clade[retnet.bacter@data$node%in%(ggtree::MRCA(retnet.bacter,"CUN002|Peru|Ancient_American_1|9022","AY090455|Nicaragua|F|0") %>% treeio::offspring(retnet.bacter,.node = .))]="American branch"
+retnet.bacter@data$clade[retnet.bacter@data$node%in%(ggtree::MRCA(retnet.bacter,"LUB001|Nepal|Ancient_A|3146","AY934764|Gambia|A|0") %>% treeio::offspring(retnet.bacter,.node = .))]="Genotype A"
+ggtree(retnet.bacter, aes(color=clade)) + theme_tree() + geom_ret(retcol = "red") + geom_nodelab() + geom_tiplab(aes(color=clade))
+```
+
+
+
+
 
