@@ -177,7 +177,13 @@ fortify.treedata <- function(model,
                              ...) {
   x <- fortify.evonet(model@phylo)
 
-  xx <- merge(x, model@data, by = "node")
+
+  if (max(dim(model@data)) == 0) {
+    xx <- x
+  }else{
+    xx <- merge(x, model@data, by = "node")
+  }
+
   class(xx) <- c(class(xx), "tbl_tree", "tbl_df", "tbl")
   attr(xx, "layout") <- layout
   return(xx)
