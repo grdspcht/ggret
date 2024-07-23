@@ -21,7 +21,7 @@ ggret <- function(data,
                   rettype = "snake",
                   na.rm = TRUE,
                   ...){
-  if(is(data, "evonet") || (is(data, "evonet"))){
+  if(is(data, "evonet") || (is(data, "treedata"))){
     if (is.null(mapping)) {
       mapping <- aes_(~x, ~y)
     } else {
