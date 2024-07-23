@@ -11,7 +11,12 @@
 #' @export
 #'
 #' @examples
-groupClade <- function(data, nodes, cladename, tiponly = FALSE, addtotable = FALSE) {
+groupClade <- function(data,
+                       nodes,
+                       cladename,
+                       tiponly = FALSE,
+                       addtotable = FALSE,
+                       undefinedclades = NA) {
   mrca = treeio::MRCA(data, nodes)
   offsprings = treeio::offspring(data, mrca, tiponly)
   if (is(data, "evonet")) {
@@ -19,12 +24,9 @@ groupClade <- function(data, nodes, cladename, tiponly = FALSE, addtotable = FAL
     if("clade" %in% names(attributes(data))){
       clades <- attributes(data)$clade
     }else{
-      clades <- rep("Undefined", length(labs))
+      clades <- rep(undefinedclades, length(labs))
     }
 
-    # for (u in cladename) {
-    #   clades[which(labs %in% nodelab(data, offsprings))] <- u
-    # }
 
     for (u in cladename) {
       clades[offsprings] <- u
@@ -37,12 +39,9 @@ groupClade <- function(data, nodes, cladename, tiponly = FALSE, addtotable = FAL
     if ("clade" %in% names(attributes(data@phylo))){
       clades <- attributes(data@phylo)$clade
     } else {
-      clades <- rep(NA, length(labs))
+      clades <- rep(undefinedclades, length(labs))
     }
 
-    # for (u in cladename) {
-    #   clades[which(labs %in% nodelab(data@phylo, offsprings))] <- u
-    # }
 
     for (u in cladename) {
       clades[offsprings] <- u
