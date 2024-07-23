@@ -22,8 +22,12 @@ groupClade <- function(data, nodes, cladename, tiponly = FALSE, addtotable = FAL
       clades <- rep("Undefined", length(labs))
     }
 
+    # for (u in cladename) {
+    #   clades[which(labs %in% nodelab(data, offsprings))] <- u
+    # }
+
     for (u in cladename) {
-      clades[which(labs %in% nodelab(data, offsprings))] <- u
+      clades[offsprings] <- u
     }
 
     attr(data, "clade") <- clades
@@ -36,8 +40,12 @@ groupClade <- function(data, nodes, cladename, tiponly = FALSE, addtotable = FAL
       clades <- rep(NA, length(labs))
     }
 
+    # for (u in cladename) {
+    #   clades[which(labs %in% nodelab(data@phylo, offsprings))] <- u
+    # }
+
     for (u in cladename) {
-      clades[which(labs %in% nodelab(data@phylo, offsprings))] <- u
+      clades[offsprings] <- u
     }
 
     attr(data@phylo, "clade") <- clades
