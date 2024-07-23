@@ -27,11 +27,14 @@ ggret <- function(data,
     } else {
       mapping <- modifyList(aes_(~x, ~y), mapping)
     }
-    p <- ggplot(data, mapping = mapping,  retcol = retcol,
-                arrows = arrows,
-                retlinetype = retlinetype,
-                rettype = rettype, ...)
-    p <- p + geom_ret()
+    p <- ggplot(data,
+                mapping,
+                ...)
+    p <- p + geom_ret(retcol = retcol,
+                      arrows = arrows,
+                      retlinetype = retlinetype,
+                      rettype = rettype,
+                      ...)
     p <- p + theme_tree()
     class(p) <- c("ggret", "ggtree", class(p))
     return(p)
