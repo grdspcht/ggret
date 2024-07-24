@@ -174,17 +174,23 @@ fortify.treedata <- function(model,
                              as.Date = FALSE,
                              yscale = "none",
                              root.position = 0,
+
                              ...) {
-  x <- fortify.evonet(model@phylo)
-
-
-  if (max(dim(model@data)) == 0) {
-    xx <- x
+  if(!is(model, "evonet")){
+    xx <- ggtree:::fortify.treedata(model)
   }else{
-    xx <- merge(x, model@data, by = "node")
-  }
+    x <- fortify.evonet(model@phylo)
 
-  class(xx) <- c(class(xx), "tbl_tree", "tbl_df", "tbl")
-  attr(xx, "layout") <- layout
+
+    if (max(dim(model@data)) == 0) {
+      xx <- x
+    }else{
+      xx <- merge(x, model@data, by = "node")
+    }
+
+    class(xx) <- c(class(xx), "tbl_tree", "tbl_df", "tbl")
+    attr(xx, "layout") <- layout
+
+  }
   return(xx)
 }
