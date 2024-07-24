@@ -4,7 +4,8 @@
 #' @param nodes Nodes that define the clade.
 #' @param cladename Name of the clade.
 #' @param tiponly Should only tips be considered?
-#' @param addtotable  If TRUE, adds group/clade information to the data table of a treedata object.
+#' @param addtotreedata  If TRUE, adds group/clade information to the data table of a treedata object.
+#' @param undefinedclades Can be changed to rename undefined clades to something more fitting
 #' @importFrom  tibble add_column
 #'
 #' @return
@@ -15,7 +16,7 @@ groupClade <- function(data,
                        nodes,
                        cladename,
                        tiponly = FALSE,
-                       addtotable = FALSE,
+                       addtotreedata = FALSE,
                        undefinedclades = NA) {
   mrca = treeio::MRCA(data, nodes)
   offsprings = treeio::offspring(data, mrca, tiponly)
