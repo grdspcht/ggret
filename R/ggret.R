@@ -14,12 +14,23 @@
 #'
 #' @examples
 ggret <- function(data,
-                  mapping = NULL,
-                  retcol = "black",
-                  arrows = FALSE,
-                  retlinetype = 2,
-                  rettype = "snake",
-                  na.rm = TRUE,
+                  mapping        = NULL,
+                  retcol         = "black",
+                  arrows         = FALSE,
+                  retlinetype    = 2,
+                  rettype        = "snake",
+                  na.rm          = TRUE,
+                  mrsd           = NULL,
+                  as.Date        = FALSE,
+                  yscale         = "none",
+                  yscale_mapping = NULL,
+                  ladderize      = TRUE,
+                  right          = FALSE,
+                  branch.length  = "branch.length",
+                  root.position  = 0,
+                  xlim           = NULL,
+                  layout.params  = list(as.graph = TRUE),
+                  hang           = .1,
                   ...){
   if(is(data, "evonet") || (is(data, "treedata"))){
     if (is.null(mapping)) {
@@ -27,8 +38,20 @@ ggret <- function(data,
     } else {
       mapping <- modifyList(aes_(~x, ~y), mapping)
     }
-    p <- ggplot(data,
-                mapping,
+    p <- ggplot(data           = data,
+                mapping        = mapping,
+                na.rm          = na.rm,
+                mrsd           = mrsd,
+                as.Date        = as.Date,
+                yscale         = yscale,
+                yscale_mapping = yscale_mapping,
+                ladderize      = ladderize,
+                right          = right,
+                branch.length  = branch.length,
+                root.position  = root.position,
+                xlim = xlim,
+                layout.params = layout.params,
+                hang = hang,
                 ...)
     p <- p + geom_ret(retcol = retcol,
                       arrows = arrows,
