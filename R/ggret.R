@@ -20,6 +20,16 @@ ggret <- function(data,
                   retlinetype = 2,
                   rettype = "snake",
                   na.rm = TRUE,
+                  mrsd           = NULL,
+                  as.Date        = FALSE,
+                  yscale         = "none",
+                  yscale_mapping = NULL,
+                  ladderize      = TRUE,
+                  right          = FALSE,
+                  branch.length  = "branch.length",
+                  root.position  = 0,
+                  xlim = NULL,
+                  hang = .1,
                   ...){
   if(is(data, "evonet") || (is(data, "evonet"))){
     if (is.null(mapping)) {
@@ -30,7 +40,19 @@ ggret <- function(data,
     p <- ggplot(data, mapping = mapping,  retcol = retcol,
                 arrows = arrows,
                 retlinetype = retlinetype,
-                rettype = rettype, ...)
+                rettype = rettype,
+                na.rm = na.rm,
+                mrsd = mrsd,
+                as.Date = as.Date,
+                yscale = yscale,
+                yscale_mapping =  yscale_mapping,
+                ladderize      = ladderize,
+                right          = right,
+                branch.length  = branch.length,
+                root.position  = root.position,
+                xlim = xlim,
+                hang = hang,
+                ...)
     p <- p + geom_ret()
     p <- p + theme_tree()
     class(p) <- c("ggret", "ggtree", class(p))
