@@ -176,7 +176,7 @@ fortify.treedata <- function(model,
                              root.position = 0,
 
                              ...) {
-  if(!is(model, "evonet")){
+  if(!is(model@phylo, "evonet")){
     xx <- ggtree:::fortify.treedata(model)
   }else{
     x <- fortify.evonet(model@phylo)
