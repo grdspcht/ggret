@@ -1,20 +1,20 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ggarg
+# ggret
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-ggarg is an **in-development** R package for the visualisation and
+ggret is an in-development R package for the visualisation and
 annotation of Ancestral Recombination Graphs (ARGs) and other tree-based
 phylogenetic networks. It extends the functionality of ggtree and
 ggplot2.
 
-![ggarg logo](man/figures/ggarg_logo_light.png)
+<img align="right" width="150" height="173" src="man/figures/ggret_logo.png">
 
 ## Installation
 
-Installation of ggarg is currently not advised due to the fact that its
-still in development. However we encourage you to watch this space as we
+Installation of ggret is currently not advised due to the fact that its
+still in development. We encourage however to watch this space as we
 plan to release official public versions soon!

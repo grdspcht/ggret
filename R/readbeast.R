@@ -1,7 +1,7 @@
 #' Read Beast2 files with phylogenetic network data
 #'
-#' @title read beast
-#' @param file Beast2 file
+#' @title read beast files that contain phylogenetic networks
+#' @param file Beast2 file with extended newick block
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarise
 #' @importFrom dplyr across
@@ -11,7 +11,7 @@
 #' @return treedata object
 #' @export
 
-read.beast <- function(file) {
+read.beast.retnet <- function(file) {
 
   clean.colnames <- function(colnames) {
     clean <- gsub("^\\[&|, |=$", "", colnames)

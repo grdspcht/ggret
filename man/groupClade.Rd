@@ -4,7 +4,14 @@
 \alias{groupClade}
 \title{Group clades}
 \usage{
-groupClade(data, nodes, cladename, tiponly = FALSE, addtotable = FALSE)
+groupClade(
+  data,
+  nodes,
+  cladename,
+  tiponly = FALSE,
+  addtotreedata = FALSE,
+  undefinedclades = NA
+)
 }
 \arguments{
 \item{data}{Evonet or treedata object.}
@@ -15,7 +22,9 @@ groupClade(data, nodes, cladename, tiponly = FALSE, addtotable = FALSE)
 
 \item{tiponly}{Should only tips be considered?}
 
-\item{addtotable}{If TRUE, adds group/clade information to the data table of a treedata object.}
+\item{addtotreedata}{If TRUE, adds group/clade information to the data table of a treedata object.}
+
+\item{undefinedclades}{Can be changed to rename undefined clades to something more fitting}
 }
 \description{
 Group clades

@@ -54,38 +54,41 @@ retnet = read.enewick("../data/retnet.nwk")
 tree=ape::read.tree("../data/tree.nwk")
 #plot the network without reticulations
 ggtree(retnet) + theme_tree()
-#add reticulated edges with different options
-ggplot(retnet) + theme_tree() + geom_ret() #I think we should rename geom_ret as geom_ret
-ggtree(retnet) + theme_tree() + geom_ret(layout = "slanted") #what does this do?
-ggtree(retnet) + theme_tree() + geom_ret(retcol = 'blue')
-ggtree(retnet) + theme_tree() + geom_ret(arrows = T) # arrowheads have a weird aspect but this is do to the line type and comes from geom_segment
-ggtree(retnet) + theme_tree() + geom_ret(retlinetype = 3)
-ggtree(retnet) + theme_tree() + geom_ret(rettype = 'snake')
-ggtree(retnet) + theme_tree() + geom_ret(rettype = 'straight')
+#plot the network with reticulations: there are two ways to do this
+ggplot(retnet) + geom_ret()
+ggret(retnet,)
+#Note that this should be avoided as it plots the backbone tree twice
+ggtree(retnet) + geom_ret() + theme_tree()
+#testing the options: DOESNT WORK WHEN PASSED INTO GGRET
+ggplot(retnet) + geom_ret(retcol = "red") + theme_tree()#this works
+ggplot(retnet) + geom_ret(retcol = "red",arrows = T) #this works
+ggplot(retnet) + geom_ret(retcol = "red",arrows = T) #this works
+ggplot(retnet) + geom_ret(retcol = "red",arrows = T, retlinetype = 3) #this works
+ggplot(retnet) + geom_ret(retcol = "red",arrows = T, retlinetype = 3,rettype ="straight") #this works
+ggret(retnet,retcol = "red",arrows = T, retlinetype = 3,rettype ="straight") #this works as well now
 #add tip labels and tip points
-ggtree(retnet) + theme_tree() + geom_ret() + geom_tiplab(color="red") + geom_tippoint()
+ggret(retnet) + geom_tiplab(color="red") + geom_tippoint() #works
+ggplot(retnet) + geom_ret() + geom_tippoint() #note that this doesn't work, but maybe it is ok if one stick to using evonet?
 #add node labels (in this example there is no metadata to be plotted)
-ggtree(retnet) + theme_tree() + geom_ret() + geom_nodelab() + geom_tiplab(color="red")
+ggret(retnet) + geom_nodelab() + geom_tiplab()
 #collapse a clade
-collapse(ggtree(retnet) + theme_tree() + geom_ret() + geom_nodelab(),node = 12,mode = "max",fill="black",clade_name = "A_B")
-#collapse a clade containing a reticulation
-collapse(ggtree(retnet) + theme_tree() + geom_ret() + geom_nodelab(),node = 8,mode = "max",fill="black",clade_name = "C_D")
+collapse(ggret(retnet) + geom_nodelab(),node = 12,mode = "max",fill="black",clade_name = "A_B")
+#collapse a clade containing a reticulation: its just removed
+collapse(ggret(retnet) + geom_nodelab(),node = 8,mode = "max",fill="black",clade_name = "C_D")
 #collapse a clade containing only the receiver point of reticulation
 retnet2 = read.enewick("../data/retnet2.nwk") #had to create another example to test this
-p.ret2 = ggtree(retnet2) + theme_tree() + geom_ret() + geom_nodelab() + geom_tiplab(color="red")
-collapse(p.ret2,node = 11,mode = "max",fill="black",clade_name = "D_E") # the reticulation edge is just removed
+ggret(retnet2) + geom_nodelab() + geom_tiplab()
+collapse(ggret(retnet2) + geom_nodelab() + geom_tiplab(),node = 11,mode = "max",fill="black",clade_name = "D_E") # the reticulation edge is just removed
 #collapse a clade containing only the donor point
-collapse(p.ret2,node = 13,mode = "max",fill="black",clade_name = "C_F") # the reticulation edge is just removed
+collapse(ggret(retnet2) + geom_nodelab() + geom_tiplab(),node = 13,mode = "max",fill="black",clade_name = "C_F") # the reticulation edge is just removed
 #rotate a clade
-ggtree::rotate(ggtree(retnet) + theme_tree() + geom_nodelab() + geom_tiplab(color="red"),node= 4) # the clade is indeed rotated but one branch gets removed from the plot
-ggtree::rotate(ggtree(tree) + theme_tree(),node= 4) # same problem with a regular tree so doesn't seem to be arg specific
-ggtree::rotate(p.ret2,node= 11) #seems to work with a larger arg
+ggtree::rotate(ggret(retnet2) + geom_nodelab() + geom_tiplab(),node= 11)
 #annotate a clade
-p.ret2 + geom_cladelabel(node=11, label="E_D",col="red", angle=0,offset = 0.2, align=F,fontsize=5)
+ggret(retnet2) + geom_nodelab() + geom_tiplab() + geom_cladelabel(node=11, label="E_D",col="red", angle=0,offset = 0.2, align=F,fontsize=5)
 #define clades and color by clade
 retnet2=groupClade(data = retnet2, nodes = c("F", "C"), "FC clade")
 retnet2=groupClade(data = retnet2, nodes = c("E", "D"), "ED clade")
-ggtree(retnet2, aes(color=clade)) + theme_tree() + geom_ret(retcol = "black") + geom_nodelab() + geom_tiplab(color="red") #the colorclade function seems to overwrite de clade attribute, so it is not possible to define different clades and the reticulation are still colored according to the receiver point without possibility to change this (since the retcol argument of geom arg doesn't seem to work)
+ggret(retnet2, aes(color=clade)) + geom_tiplab() + scale_color_manual(values = c("FC clade"="blue","ED clade"="red","Undefined"="grey"))
 ```
 
 #3. Test with arg in tree data format 
@@ -94,21 +97,21 @@ ggtree(retnet2, aes(color=clade)) + theme_tree() + geom_ret(retcol = "black") + 
 #read arg in nexus format with the read.beast function (it creates a treedata object)
 retnet3=ggarg::read.beast("../data/retnet.nexus")
 #plot the network 
-p.ret3 = ggtree(retnet3) + theme_tree2() + geom_ret() +  geom_tiplab() + geom_tippoint()
-p.ret3
+p.ret3 = ggret(retnet3) + theme_tree2() + geom_tiplab() + geom_tippoint() #doesn't work
+p.ret3 = ggplot(retnet3) + geom_ret() + theme_tree2()  + geom_tiplab() +  geom_tippoint() #doesn't work because of tippoints
 #plot posterior support
 p.ret3 + geom_nodelab(aes(label=posterior))
 #plot recombining region boundaries
-p.ret3 + geom_nodelab(aes(label=posterior)) + geom_nodelab(aes(label=region))
+p.ret3 + geom_nodelab(aes(label=posterior)) + geom_nodelab(aes(label=region),nudge_y = -0.5)
 #add a clade variable in the treedata object and color the tree by clade
 retnet3@data$clade="Undefined"
 retnet3@data$clade[retnet3@data$node%in%(ggtree::MRCA(retnet3,"A","D") %>% treeio::offspring(retnet3,.node = .))]="A_D"
 retnet3@data$clade[retnet3@data$node%in%(ggtree::MRCA(retnet3,"B","C") %>% treeio::offspring(retnet3,.node = .))]="B_C"
-ggtree(retnet3, aes(color=clade)) + theme_tree() + geom_ret() + geom_nodelab() + geom_tiplab(color="red")
+ggret(retnet3, aes(color=clade)) + theme_tree2() + geom_nodelab() + geom_tiplab(color="red")
 #testing the groupclade method
 retnet3=ggarg::read.beast("../data/retnet.nexus")
-retnet3=groupClade(data = retnet3, nodes = c("A", "D"), "AD clade")
-ggtree(retnet3, aes(color=clade)) + theme_tree() + geom_ret() + geom_nodelab() + geom_tiplab(color="red")
+retnet3=groupClade(data = retnet, nodes = c("A", "D"), "AD clade")
+ggret(retnet3, aes(color=clade)) + theme_tree2() + geom_nodelab() + geom_tiplab(color="red")
 ```
 
 #4. Format conversion
@@ -119,33 +122,121 @@ From evonet to treedata
 #evonet into treedata
 retnet2 = read.enewick("../data/retnet2.nwk")
 as.treedata.evonet(retnet2) -> retnet2.treedata
-ggtree(retnet2.treedata) + theme_tree() + geom_ret() #doesn't work
+ggret(retnet2.treedata) #works
+ggplot(retnet2.treedata) + geom_ret() #works
 ```
 
 #5. Test with a real world example
 
-```{r}
+Testing individual features
+
+```{r fig.asp=2}
 retnet.bacter=ggarg::read.beast("../data/HBV_summary.acg")
 #plot the network 
-p.retnet.bacter = ggtree(retnet.bacter) + theme_tree2() + geom_ret() +  geom_tiplab() + geom_tippoint()
-p.retnet.bacter
+p.retnet.bacter = ggret(retnet.bacter) + theme_tree2() +  geom_tiplab() + geom_tippoint()
+p.retnet.bacter = ggplot(retnet.bacter) + geom_ret() + theme_tree2() +  geom_tiplab() + geom_tippoint() #doesnt work at the moment because of the tippoint issue 
 #plot posterior support
-p.retnet.bacter + geom_nodelab(aes(label=posterior))
+p.retnet.bacter + geom_nodelab(aes(label=round(posterior,1)))
 #plot recombining region boundaries
-p.retnet.bacter + geom_nodelab(aes(label=posterior)) + geom_nodelab(aes(label=region))
-#color the tree by clade using the groupClade method doesn't work
+p.retnet.bacter + geom_nodelab(aes(label=region))
+#color the tree by clade using the groupClade
 retnet.bacter=ggarg::read.beast("../data/HBV_summary.acg")
 retnet.bacter=groupClade(data = retnet.bacter, nodes = c("CUN002|Peru|Ancient_American_1|9022", "AY090455|Nicaragua|F|0"), "American branch")
-ggtree(retnet.bacter,aes(color=clade)) + theme_tree2() + geom_ret() +  geom_tiplab() + geom_tippoint() #doesnt work well
-#using the other method, it works
+ggret(retnet.bacter,aes(color=clade)) + theme_tree2()+  geom_tiplab() + geom_tippoint()
+#using the other method
 retnet.bacter=ggarg::read.beast("../data/HBV_summary.acg")
 retnet.bacter@data$clade="Undefined"
 retnet.bacter@data$clade[retnet.bacter@data$node%in%(ggtree::MRCA(retnet.bacter,"CUN002|Peru|Ancient_American_1|9022","AY090455|Nicaragua|F|0") %>% treeio::offspring(retnet.bacter,.node = .))]="American branch"
 retnet.bacter@data$clade[retnet.bacter@data$node%in%(ggtree::MRCA(retnet.bacter,"LUB001|Nepal|Ancient_A|3146","AY934764|Gambia|A|0") %>% treeio::offspring(retnet.bacter,.node = .))]="Genotype A"
-ggtree(retnet.bacter, aes(color=clade)) + theme_tree() + geom_ret(retcol = "red") + geom_nodelab() + geom_tiplab(aes(color=clade))
+ggret(retnet.bacter, aes(color=clade)) + geom_tiplab(aes(color=clade))
 ```
 
+Complete figure
 
+```{r}
+library(ggplot2)
+library(ggtree)
+#### WITH REGULAR TREE ####
+MCC.tree=treeio::read.beast("../data/HBV_MCC.tree")
+#Add clade information
+MCC.tree@data$clade="Undefined"
+ggtree::MRCA(MCC.tree,"CUN002|Peru|Ancient_American_1|9022","AY090455|Nicaragua|F2a|0") -> mrca_american
+ggtree::MRCA(MCC.tree,"KBD002|Russian_Federation|A|4034","AY934764|Gambia|A3|0") -> mrca_genA
+MCC.tree@data$clade[MCC.tree@data$node%in%treeio::offspring(MCC.tree,.node = mrca_american)]="American branch"
+MCC.tree@data$clade[MCC.tree@data$node%in%treeio::offspring(MCC.tree,.node = mrca_genA)]="Genotype A"
+#Graphical parameters
+mrca <- max(MCC.tree@data$height)
+xticks=c(-20000,-15000,-12500,-10000,-7500,-5000,-2500,0);this.offset.text=400;offset.genotype=500;fontsize.tips=1.5;fontsize.subgenotype=1.75;fontsize.genotype=2.5;linesize.tree=0.3;linesize.vbars=0.3;linesize.annotations=0.5;expand_y=0.05
+#We remove HPD values for defined clades to not plot them
+MCC.tree@data$height_0.95_HPD[MCC.tree@data$clade!="Undefined"]=NA
+#Define color of genotypes
+col.clades=c(Undefined="#444444","Genotype A"="#CC0033","American branch"="#3366FF")
+#define plot
+MCC.tree.plot=ggtree(MCC.tree,ladderize = T,as.Date = F,root.position = -mrca,aes(color=clade),size=linesize.tree) + theme_tree2() +
+  theme(legend.position="n", axis.text=element_text(size=fontsize.subgenotype*3), axis.title=element_text(size=fontsize.subgenotype*3),axis.line = element_line(linewidth = linesize.tree)) +
+  scale_color_manual(values=col.clades) +
+  geom_nodelab(aes(label=round(posterior,2)),size=fontsize.tips,hjust=1.5,vjust=-0.5) +
+  geom_range(range='height_0.95_HPD', color="grey50", alpha=.6, size=fontsize.tips) +
+  scale_x_continuous(breaks = xticks, labels=-xticks,
+                     limits=c(-(max(MCC.tree@data$height_0.95_HPD %>% unlist)+500),offset.genotype+2000)) +
+  xlab("years BP") +
+  scale_y_discrete(expand = c(expand_y,0.01)) +
+  geom_vline(xintercept = xticks,color="grey60",lty="longdash",size=linesize.vbars) +
+  geom_vline(xintercept = xticks[1:(length(xticks)-1)] + 1250,color="grey80",lty="dashed",size=linesize.vbars) +
+  geom_cladelab(node=mrca_american, label="American branch",textcolor=col.clades["American branch"], barcolor= col.clades["American branch"],align=F,fontsize = fontsize.genotype,offset=offset.genotype, offset.text = this.offset.text) +
+  geom_cladelab(node=mrca_genA, label="Genotype A",textcolor=col.clades["Genotype A"], barcolor= col.clades["Genotype A"],align=F,fontsize = fontsize.genotype,offset=offset.genotype, offset.text = this.offset.text)
+#plot
+MCC.tree.plot
+
+
+#### WITH NETWORK ####
+devtools::load_all()
+#load summary ARG
+retnet.bacter=ggarg::read.beast.retnet("../data/HBV_summary.acg")
+#Add clade information
+retnet.bacter@data$clade="Undefined"
+ggtree::MRCA(retnet.bacter,"CUN002|Peru|Ancient_American_1|9022","AY090455|Nicaragua|F2a|0") -> mrca_american
+ggtree::MRCA(retnet.bacter,"KBD002|Russian_Federation|A|4034","AY934764|Gambia|A3|0") -> mrca_genA
+retnet.bacter@data$clade[retnet.bacter@data$node%in%treeio::offspring(retnet.bacter,.node = mrca_american)]="American branch"
+retnet.bacter@data$clade[retnet.bacter@data$node%in%treeio::offspring(retnet.bacter,.node = mrca_genA)]="Genotype A"
+#Graphical parameters
+mrca <- max(retnet.bacter@data$height) #there is no height
+mrca <-phytools::nodeHeights(retnet.bacter@phylo) %>% max #this works. Note that the mrca here is the departure of a reticulation edge on the root of the backbone tree
+xticks=c(-20000,-15000,-12500,-10000,-7500,-5000,-2500,0);this.offset.text=400;offset.genotype=500;fontsize.tips=1.5;fontsize.subgenotype=1.75;fontsize.genotype=2.5;linesize.tree=0.3;linesize.vbars=0.3;linesize.annotations=0.5;expand_y=0.05
+#We remove HPD values for defined clades to not plot them
+retnet.bacter@data$`height_95%_HPD`[retnet.bacter@data$clade!="Undefined"]=NA
+#Define color of genotypes
+col.clades=c(Undefined="#444444","Genotype A"="#CC0033","American branch"="#3366FF")
+#define plot: doesn't work
+retnet.bacter.plot=ggret(retnet.bacter,ladderize = T,as.Date = F,root.position = -mrca,aes(color=clade),size=linesize.tree) + theme_tree2() +
+  theme(legend.position="n", axis.text=element_text(size=fontsize.subgenotype*3), axis.title=element_text(size=fontsize.subgenotype*3),axis.line = element_line(linewidth = linesize.tree)) +
+  scale_color_manual(values=col.clades) +
+  geom_nodelab(aes(label=round(posterior,2)),size=fontsize.tips,hjust=1.5,vjust=-0.5) +
+  geom_range(range='height_0.95_HPD', color="grey50", alpha=.6, size=fontsize.tips) +
+  scale_x_continuous(breaks = xticks, labels=-xticks,
+                     limits=c(-(max(retnet.bacter@data$height_0.95_HPD %>% unlist)+500),offset.genotype+2000)) +
+  xlab("years BP") +
+  scale_y_discrete(expand = c(expand_y,0.01)) +
+  geom_vline(xintercept = xticks,color="grey60",lty="longdash",size=linesize.vbars) +
+  geom_vline(xintercept = xticks[1:(length(xticks)-1)] + 1250,color="grey80",lty="dashed",size=linesize.vbars) +
+  geom_cladelab(node=mrca_american, label="American branch",textcolor=col.clades["American branch"], barcolor= col.clades["American branch"],align=F,fontsize = fontsize.genotype,offset=offset.genotype, offset.text = this.offset.text) +
+  geom_cladelab(node=mrca_genA, label="Genotype A",textcolor=col.clades["Genotype A"], barcolor= col.clades["Genotype A"],align=F,fontsize = fontsize.genotype,offset=offset.genotype, offset.text = this.offset.text)
+#plot
+retnet.bacter.plot
+```
+
+#6. Compatibility with ggtree
+
+```{r}
+#loading ggtree
+library(ggplot2)
+library(ggtree)
+MCC.tree=treeio::read.beast("../data/HBV_MCC.tree")
+ggtree(MCC.tree)
+#loading ggarg
+devtools::load_all()
+ggtree(MCC.tree)
+```
 
 
 

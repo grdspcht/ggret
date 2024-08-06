@@ -4,14 +4,20 @@
 #' @param nodes Nodes that define the clade.
 #' @param cladename Name of the clade.
 #' @param tiponly Should only tips be considered?
-#' @param addtotable  If TRUE, adds group/clade information to the data table of a treedata object.
+#' @param addtotreedata  If TRUE, adds group/clade information to the data table of a treedata object.
+#' @param undefinedclades Can be changed to rename undefined clades to something more fitting
 #' @importFrom  tibble add_column
 #'
 #' @return
 #' @export
 #'
 #' @examples
-groupClade <- function(data, nodes, cladename, tiponly = FALSE, addtotable = FALSE) {
+groupClade <- function(data,
+                       nodes,
+                       cladename,
+                       tiponly = FALSE,
+                       addtotreedata = FALSE,
+                       undefinedclades = NA) {
   mrca = treeio::MRCA(data, nodes)
   offsprings = treeio::offspring(data, mrca, tiponly)
   if (is(data, "evonet")) {
@@ -19,12 +25,9 @@ groupClade <- function(data, nodes, cladename, tiponly = FALSE, addtotable = FAL
     if("clade" %in% names(attributes(data))){
       clades <- attributes(data)$clade
     }else{
-      clades <- rep("Undefined", length(labs))
+      clades <- rep(undefinedclades, length(labs))
     }
 
-    # for (u in cladename) {
-    #   clades[which(labs %in% nodelab(data, offsprings))] <- u
-    # }
 
     for (u in cladename) {
       clades[offsprings] <- u
@@ -37,12 +40,9 @@ groupClade <- function(data, nodes, cladename, tiponly = FALSE, addtotable = FAL
     if ("clade" %in% names(attributes(data@phylo))){
       clades <- attributes(data@phylo)$clade
     } else {
-      clades <- rep(NA, length(labs))
+      clades <- rep(undefinedclades, length(labs))
     }
 
-    # for (u in cladename) {
-    #   clades[which(labs %in% nodelab(data@phylo, offsprings))] <- u
-    # }
 
     for (u in cladename) {
       clades[offsprings] <- u
