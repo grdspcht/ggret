@@ -28,3 +28,7 @@ Imports:
 URL: https://github.com/grdspcht/ggarg
 BugReports: https://github.com/grdspcht/ggarg/issues
 LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

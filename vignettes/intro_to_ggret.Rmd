@@ -1,0 +1,104 @@
+---
+title: "Visualisation of Tree\\-based Phylogenetic Networks with ggret"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{"Visualisation of Tree-based Phylogenetic Networks with ggret"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+```{r setup, include=FALSE}
+library(ggarg)
+```
+<style>
+    pre {
+        border: 0;
+    }
+</style>
+
+
+
+<img style="float: right;" src="../man/figures/ggret_logo.png" width="150px">
+
+ggret is an R package for the visualisation of tree-based phylogenetic networks.  Its builds on and extends ggplot2 and ggtree and aims to be compatible with these packages. 
+
+## Installation
+
+As a first step, we recommend getting `ggplot2` from CRAN and `ggtree` from Bioconductor if you haven't done this previously. The `ggret` package is available via GitHub and can be installed with the `remotes` package.
+
+```{r message = FALSE, warnings = FALSE, eval=FALSE}
+
+install.packages("ggplot2")
+
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("ggtree")
+
+
+if (!requireNamespace("remotes", quietly=TRUE))
+  install.packages("remotes")
+remotes::install_github("grdspcht/ggarg")
+```
+
+## Parsing network formats
+
+`ggret` provides parsing functions for reading extended Newick and BEAST2 NEXUS files with network blocks (e.g. Bacter files). The input data is stored in `evonet` or `treedata` objects and can be used for plotting and further analysis.
+
+```{r, message = FALSE, eval=FALSE}
+library(ggarg)
+
+# read.enewick parses extended Newick format and generates an evonet object. 
+nw <- read.enewick("../data/retnet.nwk")
+
+# read.beast.retnet parses BEAST2 NEXUS files and generates a treedata object.
+nw_beast <- read.beast.retnet("../data/retnet.nexus")
+```
+We could plot these objects in the next step of the tutorial but we will instead use 
+the `retnet` object that comes with this package and can be used for testing 
+functions.
+
+## Plotting a basic phylogenetic network
+`ggret` is the central function of this package. In a simple call without additional arguments it only plots a visual representation of the phylogenetic network.  
+
+```{r message = TRUE, warnings = FALSE, fig.dim = c(5, 3)}
+ggret(retnet)
+
+```
+
+## Annotating a phylogenetic network
+Adding `geom_tiplab` and `geom_nodelab` from `ggtree` to our previous call allows us to annotate the network with metadata that is stored in the `retnet` object.
+
+```{r message = TRUE, warnings = FALSE, fig.dim = c(5, 3)}
+ggret(retnet) + geom_tiplab() + geom_nodelab(vjust=-0.25)
+```
+
+## Adding color to your network
+With `groupClade` we can define groups within our network and then use `aes` to color them accordingly.
+First we call `groupClade` and define a clade that includes tips "A" and "B". We simply call this clade "AB".
+`groupClade` adds clade information either as attribute or additional column in the data part of an object. 
+Therefore, we need to assign a new variable for the modified object.
+```{r message = TRUE, warnings = FALSE, fig.dim = c(5, 3)}
+retnet2 <- groupClade(data = retnet, nodes = c("A", "B"), cladename = "AB")
+
+ggret(retnet2, aes(color=clade)) + geom_tiplab() + geom_nodelab(vjust=-0.25)
+```
+
+***
+**Please note:** *When a reticulation branch starts in a clade with color "A" and ends within a clade with color "B" it will be colored according to the clade it ends in. This can be switched around with the function `modifyRet`.*
+
+***
+
+## Further reading
+
+Don't forget to check ggret's documentation for further info on functions.\\
+
+
+
+For further information on expanding your plots, please refer to the extensive [ggtree manual](https://yulab-smu.top/treedata-book/index.html) or the [ggplot2 documentation.](https://ggplot2.tidyverse.org/reference/)  

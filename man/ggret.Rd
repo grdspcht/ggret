@@ -12,6 +12,17 @@ ggret(
   retlinetype = 2,
   rettype = "snake",
   na.rm = TRUE,
+  mrsd = NULL,
+  as.Date = FALSE,
+  yscale = "none",
+  yscale_mapping = NULL,
+  ladderize = TRUE,
+  right = FALSE,
+  branch.length = "branch.length",
+  root.position = 0,
+  xlim = NULL,
+  layout.params = list(as.graph = TRUE),
+  hang = 0.1,
   ...
 )
 }
