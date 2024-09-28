@@ -4,8 +4,8 @@
 #' @param nodes Nodes that define the clade.
 #' @param cladename Name of the clade.
 #' @param tiponly Should only tips be considered?
-#' @param addtotreedata  If TRUE, adds group/clade information to the data table of a treedata object.
-#' @param undefinedclades Can be changed to rename undefined clades to something more fitting
+#' @param addtotreedata  If TRUE, adds group/clade information to the data table of a treedata object (in the "Clade" column)
+#' @param undefinedclades value used to name undefined clades
 #' @importFrom  tibble add_column
 #'
 #' @return
@@ -50,11 +50,11 @@ groupClade <- function(data,
 
     attr(data@phylo, "clade") <- clades
 
-    if (addtotable == TRUE){
-      if("Clades" %in% colnames(data@data)){
-        data@data$clade <- clades
+    if (addtotreedata == TRUE){
+      if("Clade" %in% colnames(data@data)){
+        data@data$Clade <- clades
       }else{
-        data@data <- add_column(data@data, "Clades" = clades)
+        data@data <- add_column(data@data, "Clade" = clades)
       }
     }
   } else{
