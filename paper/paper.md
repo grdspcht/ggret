@@ -1,29 +1,32 @@
 ---
 # (This front matter is required by JOSS)
 # (See here for formatting & submission guidelines: https://joss.readthedocs.io/en/latest/submitting.html#how-should-my-paper-be-formatted)
-title: "`ggarg`: Visualisation of tree‑based phylogenetic networks"
+title: "`ggret`: An R package for visualizing and manipulating tree‑based phylogenetic networks"
 
 tags:
   - R
-  - phylogenomics
-  - visualisation
+  - phylogenetic network
   - ancestral recombination graph
   - arg
-  - phylogenetic network
+  - phylogenetics
+  - reticulated evolution
+  - visualisation
+  - plotting
 
 authors:
   - name: Gerd Specht
     affiliation: "1,2"
+    corresponding: true
+  - name: Clemens Schmid
+    orcid: 0000-0003-3448-571
+    affiliation: 3
+  - name: Denise Kühnert
+    orcid: 0000-0002-5657-018X
+    affiliation: "2,4"
   - name: Arthur Kocher
     orcid: 0000-0002-9499-6472
     affiliation: "2,3"
-  - name: Clemens Schmid
-    orcid: 0000-0003-3448-571
-    affiliation: 2
-  - name: Denise Kühnert
-    orcid: 0000-0002-5657-018X
     corresponding: true
-    affiliation: "2,3,4"
 
 
 affiliations:
@@ -32,9 +35,9 @@ affiliations:
    index: 1
  - name: Transmission, Infection, Diversification & Evolution Group, Max Planck Institute of Geoanthropology, Jena, Germany
    index: 2
- - name: Department of Archogenetics, Max Planck Institute for Evolutionary Anthropology, Leipzig, Germany
+ - name: Department of Archaeogenetics, Max Planck Institute for Evolutionary Anthropology, Leipzig, Germany
    index: 3
- - name: Department of Phylogenomics, Robert Koch Institute, Wildau, Germany
+ - name: Centre for Artificial Intelligence in Public Health Research, Robert Koch Institute, Wildau, Germany
    index: 4
 
 date: 1 March 2024
@@ -57,66 +60,104 @@ bibliography: paper.bib
 
 # Summary
 
-Evolutionary history is most often visualised in the form of a bifurcating phylogenetic tree. Trees are models for a series of vertical evolutionary events and are constructed from branches or edges which describe a flow of genetic material from direct ancestor to offspring and nodes or vertices which represent ancestral states if they are internal nodes and extant species or individuals if they are external nodes (more commonly called tips or leaves) [@yang_phylogeny_2014]. While this mode of representation offers much insight into evolutionary processes and relationships it lacks the ability to visualise evolutionary events that do not fit this vertical model. So-called horizontal evolutionary events break with the common concept that genetic material is only transferred from ancestor to offspring and have gained scientific interest in the last decades [@gogarten_horizontal_2000]. Advances in sequencing and computational methods have made it possible to identify horizontal evolutionary events and helped to reveal a more complex image of evolutionary history. Due to horizontal or reticulate evolution it may be in many instances preferable to represent a group's evolutionary history as a phylogenetic network [@huson_application_2006] which requires an efficient visualisation tool that can be integrated into automated workflows.
-
+The evolutionary relationships of biological entities are most often represented with phylogenetic trees. Phylogenetic trees consist of branches (or edges) representing direct lines of descents or genetic flow from ancestor to offspring (i.e. lineages), and nodes representing evolutionary "splits" through which a parental lineage gives rise to multiple child lineages. This vertical model of evolution has provided immense insights into the evolutionary history and processes underlying observed biological diversity. However, it fails to account for "horizontal" modes of evolution, whereby genetic material can be exchanged between contemporaneous organisms through a variety of mechanism across the tree of life [@arnold2022horizontal; @keeling2024horizontal; @perez2015recombination]. In recent years, advances in sequencing technologies and computational methods have made it increasingly possible to integrate horizontal evolutionary events into reticulated phylogenetic trees (or phylogenetic networks; @huson_application_2006). While phylogenetic networks have the potential to provide more comprehensive and accurate evolutionary pictures for many biological groups, the development of specific tools is required for their manipulation and visualization. 
 
 # Statement of need
-`ggarg` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggarg` aims to extend these functionalities by building upon `ggtree's` extensive visualisation capabilites and expanding them with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. 
+
+`ggret` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggret` builds up on these functionalities by extending `ggtree's` with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. 
 
 # Usage
-`ggarg` is available on [GitHub](https://github.com/grdspcht/ggarg) and can be installed by using `devtools` `install_github` function.
+
+`ggret` is available on [GitHub](https://github.com/grdspcht/ggret) and can be installed by using `devtools` `install_github` function.
 
 ```r
 # Install from GitHub
 install.packages('devtools') # this may take a minute
 library(devtools)
-install_github('grdspcht/ggarg')
-library(ggarg)
+install_github('grdspcht/ggret')
+library(ggret)
 ```
 
-
-`ggarg` provides functions for reading extended Newick and (Beast2) NEXUS format [@cardona_extended_2008]. This allows the user to visualise phylogenetic networks inferred from various programs. 
-
-For the sake of reproducibility we showcase some of the visualisation features with the `retnet` object that comes with `ggarg`.
+`ggret` provides functions for reading extended Newick and (*BEAST2*) NEXUS format [@cardona_extended_2008]. This allows the user to visualise phylogenetic networks inferred from various programs. Here we parsed a (summary) phylogenetic network simulated with the *BEAST2* package *Bacter* [@vaughan2017inferring] containing various node metadata, using the `read.beast.retnet` function. Note that the resulting retnet `treedata` object has been directly included in the package for the sake of reproducibility.
 
 ```r
-p <- ggplot(retnet) + geom_arg() + theme_tree()
-plot(p)
+retnet <- read.beast.retnet("../data/retnet.nexus")
 ```
-This creates a rudimentary tree-based network without any labelling. Reticulate edges are drawn as dashed lines. 
 
-![A rudimentary tree-based network plotted with `ggarg`\label{fig:arg1}](rudarg.pdf){width=66%}
-
-Annotations can be easily added by appending them to the previous plot object.
+`ggret` is the central function of this package. In a simple call without additional arguments it only plots rudimentary tree-based network without any labelling. Reticulated edges are drawn as black dashed lines by default, but `ggret` contains various argument to change their aspects\autoref{fig:arg1}.
 
 ```r
-# Adding tip and node labels
-p <- geom_tiplab() + geom_nodelab(aes(vjust=1))
-plot(p)
+#simple network
+p1 <-ggret(retnet)
+#reticulation edges displayed as red dotted lines, in a "snake" shape
+p2 <- ggret(retnet,retcol = "red",retlinetype = 3)
+#reticulation edges displayed as blue solid lines, in a straight shape and with arrow heads
+p3 <- ggret(retnet,retcol = "blue",retlinetype = 1,arrows = T,rettype ="straight")
+#plot
+ggpubr::ggarrange(p1,p2,p3,nrow=1)
 ```
 
-![An explicit phylogenetic network with added tip labels
-(A-D) and node labels (1-8). Note that node labels for reticulation edges (in dashed
-lines) include a ”#” per extended Newick definition.
-\label{fig:arg2}](labels.pdf){width=66%}
+![**Figure 1**: Simple tree-based networks plotted with `ggret`\label{fig:arg1}](rudarg.png){ width=66% }
 
-As a last step, we visually distinguish the clade of tips A and B by defining a list and
-passing it to `ggtree's` `groupOTU()` which applies group information to the network object.
+We can rotate some of the nodes to avoid crossing of reticulation edges and improve visualization using the `ggtree` `rotate` function. Note that one can initially visualize node indices using `ggret(retnet) + geom_nodelab(aes(label=node))` to make this easier\autoref{fig:arg2}.
 
 ```r
-groups <- list(AB=c("A", "B"))
-tr <- groupOTU(retnet, groups, "Groups")
-pg <- (ggplot(tr, aes(colour=Groups)) + geom_arg()
-+ theme_tree() + geom_tiplab()
-+ geom_nodelab(aes(vjust=1)))
-
-plot(pg)
+#rotate nodes to improve vizualisation
+rotate(p1,node=31) %>%
+  rotate(node=30) %>%
+  rotate(node=26) %>%
+  rotate(node=37) ->
+  p1
+#plot
+p1
 ```
 
-![Phylogenetic network with added branch colours based on clade information.
-\label{fig:arg3}](colored.pdf){width=66%}
+![**Figure 2**: Network plotted after node rotation to limit edge crossing\label{fig:arg2}](rotated.png){ width=66% }
 
-For additional information, refer to `ggarg's` internal documentation or to [github.com/grdspcht/ggarg](https://github.com/grdspcht/ggarg) which also gives users the opportunity to open issues, pull requests or make bug reports. 
+Annotations can easily be added using `ggtree` functions, such as `geom_tiplab`, `geom_nodelab` and `geom_range`. In addition, a time axis can easily be added as using the `theme_tree2` theme\autoref{fig:arg3}. 
+
+```r
+#get the tMRCA of the tree and define time points to display in the time axis in years BP
+tmrca <- phytools::nodeHeights(retnet@phylo) %>% max
+xticks_BP=c(20000,15000,10000,5000,0)
+
+#add tip and node labels (we expand the x axis limits so that tip labels still fit in
+p1 <- p1 +
+  geom_tiplab() +
+  geom_nodelab(aes(label=round(posterior,2)),vjust=-0.25,hjust=1.3,size=3) +
+  expand_limits(x=22000)
+
+#adding a time axis and node bars indicating node heights' 95% highest posterior density interval
+p1 <- p1 +
+  theme_tree2() +
+  geom_range(aes(range="height_95_HPD"), color="grey50", alpha=.6, size=1.5) +
+  scale_x_continuous(breaks = tmrca - xticks_BP, labels=xticks_BP) +
+  xlab("Years before present")
+
+#plot 
+plot(p1)
+```
+
+![**Figure 3**: Annotated phylogenetic network\label{fig:arg3}](labels.png){ width=66% }
+
+The `groupClade` can be used to define clades within a network and color them accordingly. `groupClade` assigns clade information to all nodes descending from the MRCA of tips specified in the `nodes` argument\autoref{fig:arg4}.
+
+```r
+#define clades using the groupClade function
+retnet %>%
+  groupClade(nodes = c("taxon_10", "taxon_20"), cladename = "A",addtotreedata = T) %>%
+  groupClade(nodes = c("taxon_11", "taxon_15"), cladename = "B",addtotreedata = T) %>%
+  groupClade(nodes = c("taxon_1", "taxon_16"), cladename = "C",addtotreedata = T) ->
+  retnet_clade
+
+#plot network with colored clades
+p_colored <- ggret(retnet_clade, aes(color=clade))
+plot(p_colored)
+```
+
+![**Figure 4**: Phylogenetic network with colored based on clade information.\label{fig:arg4}](colored.png){ width=66% }
+
+For additional information, refer to `ggret's` internal documentation or to [github.com/grdspcht/ggret](https://github.com/grdspcht/ggret) which also gives users the opportunity to open issues, pull requests or make bug reports. 
 
 
 <!---
