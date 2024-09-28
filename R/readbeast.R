@@ -14,7 +14,7 @@
 read.beast.retnet <- function(file) {
 
   clean.colnames <- function(colnames) {
-    clean <- gsub("^\\[&|, |=$", "", colnames)
+    clean <- gsub("^\\[&|, |=$|%", "", colnames)
     clean <- unique(clean)
     return(clean)
   }
@@ -106,7 +106,7 @@ read.beast.retnet <- function(file) {
     }
 
     nodedata <- unlist(str_extract_all(treeTexts, "\\[.*?\\]"))
-    nodedata <- gsub("^\\[&|]$", "", nodedata)
+    nodedata <- gsub("^\\[&|]$|%", "", nodedata)
     nodedata <- str_split(nodedata, ", ")
 
     phylonodes <- rep(NA, length(nodesindex))
