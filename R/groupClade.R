@@ -1,33 +1,62 @@
-#' group clades
+#' Group clades
 #'
-#' @param data evonet or treedata object
-#' @param nodes nodes that define the clade
-#' @param cladename Name of the clade
+#' @param data Evonet or treedata object.
+#' @param nodes Nodes that define the clade.
+#' @param cladename Name of the clade.
 #' @param tiponly Should only tips be considered?
+#' @param addtotreedata  If TRUE, adds group/clade information to the data table of a treedata object (in the "Clade" column)
+#' @param undefinedclades value used to name undefined clades
+#' @importFrom  tibble add_column
 #'
 #' @return
 #' @export
 #'
 #' @examples
-colorClade <- function(data, nodes, cladename, tiponly = FALSE) {
+groupClade <- function(data,
+                       nodes,
+                       cladename,
+                       tiponly = FALSE,
+                       addtotreedata = FALSE,
+                       undefinedclades = NA) {
   mrca = treeio::MRCA(data, nodes)
   offsprings = treeio::offspring(data, mrca, tiponly)
   if (is(data, "evonet")) {
     labs <- c(data$tip.label, data$node.label)
-    clades <- rep("Undefined", length(labs))
+    if("clade" %in% names(attributes(data))){
+      clades <- attributes(data)$clade
+    }else{
+      clades <- rep(undefinedclades, length(labs))
+    }
+
+
     for (u in cladename) {
-      clades[which(labs %in% nodelab(data, offsprings))] <- u
+      clades[offsprings] <- u
     }
 
     attr(data, "clade") <- clades
+
   } else if (is(data, "treedata")) {
     labs <- c(data@phylo[["tip.label"]], data@phylo[["node.label"]])
-    clades <- rep(NA, length(labs))
+    if ("clade" %in% names(attributes(data@phylo))){
+      clades <- attributes(data@phylo)$clade
+    } else {
+      clades <- rep(undefinedclades, length(labs))
+    }
+
+
     for (u in cladename) {
-      clades[which(labs %in% nodelab(data@phylo, offsprings))] <- u
+      clades[offsprings] <- u
     }
 
     attr(data@phylo, "clade") <- clades
+
+    if (addtotreedata == TRUE){
+      if("Clade" %in% colnames(data@data)){
+        data@data$Clade <- clades
+      }else{
+        data@data <- add_column(data@data, "Clade" = clades)
+      }
+    }
   } else{
     warning("Function only supports evonet and treedata objects.")
     stop()
@@ -35,6 +64,7 @@ colorClade <- function(data, nodes, cladename, tiponly = FALSE) {
 
   return(data)
 }
+
 
 findRetLayer <- function(layer, rets){
   retrow <- subset(layer[rets,], select = c("x", "y", "xend", "yend"))
@@ -49,7 +79,7 @@ findRetLayer <- function(layer, rets){
 #' Change reticulation coloring
 #'
 #' @param plot ggplot object
-#' @param assignto  Reticulation colour can be assigned to "donor" or "receiver"
+#' @param assignto  Reticulation color can be assigned to "donor" or "receiver"
 #'
 #' @return Modified ggplot object
 #' @export

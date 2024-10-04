@@ -2,19 +2,18 @@
 % Please edit documentation in R/read.R
 \name{read.enewick}
 \alias{read.enewick}
-\title{Read an extended Newick file (via ape)}
+\title{Read Network in Extended Newick Format}
 \usage{
-read.enewick(file = "")
+read.enewick(file = "", text = NULL)
 }
 \arguments{
-\item{file}{Path to an extended Newick file.}
+\item{file}{extended newick file}
+
+\item{text}{character string}
 }
 \value{
-ape evonet object
+evonet object
 }
 \description{
-Read an extended Newick file (via ape)
-}
-\examples{
-print("EXAMPLE HERE")
+Read Network in Extended Newick Format
 }

@@ -1,16 +1,22 @@
-#' Read an extended Newick file (via ape)
+#' Read Network in Extended Newick Format
 #'
-#' @param file Path to an extended Newick file.
+#' @param file extended newick file
+#' @param text character string
 #'
-#' @return ape evonet object
+#' @return evonet object
 #' @export
-#'
-#' @examples
-#' print("EXAMPLE HERE")
-read.enewick <- function(file = "") {
-  if (grepl("#", readLines(file))) {
-    ape::read.evonet(file)
-  } else {
-    stop("No reticulation edges found.")
-  }
+
+read.enewick <- function(file = "", text = NULL)
+
+{
+  tr <- ape::read.tree(file = file, text = text)
+  ret_index <- grep("#", tr$tip.label)
+  rets <- match(ret_index, tr$edge[, 2])
+  ret_len <- tr$edge.length[rets]
+
+  evo <- ape::as.evonet.phylo(tr)
+  evo$ret.length <- ret_len
+  # class(evo) <- c("phylo", "evonet")
+  class(evo) <- c("evonet", "phylo")
+  evo
 }

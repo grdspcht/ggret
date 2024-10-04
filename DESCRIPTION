@@ -1,8 +1,8 @@
-Package: ggarg
+Package: ggret
 Title: Visualisation of Tree-based Phylogenetic Networks 
 Version: 0.0.0.9000
 Authors@R: 
-    person("Gerd", "Specht", , "specht@gea.mpg.de", role = c("aut", "cre"))
+    person("Gerd", "Specht", , "gerdspecht1995@gmail.com", role = c("aut", "cre"))
 Description: Visualisation and annotation of Ancestral Recombination Graphs and other tree-based phylogenetic networks. It extends the functionality of 'ggtree' and 'ggplot2'.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -28,3 +28,7 @@ Imports:
 URL: https://github.com/grdspcht/ggarg
 BugReports: https://github.com/grdspcht/ggarg/issues
 LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

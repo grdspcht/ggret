@@ -1,7 +1,7 @@
 #' Read Beast2 files with phylogenetic network data
 #'
-#' @title read beast
-#' @param file Beast2 file
+#' @title read beast files that contain phylogenetic networks
+#' @param file Beast2 file with extended newick block
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarise
 #' @importFrom dplyr across
@@ -11,10 +11,10 @@
 #' @return treedata object
 #' @export
 
-read.beast <- function(file) {
+read.beast.retnet <- function(file) {
 
   clean.colnames <- function(colnames) {
-    clean <- gsub("^\\[&|, |=$", "", colnames)
+    clean <- gsub("^\\[&|, |=$|%", "", colnames)
     clean <- unique(clean)
     return(clean)
   }
@@ -70,7 +70,7 @@ read.beast <- function(file) {
   # check if tree block contains extended newick
   tt <- gsub("\\[(.*?)\\]", "", treeTexts) # remove comments
   if (grepl("#", tt)) {
-    phylo <- read.enewick2(text = treeTexts)
+    phylo <- read.enewick(text = treeTexts)
 
     # add temporary node and tip labels to network if needed
     if (any(phylo$node.label == "")) {
@@ -85,7 +85,7 @@ read.beast <- function(file) {
         paste0("Tip", seq(1:length(emptyTips)))
     }
     pwl <- write.evonet(phylo)
-    phyLabel <- read.enewick2(text = pwl)
+    phyLabel <- read.enewick(text = pwl)
 
     # Get metadata attributes (column names)
     extrdCols <- get.colnames(treeTexts)
@@ -106,7 +106,7 @@ read.beast <- function(file) {
     }
 
     nodedata <- unlist(str_extract_all(treeTexts, "\\[.*?\\]"))
-    nodedata <- gsub("^\\[&|]$", "", nodedata)
+    nodedata <- gsub("^\\[&|]$|%", "", nodedata)
     nodedata <- str_split(nodedata, ", ")
 
     phylonodes <- rep(NA, length(nodesindex))

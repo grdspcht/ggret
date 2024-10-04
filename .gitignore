@@ -9,5 +9,7 @@
 .newick
 .acg
 R/test2.R
-ggarg.Rproj
-
+ggret.Rproj
+inst/doc
+/doc/
+/Meta/
