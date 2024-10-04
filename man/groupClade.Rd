@@ -22,9 +22,9 @@ groupClade(
 
 \item{tiponly}{Should only tips be considered?}
 
-\item{addtotreedata}{If TRUE, adds group/clade information to the data table of a treedata object.}
+\item{addtotreedata}{If TRUE, adds group/clade information to the data table of a treedata object (in the "Clade" column)}
 
-\item{undefinedclades}{Can be changed to rename undefined clades to something more fitting}
+\item{undefinedclades}{value used to name undefined clades}
 }
 \description{
 Group clades
