@@ -21,13 +21,12 @@ install.packages("ggplot2")
 #install ggtree
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-
 BiocManager::install("ggtree")
 
 #install ggret
 if (!requireNamespace("remotes", quietly=TRUE))
   install.packages("remotes")
-remotes::install_github("grdspcht/ggret", dependencies = TRUE, build_vignettes = TRUE))
+remotes::install_github("grdspcht/ggret", dependencies = TRUE, build_vignettes = TRUE)
 ```
 
 ## Documentation
@@ -37,7 +36,7 @@ Additionally, you can find multiple examples on how to use `ggret`
 effectively in the vignette. To access it call:
 
 ``` r
-vignette("ggret")
+vignette(topic="intro_to_ggret",package="ggret")
 ```
 
 ## Citing ggret
