@@ -1,5 +1,6 @@
 #' Plot reticulation networks
 #'
+#' @aliases ggret-function
 #' @param data either treedata or evonet objects
 #' @param mapping aesthetic mappings
 #' @param retcol reticulation edge colour
@@ -7,6 +8,18 @@
 #' @param retlinetype line type aesthetic for reticulations
 #' @param rettype Either 'straight' or 'snake'. Determines in which style reticulations are drawn
 #' @param na.rm supresses NA value warnings
+#' @param mrsd Most recent sampling date
+#' @param as.Date logical whether using Date class for time
+#' @param yscale Y-Scale
+#' @param yscale_mapping Y-scale mapping for category variable,
+#' @param ladderize Logical (default TRUE). Should the tree be re-organized to have a 'ladder' format?
+#' @param right Logical. If ladderize = TRUE, should the ladder have the smallest clade on the right-hand side? See ape::ladderize() for more information.
+#' @param branch.length Variable for scaling branch.
+#' @param root.position Position of the root node (default = 0)
+#' @param xlim X-Axis limits.
+#' @param hang Defines the hang
+#' @param layout.params  Layout parameters in list format
+
 #' @param ... additional parameter
 #'
 #' @return reticulation network plot

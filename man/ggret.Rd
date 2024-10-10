@@ -2,6 +2,7 @@
 % Please edit documentation in R/ggret.R
 \name{ggret}
 \alias{ggret}
+\alias{ggret-function}
 \title{Plot reticulation networks}
 \usage{
 ggret(
@@ -40,6 +41,28 @@ ggret(
 \item{rettype}{Either 'straight' or 'snake'. Determines in which style reticulations are drawn}
 
 \item{na.rm}{supresses NA value warnings}
+
+\item{mrsd}{Most recent sampling date}
+
+\item{as.Date}{logical whether using Date class for time}
+
+\item{yscale}{Y-Scale}
+
+\item{yscale_mapping}{Y-scale mapping for category variable,}
+
+\item{ladderize}{Logical (default TRUE). Should the tree be re-organized to have a 'ladder' format?}
+
+\item{right}{Logical. If ladderize = TRUE, should the ladder have the smallest clade on the right-hand side? See ape::ladderize() for more information.}
+
+\item{branch.length}{Variable for scaling branch.}
+
+\item{root.position}{Position of the root node (default = 0)}
+
+\item{xlim}{X-Axis limits.}
+
+\item{layout.params}{Layout parameters in list format}
+
+\item{hang}{Defines the hang}
 
 \item{...}{additional parameter}
 }
