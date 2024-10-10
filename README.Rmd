@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 # ggret
-<img align="right" width="150" height="173" src="man/figures/ggret_logo.png">
+<img align="right" width="113" height="130" src="man/figures/ggret_logo.png">
 <!-- badges: start -->
 <!-- badges: end -->
 

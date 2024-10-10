@@ -3,7 +3,7 @@
 
 # ggret
 
-<img align="right" width="150" height="173" src="man/figures/ggret_logo.png">
+<img align="right" width="113" height="130" src="man/figures/ggret_logo.png">
 <!-- badges: start --> <!-- badges: end -->
 
 ggret is an R package for the visualization and annotation of Ancestral
