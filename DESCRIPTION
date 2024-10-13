@@ -5,7 +5,7 @@ Authors@R:c(
     person("Gerd", "Specht",  email = "gerdspecht1995@gmail.com", role = c("aut", "cre")),
     person("Arthur", "Kocher", email = "arthur_kocher@eva.mpg.de", role = c("aut", "rth"), comment = c(ORCID = "0000-0002-9499-6472")))
 Description: Visualisation and annotation of Ancestral Recombination Graphs and other tree-based phylogenetic networks. It extends the functionality of 'ggtree' and 'ggplot2'.
-License: MIT + file LICENSE
+License: MIT
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
