@@ -1,3 +1,49 @@
+clean.colnames <- function(colnames) {
+  clean <- gsub("^\\[&|, |=$|%", "", colnames)
+  clean <- unique(clean)
+  return(clean)
+}
+
+get.colnames <- function (treeTexts) {
+  extractedCols <- str_extract_all(treeTexts, "\\[&(\\w+)=|, (.*?)=")
+  extrUni <- unique(unlist(extractedCols))
+  return(extrUni)
+}
+
+get_ret_parentlab <- function(phylo, nodelabel) {
+  childid <- nodeid(phylo, nodelabel)
+  row <- which(phylo$reticulation[, 2] == childid)
+  parentid <- phylo$reticulation[row , 1]
+  parentlab <- nodelab(phylo, parentid)
+  return(parentlab)
+}
+
+fix_nodeids <- function(phylo, nodesindex, phylonodes) {
+  ret_nodesindex <- which(grepl("#", nodesindex))
+  ret_nodelabs <- unique(nodesindex[ret_nodesindex])
+
+  for (lab in ret_nodelabs) {
+    receivernodes <- which(nodesindex == lab)
+    if (length(receivernodes == 2)) {
+      donorlab <- get_ret_parentlab(phylo, lab)
+      donorindex <- which(nodesindex == donorlab)
+      if (length(donorindex) != 1) {
+        warning("More than one reticulation donor node found. Breaking...")
+        break
+      } else{
+        retbased <- which(receivernodes + 1 == donorindex)
+        retbased <- receivernodes[retbased]
+        phylonodes[retbased] <- nodeid(phylo, donorlab)
+      }
+    } else{
+      warning("Number of reticulation receiver nodes is not 2. Skipping...")
+      next
+    }
+  }
+  return(phylonodes)
+}
+
+
 #' Read Beast2 files with phylogenetic network data
 #'
 #' @title read beast files that contain phylogenetic networks
@@ -11,52 +57,7 @@
 #' @return treedata object
 #' @export
 
-read.beast.retnet <- function(file) {
-
-  clean.colnames <- function(colnames) {
-    clean <- gsub("^\\[&|, |=$|%", "", colnames)
-    clean <- unique(clean)
-    return(clean)
-  }
-
-  get.colnames <- function (treeTexts) {
-    extractedCols <- str_extract_all(treeTexts, "\\[&(\\w+)=|, (.*?)=")
-    extrUni <- unique(unlist(extractedCols))
-    return(extrUni)
-  }
-
-  get_ret_parentlab <- function(phylo, nodelabel) {
-    childid <- nodeid(phylo, nodelabel)
-    row <- which(phylo$reticulation[, 2] == childid)
-    parentid <- phylo$reticulation[row , 1]
-    parentlab <- nodelab(phylo, parentid)
-    return(parentlab)
-  }
-
-  fix_nodeids <- function(phylo, nodesindex, phylonodes) {
-    ret_nodesindex <- which(grepl("#", nodesindex))
-    ret_nodelabs <- unique(nodesindex[ret_nodesindex])
-
-    for (lab in ret_nodelabs) {
-      receivernodes <- which(nodesindex == lab)
-      if (length(receivernodes == 2)) {
-        donorlab <- get_ret_parentlab(phylo, lab)
-        donorindex <- which(nodesindex == donorlab)
-        if (length(donorindex) != 1) {
-          warning("More than one reticulation donor node found. Breaking...")
-          break
-        } else{
-          retbased <- which(receivernodes + 1 == donorindex)
-          retbased <- receivernodes[retbased]
-          phylonodes[retbased] <- nodeid(phylo, donorlab)
-        }
-      } else{
-        warning("Number of reticulation receiver nodes is not 2. Skipping...")
-        next
-      }
-    }
-    return(phylonodes)
-  }
+read_beast_retnet <- function(file) {
 
   file <- normalizePath(file)
   treefile <- readLines(file)
@@ -70,7 +71,7 @@ read.beast.retnet <- function(file) {
   # check if tree block contains extended newick
   tt <- gsub("\\[(.*?)\\]", "", treeTexts) # remove comments
   if (grepl("#", tt)) {
-    phylo <- read.enewick(text = treeTexts)
+    phylo <- read_enewick(text = treeTexts)
 
     # add temporary node and tip labels to network if needed
     if (any(phylo$node.label == "")) {
@@ -85,7 +86,7 @@ read.beast.retnet <- function(file) {
         paste0("Tip", seq(1:length(emptyTips)))
     }
     pwl <- write.evonet(phylo)
-    phyLabel <- read.enewick(text = pwl)
+    phyLabel <- read_enewick(text = pwl)
 
     # Get metadata attributes (column names)
     extrdCols <- get.colnames(treeTexts)
