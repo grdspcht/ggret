@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @aliases ggret-pkg
 "_PACKAGE"
 
 ## usethis namespace: start
