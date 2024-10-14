@@ -31,5 +31,6 @@ BugReports: https://github.com/grdspcht/ggret/issues
 LazyData: true
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    phytools
 VignetteBuilder: knitr
