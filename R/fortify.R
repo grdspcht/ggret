@@ -1,5 +1,5 @@
 # !!!DISCLAIMER!!!
-# This file contains source from the ggtree R package. ggarg serves as an extension
+# This file contains source from the ggtree R package. ggret serves as an extension
 # of ggtree and therefore frequently interacts with internal objects and functions
 # of ggtree. For the sake of easier access they have been included in this package
 # All rights reserved to the ggtree developers.
