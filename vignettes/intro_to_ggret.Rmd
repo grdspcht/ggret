@@ -56,11 +56,11 @@ remotes::install_github("grdspcht/ggret", dependencies = TRUE, build_vignettes =
 ```{r, message = FALSE, eval=FALSE}
 library(ggret)
 
-# read.enewick parses extended Newick format and generates an evonet object. 
-nw <- ggret::read.enewick("../data/retnet.nwk")
+# read_enewick parses extended Newick format and generates an evonet object. 
+nw <- ggret::read_enewick("../data/retnet.nwk")
 
-# read.beast.retnet parses BEAST2 NEXUS files and generates a treedata object.
-nw_beast <- ggret::read.beast.retnet("../data/retnet.nexus")
+# read_beast_retnet parses BEAST2 NEXUS files and generates a treedata object.
+nw_beast <- ggret::read_beast_retnet("../data/retnet.nexus")
 ```
 
 For the next step of the tutorial, we will instead use the `retnet` object that comes with this package. It is a `treedata` object corresponding to a (summary) phylogenetic network simulated with the BEAST2 package [Bacter](https://github.com/tgvaughan/bacter) containing various node metadata.
@@ -157,7 +157,7 @@ retnet %>%
   retnet_clade
 
 # Plot network with colored clades
-ggret(retnet_clade, aes(color=Clade))
+ggret::ggret(retnet_clade, aes(color=Clade))
 ```
 
 ## Citations

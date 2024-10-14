@@ -69,25 +69,26 @@ The evolutionary relationships of biological entities are most often represented
 
 # Usage
 
-`ggret` is available on [GitHub](https://github.com/grdspcht/ggret) and can be installed by using `devtools'` `install_github` function.
+`ggret` is available on [GitHub](https://github.com/grdspcht/ggret) and can be installed by using `remotes'` `install_github` function.
 
 ``` r
 # Install from GitHub
-install.packages('devtools') # this may take a minute
-library(devtools)
-install_github('grdspcht/ggret')
-library(ggret)
+if (!requireNamespace("remotes", quietly=TRUE))
+  install.packages("remotes")
+remotes::install_github("grdspcht/ggret", dependencies = TRUE, build_vignettes = TRUE)
 ```
 
 `ggret` provides functions for reading extended Newick and (*BEAST2*) NEXUS format [@cardona_extended_2008]. This allows the user to visualise phylogenetic networks inferred from various programs. Here we parsed a (summary) phylogenetic network simulated with the *BEAST2* package *Bacter* [@vaughan2017inferring] containing various node metadata, using the `read.beast.retnet` function. Note that the resulting retnet `treedata` object has been directly included in the package for the sake of reproducibility.
 
 ``` r
-retnet <- read.beast.retnet("../data/retnet.nexus")
+retnet <- system.file("extdata", "retnet.nexus", package = "ggret", mustWork = TRUE)
 ```
 
 `ggret` is the central function of this package. In a simple call without additional arguments it only plots rudimentary tree-based network without any labelling. Reticulated edges are drawn as black dashed lines by default, but `ggret` contains various argument to change their aspects\autoref{fig:arg1}.
 
 ``` r
+library(ggret)
+
 #simple network
 p1 <-ggret(retnet)
 #reticulation edges displayed as red dotted lines, in a "snake" shape
@@ -98,7 +99,7 @@ p3 <- ggret(retnet,retcol = "blue",retlinetype = 1,arrows = T,rettype ="straight
 ggpubr::ggarrange(p1,p2,p3,nrow=1)
 ```
 
-![**Figure 1**: Simple tree-based networks plotted with `ggret`\label{fig:arg1}](rudarg.png){width="66%"}
+![**Figure 1**: Simple tree-based networks plotted with `ggret`\label{fig:arg1}](rudarg.png){width="100%"}
 
 We can rotate some of the nodes to avoid crossing of reticulation edges and improve visualization using the `ggtree` `rotate` function. Note that one can initially visualize node indices using `ggret(retnet) + geom_nodelab(aes(label=node))` to make this easier\autoref{fig:arg2}.
 
@@ -113,22 +114,22 @@ rotate(p1,node=31) %>%
 p1
 ```
 
-![**Figure 2**: Network plotted after node rotation to limit edge crossing\label{fig:arg2}](rotated.png){width="66%"}
+![**Figure 2**: Network plotted after node rotation to limit edge crossing\label{fig:arg2}](rotated.png){width="100%"}
 
 Annotations can easily be added using `ggtree` functions, such as `geom_tiplab`, `geom_nodelab` and `geom_range`. In addition, a time axis can easily be added as using the `theme_tree2` theme\autoref{fig:arg3}.
 
 ``` r
-#get the tMRCA of the tree and define time points to display in the time axis in years BP
+# Get the tMRCA of the tree and define time points to display in the time axis in years BP
 tmrca <- phytools::nodeHeights(retnet@phylo) %>% max
 xticks_BP=c(20000,15000,10000,5000,0)
 
-#add tip and node labels (we expand the x axis limits so that tip labels still fit in
+# Add tip and node labels (we expand the x axis limits so that tip labels still fit in
 p1 <- p1 +
   geom_tiplab() +
   geom_nodelab(aes(label=round(posterior,2)),vjust=-0.25,hjust=1.3,size=3) +
   expand_limits(x=22000)
 
-#adding a time axis and node bars indicating node heights' 95% highest posterior density interval
+# Adding a time axis and node bars indicating node heights' 95% highest posterior density interval
 p1 <- p1 +
   theme_tree2() +
   geom_range(aes(range="height_95_HPD"), color="grey50", alpha=.6, size=1.5) +
@@ -139,19 +140,19 @@ p1 <- p1 +
 plot(p1)
 ```
 
-![**Figure 3**: Annotated phylogenetic network\label{fig:arg3}](labels.png){width="66%"}
+![**Figure 3**: Annotated phylogenetic network\label{fig:arg3}](labels.png){width="100%"}
 
 The `groupClade` can be used to define clades within a network and color them accordingly. `groupClade` assigns clade information to all nodes descending from the MRCA of tips specified in the `nodes` argument\autoref{fig:arg4}.
 
 ``` r
-#define clades using the groupClade function
+# Define clades using the groupClade function
 retnet %>%
   groupClade(nodes = c("taxon_10", "taxon_20"), cladename = "A",addtotreedata = T) %>%
   groupClade(nodes = c("taxon_11", "taxon_15"), cladename = "B",addtotreedata = T) %>%
   groupClade(nodes = c("taxon_1", "taxon_16"), cladename = "C",addtotreedata = T) ->
   retnet_clade
 
-#plot network with colored clades
+# Plot network with colored clades
 p_colored <- ggret(retnet_clade, aes(color=clade))
 plot(p_colored)
 ```
