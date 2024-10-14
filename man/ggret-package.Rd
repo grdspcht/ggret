@@ -25,5 +25,11 @@ Authors:
   \item Arthur Kocher \email{arthur_kocher@eva.mpg.de} (\href{https://orcid.org/0000-0002-9499-6472}{ORCID}) [research team head]
 }
 
+Other contributors:
+\itemize{
+  \item Clemens Schmid (\href{https://orcid.org/0000-0003-3448-5715}{ORCID}) [contributor, scientific advisor]
+  \item Denise Kühnert (\href{https://orcid.org/0000-0002-5657-018X}{ORCID}) [thesis advisor, research team head]
+}
+
 }
 \keyword{internal}
