@@ -6,7 +6,7 @@
 #' @return evonet object
 #' @export
 
-read.enewick <- function(file = "", text = NULL)
+read_enewick <- function(file = "", text = NULL)
 
 {
   tr <- ape::read.tree(file = file, text = text)

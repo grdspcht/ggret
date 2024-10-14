@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @examples
-groupClade <- function(data,
+group_clade <- function(data,
                        nodes,
                        cladename,
                        tiponly = FALSE,
@@ -84,7 +84,7 @@ findRetLayer <- function(layer, rets){
 #' @return Modified ggplot object
 #' @export
 #'
-modifyRet <- function(plot, assignto="donor"){
+modify_ret <- function(plot, assignto="donor"){
   # Diassemble ggplot object and extract needed variables
   decon <- ggplot_build(plot)
   data <- decon$plot$data
