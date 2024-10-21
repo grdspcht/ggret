@@ -62,7 +62,7 @@ bibliography: paper.bib
 The evolutionary relationships of biological entities are most often represented with phylogenetic trees. Phylogenetic trees consist of branches (or edges) representing direct lines of descents or genetic flow from ancestor to offspring (i.e. lineages), and nodes representing evolutionary "splits" through which a parental lineage gives rise to multiple child lineages. This vertical model of evolution has provided immense insights into the evolutionary history and processes underlying observed biological diversity. However, it fails to account for "horizontal" modes of evolution, whereby genetic material can be exchanged between contemporaneous organisms through a variety of mechanism across the tree of life [@perez2015recombination; @arnold2022horizontal; @keeling2024horizontal]. In recent years, advances in sequencing technologies and computational methods have made it increasingly possible to integrate horizontal evolutionary events into reticulated phylogenetic trees (or phylogenetic networks; [@huson_application_2006]). While phylogenetic networks have the potential to provide more comprehensive and accurate evolutionary pictures for many biological groups, the development of specific tools is required for their manipulation and visualisation.
 
 # Statement of need
-`ggret` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@yu_ggtree_2017; @paradis_ape_2019;]. `ggret` builds up on these functionalities by extending `ggtree` with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. Additionally, it enables the user to parse data formats for phylogenetic networks (extended Newick and NEXUS) and handle associated metadata via `treedata` objects.  
+`ggret` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@yu_ggtree_2017; @paradis_ape_2019]. `ggret` builds up on these functionalities by extending `ggtree` with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. Additionally, it enables the user to parse data formats for phylogenetic networks (extended Newick and NEXUS) and handle associated metadata via `treedata` objects.  
 
 # Usage
 
@@ -83,7 +83,7 @@ retfile <- system.file("extdata", "retnet.nexus", package = "ggret")
 retnet <- ggret::read_beast_retnet(retfile)    
 ```
 
-`ggret` is the central function of this package. In a simple call without additional arguments it plots rudimentary tree-based network without labeling. Reticulated edges are drawn as black dashed lines by default, but `ggret` contains various arguments to change their aspects (e.g. colour, linetype, etc.) \autoref{fig:arg1}.
+`ggret` is the central function of this package. In a simple call without additional arguments it plots rudimentary tree-based network without labeling. Reticulated edges are drawn as black dashed lines by default, but `ggret` contains various arguments to change their aspects (e.g. colour, linetype, etc.) (\autoref{fig:arg1}).
 
 ``` r
 library(ggret)
@@ -100,7 +100,7 @@ p3 <- ggret::ggret(retnet, retcol = "blue", retlinetype = 1, arrows = T,
 
 ![A simple tree-based networks plotted with `ggret`\label{fig:arg1}](rudarg.png){width="100%"}
 
-We can rotate some of the nodes to avoid crossing of reticulation edges and improve visualisation using the `ggtree` `rotate` function. Note that one can initially visualise node indices using `ggret(retnet) + geom_nodelab(aes(label=node))` to make this easier\autoref{fig:arg2}.
+We can rotate some of the nodes to avoid crossing of reticulation edges and improve visualisation using the `ggtree` `rotate` function. Note that one can initially visualise node indices using `ggret(retnet) + geom_nodelab(aes(label=node))` to make this easier (\autoref{fig:arg2}).
 
 ``` r
 # Rotate nodes to improve vizualisation
@@ -113,7 +113,7 @@ ggtree::rotate(p1, node = 31) %>%
 
 ![Network plotted after node rotation to limit the number of edge crossings.\label{fig:arg2}](rotated.png){width="100%"}
 
-Annotations can be added using `ggtree` functions, such as `geom_tiplab`, `geom_nodelab` and `geom_range`. In addition, a time axis may be added by using the `theme_tree2` theme\autoref{fig:arg3}.
+Annotations can be added using `ggtree` functions, such as `geom_tiplab`, `geom_nodelab` and `geom_range`. In addition, a time axis may be added by using the `theme_tree2` theme (\autoref{fig:arg3}).
 
 ``` r
 # Get the tMRCA of the tree and define time points to display
@@ -133,7 +133,8 @@ p1 <- p1 +
 # highest posterior density interval.
 p1 <- p1 +
   ggtree::theme_tree2() +
-  ggtree::geom_range(aes(range = "height_95_HPD"), color = "grey50", alpha = .6, size = 1.5) +
+  ggtree::geom_range(aes(range = "height_95_HPD"), color = "grey50", 
+          alpha = .6, size = 1.5) +
   ggtree::scale_x_continuous(breaks = tmrca - xticks_BP, labels = xticks_BP) +
   ggplot2::xlab("Years before present")
 
@@ -141,14 +142,17 @@ p1 <- p1 +
 
 ![Annotated phylogenetic network\label{fig:arg3}](labels.png){width="100%"}
 
-The `group_clade` can be used to define clades within a network and color them accordingly. `group_clade` assigns clade information to all nodes descending from the MRCA of tips specified in the `nodes` argument\autoref{fig:arg4}.
+The `group_clade` can be used to define clades within a network and color them accordingly. `group_clade` assigns clade information to all nodes descending from the MRCA of tips specified in the `nodes` argument (\autoref{fig:arg4}).
 
 ``` r
 # Define clades using the groupClade function
 retnet %>%
-  ggret::group_clade(nodes = c("taxon_10", "taxon_20"), cladename = "A", addtotreedata = T) %>%
-  ggret::group_clade(nodes = c("taxon_11", "taxon_15"), cladename = "B", addtotreedata = T) %>%
-  ggret::group_clade(nodes = c("taxon_1", "taxon_16"), cladename = "C", addtotreedata = T) ->
+  ggret::group_clade(nodes = c("taxon_10", "taxon_20"), cladename = "A", 
+         addtotreedata = T) %>%
+  ggret::group_clade(nodes = c("taxon_11", "taxon_15"), cladename = "B", 
+         addtotreedata = T) %>%
+  ggret::group_clade(nodes = c("taxon_1", "taxon_16"), cladename = "C", 
+         addtotreedata = T) ->
   retnet_clade
 
 # Plot network with colored clades
@@ -190,8 +194,6 @@ Figure sizes can be customized by adding an optional second parameter:
 ![Caption for example figure.](figure.png){ width=20% }
 -->
 ```
-# Acknowledgements
-
 # References
 
 <!--- Auto-generated, no need to add something here -->
