@@ -1,6 +1,3 @@
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # ggret
 
 <img align="right" width="113" height="130" src="man/figures/ggret_logo.png">
@@ -24,7 +21,7 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("ggtree")
 
 #install ggret
-if (!requireNamespace("remotes", quietly=TRUE))
+if (!requireNamespace("remotes", quietly = TRUE))
   install.packages("remotes")
 remotes::install_github("grdspcht/ggret", dependencies = TRUE, build_vignettes = TRUE)
 ```
@@ -36,7 +33,7 @@ Additionally, you can find multiple examples on how to use `ggret`
 effectively in the vignette. To access it call:
 
 ``` r
-vignette(topic="intro_to_ggret",package="ggret")
+vignette(topic = "intro_to_ggret", package = "ggret")
 ```
 
 ## Citing ggret
