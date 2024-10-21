@@ -173,6 +173,7 @@ doi: [10.1111/2041-210X.12628](https://doi.org/10.1111/2041-210X.12628).
 
 ## Further Reading
 
-Don't forget to check ggret's documentation for further info on functions.\\
+Don't forget to check ggret's documentation for further info on functions.
+
 
 For further information on expanding your plots, please refer to the extensive [ggtree manual](https://yulab-smu.top/treedata-book/index.html) or the [ggplot2 documentation.](https://ggplot2.tidyverse.org/reference/)  
