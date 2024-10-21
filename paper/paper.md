@@ -19,7 +19,7 @@ authors:
     corresponding: true
   - name: Clemens Schmid
     orcid: 0000-0003-3448-571
-    affiliation: 3
+    affiliation: "3"
   - name: Denise Kühnert
     orcid: 0000-0002-5657-018X
     affiliation: "2,4"
@@ -59,10 +59,10 @@ bibliography: paper.bib
 ```
 # Summary
 
-The evolutionary relationships of biological entities are most often represented with phylogenetic trees. Phylogenetic trees consist of branches (or edges) representing direct lines of descents or genetic flow from ancestor to offspring (i.e. lineages), and nodes representing evolutionary "splits" through which a parental lineage gives rise to multiple child lineages. This vertical model of evolution has provided immense insights into the evolutionary history and processes underlying observed biological diversity. However, it fails to account for "horizontal" modes of evolution, whereby genetic material can be exchanged between contemporaneous organisms through a variety of mechanism across the tree of life [@arnold2022horizontal; @keeling2024horizontal; @perez2015recombination]. In recent years, advances in sequencing technologies and computational methods have made it increasingly possible to integrate horizontal evolutionary events into reticulated phylogenetic trees (or phylogenetic networks; [@huson_application_2006]). While phylogenetic networks have the potential to provide more comprehensive and accurate evolutionary pictures for many biological groups, the development of specific tools is required for their manipulation and visualisation.
+The evolutionary relationships of biological entities are most often represented with phylogenetic trees. Phylogenetic trees consist of branches (or edges) representing direct lines of descents or genetic flow from ancestor to offspring (i.e. lineages), and nodes representing evolutionary "splits" through which a parental lineage gives rise to multiple child lineages. This vertical model of evolution has provided immense insights into the evolutionary history and processes underlying observed biological diversity. However, it fails to account for "horizontal" modes of evolution, whereby genetic material can be exchanged between contemporaneous organisms through a variety of mechanism across the tree of life [@perez2015recombination; @arnold2022horizontal; @keeling2024horizontal]. In recent years, advances in sequencing technologies and computational methods have made it increasingly possible to integrate horizontal evolutionary events into reticulated phylogenetic trees (or phylogenetic networks; [@huson_application_2006]). While phylogenetic networks have the potential to provide more comprehensive and accurate evolutionary pictures for many biological groups, the development of specific tools is required for their manipulation and visualisation.
 
 # Statement of need
-`ggret` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@paradis_ape_2019; @yu_ggtree_2017]. `ggret` builds up on these functionalities by extending `ggtree` with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. Additionally, it enables the user to parse data formats for phylogenetic networks (extended Newick and NEXUS) and handle associated metadata via `treedata` objects.  
+`ggret` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@yu_ggtree_2017; @paradis_ape_2019;]. `ggret` builds up on these functionalities by extending `ggtree` with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. Additionally, it enables the user to parse data formats for phylogenetic networks (extended Newick and NEXUS) and handle associated metadata via `treedata` objects.  
 
 # Usage
 
@@ -72,13 +72,14 @@ The evolutionary relationships of biological entities are most often represented
 # Install from GitHub
 if (!requireNamespace("remotes", quietly=TRUE))
   install.packages("remotes")
-remotes::install_github("grdspcht/ggret", dependencies = TRUE, build_vignettes = TRUE)
+remotes::install_github("grdspcht/ggret", dependencies = TRUE, 
+                         build_vignettes = TRUE)
 ```
 
 `ggret` provides functions for reading extended Newick and (*BEAST2*) NEXUS format [@cardona_extended_2008]. This allows the user to visualise phylogenetic networks inferred from various programs. Here we parsed a (summary) phylogenetic network simulated with the *BEAST2* package *Bacter* [@vaughan2017inferring] containing various node metadata, using the `read_beast_retnet` function. Note that the resulting retnet `treedata` object has been included in the package for the sake of reproducibility.
 
 ``` r
-retfile <- system.file("extdata", "retnet.nexus", package = "ggret", mustWork = TRUE)
+retfile <- system.file("extdata", "retnet.nexus", package = "ggret")
 retnet <- ggret::read_beast_retnet(retfile)    
 ```
 
@@ -93,8 +94,8 @@ p1 <- ggret::ggret(retnet)
 p2 <- ggret::ggret(retnet, retcol = "red", retlinetype = 3)
 # Reticulation edges displayed as blue solid lines, in a straight shape and 
 # with arrow heads
-p3 <- ggret::ggret(retnet, retcol = "blue", retlinetype = 1,arrows = T,
-                   rettype ="straight") 
+p3 <- ggret::ggret(retnet, retcol = "blue", retlinetype = 1, arrows = T,
+                   rettype = "straight") 
 ```
 
 ![A simple tree-based networks plotted with `ggret`\label{fig:arg1}](rudarg.png){width="100%"}
@@ -103,33 +104,37 @@ We can rotate some of the nodes to avoid crossing of reticulation edges and impr
 
 ``` r
 # Rotate nodes to improve vizualisation
-ggtree::rotate(p1, node=31) %>%
-  ggtree::rotate(node=30) %>%
-  ggtree::rotate(node=26) %>%
-  ggtree::rotate(node=37) ->
+ggtree::rotate(p1, node = 31) %>%
+  ggtree::rotate(node = 30) %>%
+  ggtree::rotate(node = 26) %>%
+  ggtree::rotate(node = 37) ->
   p1
 ```
 
-![Network plotted after node rotation to limit edge crossing\label{fig:arg2}](rotated.png){width="100%"}
+![Network plotted after node rotation to limit the number of edge crossings.\label{fig:arg2}](rotated.png){width="100%"}
 
-Annotations can easily be added using `ggtree` functions, such as `geom_tiplab`, `geom_nodelab` and `geom_range`. In addition, a time axis can easily be added as using the `theme_tree2` theme\autoref{fig:arg3}.
+Annotations can be added using `ggtree` functions, such as `geom_tiplab`, `geom_nodelab` and `geom_range`. In addition, a time axis may be added by using the `theme_tree2` theme\autoref{fig:arg3}.
 
 ``` r
-# Get the tMRCA of the tree and define time points to display in the time axis in years BP
+# Get the tMRCA of the tree and define time points to display
+# the time axis in years BP
 tmrca <- phytools::nodeHeights(retnet@phylo) %>% max
-xticks_BP=c(20000,15000,10000,5000,0)
+xticks_BP <- c(20000, 15000, 10000, 5000, 0)
 
-# Add tip and node labels (we expand the x axis limits so that tip labels still fit in
+# Add tip and node labels (we expand the x axis limits 
+# so that tip labels still fit).
 p1 <- p1 +
   ggtree::geom_tiplab() +
-  ggtree::geom_nodelab(aes(label=round(posterior,2)),vjust=-0.25,hjust=1.3,size=3) +
-  ggplot2::expand_limits(x=22000)
+  ggtree::geom_nodelab(aes(label = round(posterior, 2)), 
+          vjust = -0.25, hjust = 1.3, size = 3) +
+  ggplot2::expand_limits(x = 22000)
 
-# Adding a time axis and node bars indicating node heights' 95% highest posterior density interval
+# Adding a time axis and node bars indicating node heights' 95% 
+# highest posterior density interval.
 p1 <- p1 +
   ggtree::theme_tree2() +
-  ggtree::geom_range(aes(range="height_95_HPD"), color="grey50", alpha=.6, size=1.5) +
-  ggtree::scale_x_continuous(breaks = tmrca - xticks_BP, labels=xticks_BP) +
+  ggtree::geom_range(aes(range = "height_95_HPD"), color = "grey50", alpha = .6, size = 1.5) +
+  ggtree::scale_x_continuous(breaks = tmrca - xticks_BP, labels = xticks_BP) +
   ggplot2::xlab("Years before present")
 
 ```
@@ -147,7 +152,7 @@ retnet %>%
   retnet_clade
 
 # Plot network with colored clades
-ggret::ggret(retnet_clade, aes(color=clade))
+ggret::ggret(retnet_clade, aes(color = clade))
 
 ```
 
