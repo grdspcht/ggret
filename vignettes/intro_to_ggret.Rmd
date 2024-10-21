@@ -74,13 +74,13 @@ For the next step of the tutorial, we will instead use the `retnet_treedata` obj
 We first use the original `ggtree` function to plot the backbone tree of the `retnet` object
 
 ```{r message = FALSE, warning = FALSE, fig.dim = c(5, 3)}
-ggtree::ggtree(retnet)
+ggtree::ggtree(retnet_evonet)
 ```
 
 We now plot the entire network, including reticulation edges, using the `ggret` function.
 
 ```{r message = FALSE, warning = FALSE, fig.dim = c(5, 3)}
-ggret::ggret(retnet)
+ggret::ggret(retnet_evonet)
 ```
 
 ## Changing the aspect of reticulation edges
@@ -89,9 +89,9 @@ The `ggret` functions can take different arguments to change the aspect of retic
 
 ```{r  message = FALSE, warning = FALSE, fig.dim = c(5, 3)}
 # Reticulation edges displayed as red dotted lines, in a "snake" shape
-p1 <- ggret::ggret(retnet, retcol = "red", retlinetype = 3)
+p1 <- ggret::ggret(retnet_evonet, retcol = "red", retlinetype = 3)
 # Reticulation edges displayed as blue solid lines, in a straight shape and with arrow heads
-p2 <- ggret::ggret(retnet, retcol = "blue", retlinetype = 1, arrows = T, rettype = "straight")
+p2 <- ggret::ggret(retnet_evonet, retcol = "blue", retlinetype = 1, arrows = T, rettype = "straight")
 # Plot
 plot(p1)
 plot(p2)
@@ -124,7 +124,7 @@ Adding `geom_tiplab` and `geom_nodelab` from `ggtree` to our previous call allow
 Here is an example to add tip labels and posterior support values at the nodes. Note that we have to expand the x axis limits to make the tip labels visible.
 
 ```{r message = FALSE, warning = FALSE, fig.dim = c(5, 3)}
-ggret::ggret(retnet) + 
+ggret::ggret(retnet_treedata) + 
   ggtree::geom_tiplab() +
   ggtree::geom_nodelab(aes(label = round(posterior,2)), vjust = -0.25, hjust = 1.2, size = 3) +
   ggplot2::expand_limits(x = 23000)
@@ -135,11 +135,11 @@ Here is another example in which we add a time axis to the plot, as well as the 
 ```{r  message = FALSE, warning = FALSE, echo=TRUE, fig.dim = c(5, 3)}
 # Get the tMRCA of the tree and define time points to display in the time axis in years BP
 library(phytools)
-tmrca <- phytools::nodeHeights(retnet@phylo) %>% max
+tmrca <- phytools::nodeHeights(retnet_treedata@phylo) %>% max
 xticks_BP <- c(20000,15000,10000,5000,0)
 
 # Plot the network
-ggret::ggret(retnet) +
+ggret::ggret(retnet_treedata) +
   ggtree::theme_tree2() +
   ggtree::geom_range(aes(range = "height_95_HPD"), color = "grey50", alpha = .6, size = 1.5) +
   ggplot2::scale_x_continuous(breaks = tmrca - xticks_BP, labels = xticks_BP) +
@@ -152,14 +152,14 @@ With `group_clade` we can define clades within our network and then use `aes` to
 
 ```{r message = FALSE, warning = FALSE, fig.dim = c(5, 3)}
 # Define clades using the group_clade function
-retnet %>%
+retnet_treedata %>%
   ggret::group_clade(nodes = c("taxon_10", "taxon_20"), cladename = "A", addtotreedata = T) %>%
   ggret::group_clade(nodes = c("taxon_11", "taxon_15"), cladename = "B", addtotreedata = T) %>%
   ggret::group_clade(nodes = c("taxon_1", "taxon_16"), cladename = "C", addtotreedata = T) ->
   retnet_clade
 
 # Plot network with colored clades
-ggret::ggret(retnet_clade, aes(color=Clade))
+ggret::ggret(retnet_clade, aes(color = Clade))
 ```
 
 ## Citations
