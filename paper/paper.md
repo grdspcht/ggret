@@ -57,12 +57,14 @@ bibliography: paper.bib
 - Acknowledgement of any financial support.
 -->
 ```
+
 # Summary
 
-The evolutionary relationships of biological entities are most often represented with phylogenetic trees. Phylogenetic trees consist of branches (or edges) representing direct lines of descents or genetic flow from ancestor to offspring (i.e. lineages), and nodes representing evolutionary "splits" through which a parental lineage gives rise to multiple child lineages. This vertical model of evolution has provided immense insights into the evolutionary history and processes underlying observed biological diversity. However, it fails to account for "horizontal" modes of evolution, whereby genetic material can be exchanged between contemporaneous organisms through a variety of mechanism across the tree of life [@perez2015recombination; @arnold2022horizontal; @keeling2024horizontal]. In recent years, advances in sequencing technologies and computational methods have made it increasingly possible to integrate horizontal evolutionary events into reticulated phylogenetic trees (or phylogenetic networks; [@huson_application_2006]). While phylogenetic networks have the potential to provide more comprehensive and accurate evolutionary pictures for many biological groups, the development of specific tools is required for their manipulation and visualisation.
+Evolutionary relationships of biological entities are most often modeled with phylogenetic trees. Phylogenetic trees consist of branches (or edges) representing direct lines of descent or genetic flow from ancestor to offspring (*i.e.* lineages), and nodes representing evolutionary "splits" through which a parental lineage gives rise to multiple child lineages. This vertical model of evolution has provided immense insights into the evolutionary history and processes underlying observed biological diversity. However, it fails to account for "horizontal" modes of evolution, whereby genetic material can be exchanged between contemporaneous organisms through a variety of mechanisms across the tree of life [@perez2015recombination; @arnold2022horizontal; @keeling2024horizontal]. In recent years, advances in sequencing technologies and computational methods have made it increasingly possible to integrate horizontal evolutionary events into reticulated phylogenetic trees (or phylogenetic networks; [@huson_application_2006; @chen_hybridnet_2010; @vaughan2017inferring; @muller2020bayesian; @muller2022bayesian]). While phylogenetic networks have the potential to provide more comprehensive and accurate evolutionary pictures for many biological groups, the development of specific tools is required for their manipulation and visualisation. Here, we present `ggret`, an R package building upon the popular `ggtree` package [@yu_ggtree_2017] for the manipulation and visualisation of tree-based phylogenetic networks.
 
 # Statement of need
-`ggret` is an R package for the visualisation of tree-based phylogenetic networks (i.e. phylogenetic trees with additional horizontal edges). The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for phylogenetic research [@yu_ggtree_2017; @paradis_ape_2019]. `ggret` builds up on these functionalities by extending `ggtree` with methods for handling tree-based phylogenetic networks while maintaining compatibility between the packages. Additionally, it enables the user to parse data formats for phylogenetic networks (extended Newick and NEXUS) and handle associated metadata via `treedata` objects.  
+
+Command-line tools are needed for the efficient, reproducible manipulation and plotting of phylogenetic networks. The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for handling and visualizing classic phylogenetic trees [@yu_ggtree_2017; @paradis_ape_2019]. `ggret` extends `ggtree` with methods for manipulating and plotting tree-based phylogenetic networks, where horizontal transfers of genetic material are represented by reticulation edges connecting the branches of a backbone phylogenetic tree. `ggret` enables the parsing of phylogenetic networks in extended Newick and NEXUS formats such as those produced by the popular *BEAST2* software [@bouckaert2019beast]. Importantly, it can handle associated metadata via `treedata` objects and maintains most `ggtree` annotation and visualisation methods.
 
 # Usage
 
@@ -194,6 +196,11 @@ Figure sizes can be customized by adding an optional second parameter:
 ![Caption for example figure.](figure.png){ width=20% }
 -->
 ```
+
+# Acknowledgements
+
+This work was funded by the Max Planck Society.
+
 # References
 
 <!--- Auto-generated, no need to add something here -->
