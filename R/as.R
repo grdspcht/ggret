@@ -32,14 +32,14 @@ as.treedata.evonet <- function(tree, ...){
 
 #' Treedata object to evonet
 #'
-#' @param tree A treedata object that contains a phylo slot in evonet format
+#' @param x A treedata object that contains a phylo slot in evonet format
 #' @param ... Unused, for extensibility.
 #' @return An evonet object
 #' @export
 #' @method as.evonet treedata
 #' @examples
-as.evonet.treedata <- function(tree, ...){
-  evo <- tree@phylo
+as.evonet.treedata <- function(x, ...){
+  evo <- x@phylo
   class(evo) <- c("evonet", "phylo")
 
   return(evo)

@@ -4,10 +4,10 @@
 \alias{as.evonet.treedata}
 \title{Treedata object to evonet}
 \usage{
-\method{as.evonet}{treedata}(tree, ...)
+\method{as.evonet}{treedata}(x, ...)
 }
 \arguments{
-\item{tree}{A treedata object that contains a phylo slot in evonet format}
+\item{x}{A treedata object that contains a phylo slot in evonet format}
 
 \item{...}{Unused, for extensibility.}
 }
