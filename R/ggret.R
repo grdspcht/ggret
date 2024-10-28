@@ -24,8 +24,6 @@
 #'
 #' @return reticulation network plot
 #' @export
-#'
-#' @examples
 ggret <- function(data,
                   mapping        = NULL,
                   retcol         = "black",

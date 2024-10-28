@@ -8,10 +8,7 @@
 #' @param undefinedclades value used to name undefined clades
 #' @importFrom  tibble add_column
 #'
-#' @return
 #' @export
-#'
-#' @examples
 group_clade <- function(data,
                        nodes,
                        cladename,
