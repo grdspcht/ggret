@@ -1,16 +1,16 @@
 Package: ggret
 Title: Visualisation of Tree-based Phylogenetic Networks 
 Version: 1.0.0
-Authors@R:c( 
+Authors@R: c( 
     person("Gerd", "Specht",  email = "gerdspecht1995@gmail.com", role = c("aut", "cre")),
     person("Arthur", "Kocher", email = "arthur_kocher@eva.mpg.de", role = c("aut", "rth"), comment = c(ORCID = "0000-0002-9499-6472")),
     person ("Clemens", "Schmid", role = c("ctb", "sad"), comment = c(ORCID = "0000-0003-3448-5715")),
     person ("Denise", "Kühnert", role = c("ths", "rth"), comment = c(ORCID = "0000-0002-5657-018X")))
 Description: Visualisation and annotation of Ancestral Recombination Graphs and other tree-based phylogenetic networks. It extends the functionality of 'ggtree' and 'ggplot2'.
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Depends: 
     ggplot2,
     ggtree,
