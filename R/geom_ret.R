@@ -407,7 +407,7 @@ ggproto_formals <- function(x) formals(environment(x)$f)
 # @param character vector of present aesthetics
 # @param name of object for error message
 # @keyword internal
-check_required_aesthetics <- function(required, present, name, call = caller_env()) {
+check_required_aesthetics <- function(required, present, name, call = rlang::caller_env()) {
   if (is.null(required)) return()
 
   required <- strsplit(required, "|", fixed = TRUE)
@@ -670,7 +670,7 @@ find_args <- function(...) {
   vals <- mget(args, envir = env)
   vals <- vals[!vapply(vals, is_missing_arg, logical(1))]
 
-  modify_list(vals, list(..., `...` = NULL))
+  ggplot2:::modify_list(vals, list(..., `...` = NULL))
 }
 
 # Used in annotations to ensure printed even when no
@@ -698,7 +698,7 @@ seq_asc <- function(to, from) {
 NULL
 
 # Wrapping vctrs data_frame constructor with no name repair
-data_frame0 <- function(...) data_frame(..., .name_repair = "minimal")
+data_frame0 <- function(...) tibble::data_frame(..., .name_repair = "minimal")
 
 # Wrapping unique0() to accept NULL
 unique0 <- function(x, ...) if (is.null(x)) x else vec_unique(x, ...)
@@ -952,7 +952,7 @@ with_ordered_restart <- function(expr, .call) {
   )
 }
 
-vec_rbind0 <- function(..., .error_call = current_env(), .call = caller_env()) {
+vec_rbind0 <- function(..., .error_call = current_env(), .call = rlang::caller_env()) {
   with_ordered_restart(
     vec_rbind(..., .error_call = .error_call),
     .call
@@ -965,17 +965,17 @@ attach_plot_env <- function(env) {
   withr::defer_parent(options(ggplot2_plot_env = old_env))
 }
 
-as_cli <- function(..., env = caller_env()) {
+as_cli <- function(..., env = rlang::caller_env()) {
   cli::cli_fmt(cli::cli_text(..., .envir = env))
 }
 
 deprecate_soft0 <- function(..., user_env = NULL) {
-  user_env <- user_env %||% getOption("ggplot2_plot_env") %||% caller_env(2)
+  user_env <- user_env %||% getOption("ggplot2_plot_env") %||% rlang::caller_env(2)
   lifecycle::deprecate_soft(..., user_env = user_env)
 }
 
 deprecate_warn0 <- function(..., user_env = NULL) {
-  user_env <- user_env %||% getOption("ggplot2_plot_env") %||% caller_env(2)
+  user_env <- user_env %||% getOption("ggplot2_plot_env") %||% rlang::caller_env(2)
   lifecycle::deprecate_warn(..., user_env = user_env)
 }
 
@@ -986,11 +986,11 @@ dapply <- function(df, by, fun, ..., drop = TRUE) {
     res <- fun(x, ...)
     if (is.null(res)) return(res)
     if (length(res) == 0) return(data_frame0())
-    vars <- lapply(setNames(by, by), function(col) .subset2(x, col)[1])
-    if (is.matrix(res)) res <- split_matrix(res)
+    vars <- lapply(stats::setNames(by, by), function(col) .subset2(x, col)[1])
+    if (is.matrix(res)) res <- ggplot2:::split_matrix(res)
     if (is.null(names(res))) names(res) <- paste0("V", seq_along(res))
     if (all(by %in% names(res))) return(data_frame0(!!!unclass(res)))
-    res <- modify_list(unclass(vars), unclass(res))
+    res <- ggplot2:::modify_list(unclass(vars), unclass(res))
     res <- res[intersect(c(fallback_order, names(res)), names(res))]
     data_frame0(!!!res)
   }
@@ -1003,7 +1003,7 @@ dapply <- function(df, by, fun, ..., drop = TRUE) {
   ids <- id(grouping_cols, drop = drop)
   group_rows <- split_with_index(seq_len(nrow(df)), ids)
   result <- lapply(seq_along(group_rows), function(i) {
-    cur_data <- df_rows(df, group_rows[[i]])
+    cur_data <- ggplot2:::df_rows(df, group_rows[[i]])
     apply_fun(cur_data)
   })
   vec_rbind0(!!!result)
@@ -1292,11 +1292,11 @@ dapply <- function(df, by, fun, ..., drop = TRUE) {
     res <- fun(x, ...)
     if (is.null(res)) return(res)
     if (length(res) == 0) return(data_frame0())
-    vars <- lapply(setNames(by, by), function(col) .subset2(x, col)[1])
-    if (is.matrix(res)) res <- split_matrix(res)
+    vars <- lapply(stats::setNames(by, by), function(col) .subset2(x, col)[1])
+    if (is.matrix(res)) res <- ggplot2:::split_matrix(res)
     if (is.null(names(res))) names(res) <- paste0("V", seq_along(res))
     if (all(by %in% names(res))) return(data_frame0(!!!unclass(res)))
-    res <- modify_list(unclass(vars), unclass(res))
+    res <- ggplot2:::modify_list(unclass(vars), unclass(res))
     res <- res[intersect(c(fallback_order, names(res)), names(res))]
     data_frame0(!!!res)
   }
@@ -1309,7 +1309,7 @@ dapply <- function(df, by, fun, ..., drop = TRUE) {
   ids <- id(grouping_cols, drop = drop)
   group_rows <- split_with_index(seq_len(nrow(df)), ids)
   result <- lapply(seq_along(group_rows), function(i) {
-    cur_data <- df_rows(df, group_rows[[i]])
+    cur_data <- ggplot2:::df_rows(df, group_rows[[i]])
     apply_fun(cur_data)
   })
   vec_rbind0(!!!result)
