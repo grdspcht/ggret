@@ -636,7 +636,6 @@ getRoot.df <- function(df, node) {
 
 
 
-mutate.data.frame <- getFromNamespace("mutate.data.frame", "dplyr")
 
 
 
