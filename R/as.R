@@ -7,7 +7,7 @@
 #' of treedata does not allow for evonet objects in the phylo slot. At some
 #' point we will resolve this inconsistency.
 #'
-#' @param evo An evonet object.
+#' @param tree An evonet object.
 #' @param ... Unused, for extensibility.
 #' @importFrom tibble tibble
 #' @importFrom tibble as_tibble
@@ -18,28 +18,28 @@
 #' @method as.treedata evonet
 #' @examples
 
-as.treedata.evonet <- function(evo, ...){
+as.treedata.evonet <- function(tree, ...){
   # TODO: We are currently changing class information to c("phylo", "evonet")
   # even though the other way around is *correct*. This is because the S4 def.
   # of treedata does not allow for evonet objects in the phylo slot. At some
   # point we will have to do something about this inconsistency (new class?)
 
-  class(evo) <- c("phylo", "evonet")
-  trd <- as.treedata(evo, ...)
+  class(tree) <- c("phylo", "evonet")
+  trd <- as.treedata(tree, ...)
 
   return(trd)
 }
 
 #' Treedata object to evonet
 #'
-#' @param trd A treedata object that contains a phylo slot in evonet format
-#'
+#' @param tree A treedata object that contains a phylo slot in evonet format
+#' @param ... Unused, for extensibility.
 #' @return An evonet object
 #' @export
 #' @method as.evonet treedata
 #' @examples
-as.evonet.treedata <- function(trd){
-  evo <- trd@phylo
+as.evonet.treedata <- function(tree, ...){
+  evo <- tree@phylo
   class(evo) <- c("evonet", "phylo")
 
   return(evo)

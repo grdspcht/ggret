@@ -4,10 +4,10 @@
 \alias{as.treedata.evonet}
 \title{Evonet object to treedata}
 \usage{
-\method{as.treedata}{evonet}(evo, ...)
+\method{as.treedata}{evonet}(tree, ...)
 }
 \arguments{
-\item{evo}{An evonet object.}
+\item{tree}{An evonet object.}
 
 \item{...}{Unused, for extensibility.}
 }
