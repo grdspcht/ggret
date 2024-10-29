@@ -73,9 +73,9 @@ fortify.evonet <- function(model,
 
     if (is.null(x$edge.length) || branch.length == "none") {
       if (layout == "slanted") {
-        sbp <- .convert_tips2ancestors_sbp(x, include.root = TRUE)
-        xpos <- getXcoord_no_length_slanted(sbp)
-        ypos <- getYcoord_no_length_slanted(sbp)
+        sbp <- ggtree:::.convert_tips2ancestors_sbp(x, include.root = TRUE)
+        xpos <- ggtree:::getXcoord_no_length_slanted(sbp)
+        ypos <- ggtree:::getYcoord_no_length_slanted(sbp)
       } else {
         xpos <- getXcoord_no_length(x)
       }
@@ -131,7 +131,7 @@ fortify.evonet <- function(model,
   res <- calculate_branch_mid(res)
 
   if (!is.null(mrsd)) {
-    res <- scaleX_by_time_from_mrsd(res, mrsd, as.Date)
+    res <- ggtree:::scaleX_by_time_from_mrsd(res, mrsd, as.Date)
   }
 
   if (layout == "slanted") {

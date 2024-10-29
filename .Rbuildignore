@@ -1,7 +1,8 @@
-^ggarg\.Rproj$
+^ggret\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^README\.Rmd$
 ^doc$
 ^Meta$
 ^\.github$
+^paper$

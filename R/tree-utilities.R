@@ -636,7 +636,6 @@ getRoot.df <- function(df, node) {
 
 
 
-mutate.data.frame <- getFromNamespace("mutate.data.frame", "dplyr")
 
 
 
@@ -1064,7 +1063,7 @@ getYcoord_scale_numeric <- function(tr, df, yscale, ...) {
   yy <- df[[variable]]
   na.idx <- which(is.na(yy))
   if (length(na.idx) > 0) {
-    tree <- get.tree(tr)
+    tree <- treeio::get.tree(tr)
     nodes <- getNodes_by_postorder(tree)
     for (curNode in nodes) {
       children <- treeio::child(tree, curNode)
@@ -1090,7 +1089,7 @@ getYcoord_scale_numeric <- function(tr, df, yscale, ...) {
 
   na.idx <- which(is.na(yy))
   if (length(na.idx) > 0) {
-    tree <- get.tree(tr)
+    tree <- treeio::get.tree(tr)
     nodes <- rev(getNodes_by_postorder(tree))
     for (curNode in nodes) {
       parent <- parent(tree, curNode)

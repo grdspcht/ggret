@@ -16,7 +16,6 @@
 #' @return A treedata object with evonet object in the phylo slot.
 #' @export
 #' @method as.treedata evonet
-#' @examples
 
 as.treedata.evonet <- function(tree, ...){
   # TODO: We are currently changing class information to c("phylo", "evonet")
@@ -37,7 +36,6 @@ as.treedata.evonet <- function(tree, ...){
 #' @return An evonet object
 #' @export
 #' @method as.evonet treedata
-#' @examples
 as.evonet.treedata <- function(x, ...){
   evo <- x@phylo
   class(evo) <- c("evonet", "phylo")
