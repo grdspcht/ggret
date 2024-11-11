@@ -113,8 +113,8 @@ ggtree::rotate(p1, node = 31) %>%
   p1
 ```
 
-![Network plotted before node rotation.](unrotated.png){width="100%"}
-![The same network plotted after node rotation to limit the number of edge crossings.\label{fig:arg2}](rotated.png){width="100%"}
+
+![An example network before rotation (left) and the same network plotted after node rotation (right) to limit the number of edge crossings.\label{fig:arg2}](rotate_compare.png){width="100%"}
 
 Annotations can be added using `ggtree` functions, such as `geom_tiplab`, `geom_nodelab` and `geom_range`. In addition, a time axis may be added by using the `theme_tree2` theme (\autoref{fig:arg3}).
 
@@ -143,7 +143,7 @@ p1 <- p1 +
 
 ```
 
-![Annotated phylogenetic network\label{fig:arg3}](labels.png){width="100%"}
+![Annotated phylogenetic network. Tip labels are marked with names ranging from "taxon_1" to "taxon_15" and internale nodes are labelled with the posterior probability for node position. Grey ranges on the nodes show the 95% HPD (highest probability density) intervalls. The x-axis represents a years before present (BP) timeline.\label{fig:arg3}](labels.png){width="100%"}
 
 The `group_clade` can be used to define clades within a network and color them accordingly. `group_clade` assigns clade information to all nodes descending from the MRCA of tips specified in the `nodes` argument (\autoref{fig:arg4}).
 
