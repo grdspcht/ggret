@@ -60,7 +60,7 @@ bibliography: paper.bib
 
 # Summary
 
-Evolutionary relationships of biological entities are most often modeled with phylogenetic trees. Phylogenetic trees consist of branches (or edges) representing direct lines of descent or genetic flow from ancestor to offspring (*i.e.* lineages), and nodes representing evolutionary "splits" through which a parental lineage gives rise to multiple child lineages. This vertical model of evolution has provided immense insights into the evolutionary history and processes underlying observed biological diversity. However, it fails to account for "horizontal" modes of evolution, whereby genetic material can be exchanged between contemporaneous organisms through a variety of mechanisms across the tree of life [@perez-losada_recombination_2015; @arnold2022horizontal; @keeling2024horizontal]. In recent years, advances in sequencing technologies and computational methods have made it increasingly possible to integrate horizontal evolutionary events into reticulated phylogenetic trees (or phylogenetic networks; [@huson_application_2006; @chen_hybridnet_2010; @vaughan2017inferring; @muller2020bayesian; @muller2022bayesian]). While phylogenetic networks have the potential to provide more comprehensive and accurate evolutionary pictures for many biological groups, the development of specific tools is required for their manipulation and visualisation. Here, we present `ggret`, an R package building upon the popular `ggtree` package [@yu_ggtree_2017] for the manipulation and visualisation of tree-based phylogenetic networks.
+Evolutionary relationships of biological entities are most often modeled with phylogenetic trees. Phylogenetic trees consist of branches (or edges) representing direct lines of descent or genetic flow from ancestor to offspring (*i.e.* lineages), and nodes representing evolutionary "splits" through which a parental lineage gives rise to multiple child lineages. This vertical model of evolution has provided immense insights into the evolutionary history and processes underlying observed biological diversity. However, it fails to account for "horizontal" modes of evolution, whereby genetic material can be exchanged between contemporaneous organisms through a variety of mechanisms across the tree of life [@perez-losada_recombination_2015; @arnold2022horizontal; @keeling2024horizontal]. In recent years, advances in sequencing technologies and computational methods have made it increasingly possible to integrate horizontal evolutionary events into reticulated phylogenetic trees (or phylogenetic networks; [@huson_application_2006; @chen_hybridnet_2010; @vaughan2017inferring; @muller2020bayesian; @muller2022bayesian]). While phylogenetic networks have the potential to provide more comprehensive and accurate evolutionary pictures for many biological groups, the development of specific tools is required for their manipulation and visualisation. Here, we present `ggret`, an R package building upon the popular `ggtree` package [@yu_ggtree_2017] for the manipulation and visualisation of phylogenetic networks. `ggret` provides novel functions for parsing extended Newick and NEXUS files and introduces the `geom_ret` object for visualisation of tree-based phylogenetic networks.  
 
 # Statement of need
 
@@ -91,16 +91,16 @@ retnet <- ggret::read_beast_retnet(retfile)
 library(ggret)
 
 # Simple network
-p1 <- ggret::ggret(retnet)
+p1 <- ggret::ggret(retnet_treedata)
 # Reticulation edges displayed as red dotted lines, in a "snake" shape
-p2 <- ggret::ggret(retnet, retcol = "red", retlinetype = 3)
+p2 <- ggret::ggret(retnet_treedata, retcol = "red", retlinetype = 3)
 # Reticulation edges displayed as blue solid lines, in a straight shape and 
 # with arrow heads
-p3 <- ggret::ggret(retnet, retcol = "blue", retlinetype = 1, arrows = T,
+p3 <- ggret::ggret(retnet_treedata, retcol = "blue", retlinetype = 1, arrows = T,
                    rettype = "straight") 
 ```
 
-![A simple tree-based networks plotted with `ggret`\label{fig:arg1}](rudarg.png){width="100%"}
+![A simple tree-based networks plotted with `ggret` using different formats for reticulation edges. \label{fig:arg1}](rudarg.png){width="100%"}
 
 We can rotate some of the nodes to avoid crossing of reticulation edges and improve visualisation using the `ggtree` `rotate` function. Note that one can initially visualise node indices using `ggret(retnet) + geom_nodelab(aes(label=node))` to make this easier (\autoref{fig:arg2}).
 
@@ -113,14 +113,15 @@ ggtree::rotate(p1, node = 31) %>%
   p1
 ```
 
-![Network plotted after node rotation to limit the number of edge crossings.\label{fig:arg2}](rotated.png){width="100%"}
+![Network plotted before node rotation.](unrotated.png){width="100%"}
+![The same network plotted after node rotation to limit the number of edge crossings.\label{fig:arg2}](rotated.png){width="100%"}
 
 Annotations can be added using `ggtree` functions, such as `geom_tiplab`, `geom_nodelab` and `geom_range`. In addition, a time axis may be added by using the `theme_tree2` theme (\autoref{fig:arg3}).
 
 ``` r
 # Get the tMRCA of the tree and define time points to display
 # the time axis in years BP
-tmrca <- phytools::nodeHeights(retnet@phylo) %>% max
+tmrca <- phytools::nodeHeights(retnet_treedata@phylo) %>% max
 xticks_BP <- c(20000, 15000, 10000, 5000, 0)
 
 # Add tip and node labels (we expand the x axis limits 
@@ -148,7 +149,7 @@ The `group_clade` can be used to define clades within a network and color them a
 
 ``` r
 # Define clades using the groupClade function
-retnet %>%
+retnet_treedata %>%
   ggret::group_clade(nodes = c("taxon_10", "taxon_20"), cladename = "A", 
          addtotreedata = T) %>%
   ggret::group_clade(nodes = c("taxon_11", "taxon_15"), cladename = "B", 
@@ -162,7 +163,7 @@ ggret::ggret(retnet_clade, aes(color = clade))
 
 ```
 
-![Phylogenetic network with colored based on clade information.\label{fig:arg4}](colored.png){width="100%"}
+![Phylogenetic network with colored based on clade information. Towards the root of the tree no clade information is given anymore (NA).\label{fig:arg4}](colored.png){width="100%"}
 
 For additional information, refer to `ggret's` internal documentation or to [https://github.com/grdspcht/ggret](https://github.com/grdspcht/ggret) which also gives users the opportunity to open issues, pull requests or report bugs. 
 
