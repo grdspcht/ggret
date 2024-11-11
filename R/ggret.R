@@ -48,7 +48,7 @@ ggret <- function(data,
     if (is.null(mapping)) {
       mapping <- aes_(~x, ~y)
     } else {
-      mapping <- ggplot2:::modifyList(aes_(~x, ~y), mapping)
+      mapping <- ggplot2:::modify_list(aes_(~x, ~y), mapping)
     }
     p <- ggplot(data           = data,
                 mapping        = mapping,
