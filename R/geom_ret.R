@@ -24,11 +24,13 @@
 ##' @param arrow.fill fill color to usse for the arrow head (if closed). `NULL` means use `colour` aesthetic.
 ##' @param ... additional parameter
 ##' @importFrom ggplot2 layer
+##' @importFrom ggplot2 aes_
 ##' @export
 ##' @seealso
 ##' [geom_segment][ggplot2::geom_segment]
 ##' @return add segment layer
 ##' @author Guangchuang Yu
+
 geom_segment2 <- function(mapping = NULL, data = NULL, stat = "identity",
                           position = "identity", lineend = "butt",
                           na.rm = FALSE, show.legend = NA, inherit.aes = TRUE,
@@ -39,7 +41,7 @@ geom_segment2 <- function(mapping = NULL, data = NULL, stat = "identity",
   if (is.null(mapping)) {
     mapping <- default_aes
   } else {
-    mapping <- modifyList(mapping, default_aes)
+    mapping <- ggplot2:::modifyList(mapping, default_aes)
   }
 
   layer(
@@ -129,13 +131,13 @@ stat_tree <- function(mapping=NULL, data=NULL, geom="segment", position="identit
 
   default_aes <- aes_(x=~x, y=~y,node=~node, parent=~parent)
   if (multiPhylo) {
-    default_aes <- modifyList(default_aes, aes_(.id=~.id))
+    default_aes <- ggplot2:::modifyList(default_aes, aes_(.id=~.id))
   }
 
   if (is.null(mapping)) {
     mapping <- default_aes
   } else {
-    mapping <- modifyList(default_aes, mapping)
+    mapping <- ggplot2:::modifyList(default_aes, mapping)
   }
 
   if (!is.null(arrow)) {
@@ -192,23 +194,6 @@ stat_tree <- function(mapping=NULL, data=NULL, geom="segment", position="identit
                       rootnode = rootnode,
                       ...),
           check.aes = FALSE
-    )
-  } else if (layout %in% c("ellipse", "roundrect")){
-    mapping <- modifyList(mapping, aes_(isTip=~isTip))
-    layer(stat=StatTreeEllipse,
-          data=data,
-          mapping=mapping,
-          geom=GeomCurvelink,
-          position=position,
-          show.legend=show.legend,
-          inherit.aes=inherit.aes,
-          params=list(layout=layout,
-                      lineend = lineend,
-                      na.rm = na.rm,
-                      arrow = arrow,
-                      rootnode = rootnode,
-                      ...),
-          check.aes=FALSE
     )
   }
 }
@@ -307,15 +292,17 @@ setup_tree_data <- function(data) {
 ##' @return phylogenetic network layer
 ##' @importFrom ggplot2 geom_segment
 ##' @importFrom ggplot2 aes
+##' @importFrom rlang .data
 ##' @export
 ##' @author Yu Guangchuang, Gerd Specht
+
 geom_ret <- function(retcol = "black",
                      arrows = FALSE,
                      retlinetype = 2,
                      rettype = "snake",
                      na.rm = TRUE,
                      ...) {
-  x <- y <- parent <- NULL
+  x <- y <- parent <- donor <- NULL
   lend  = "round"
   if (arrows == TRUE){
     arrowtype = arrow(length = unit(0.03, "npc"), type = "closed")
@@ -467,7 +454,7 @@ uniquecols <- function(df) {
 #' @export
 remove_missing <- function(df, na.rm = FALSE, vars = names(df), name = "",
                            finite = FALSE) {
-  check_bool(na.rm)
+  ggplot2:::check_bool(na.rm)
   missing <- detect_missing(df, vars, finite)
 
   if (any(missing)) {
@@ -701,12 +688,12 @@ NULL
 data_frame0 <- function(...) tibble::data_frame(..., .name_repair = "minimal")
 
 # Wrapping unique0() to accept NULL
-unique0 <- function(x, ...) if (is.null(x)) x else vec_unique(x, ...)
+unique0 <- function(x, ...) if (is.null(x)) x else vctrs::vec_unique(x, ...)
 
 # Code readability checking for uniqueness
-is_unique <- function(x) vec_unique_count(x) == 1L
+is_unique <- function(x) ggplot2:::vec_unique_count(x) == 1L
 
-is_scalar_numeric <- function(x) is_bare_numeric(x, n = 1L)
+is_scalar_numeric <- function(x) rlang::is_bare_numeric(x, n = 1L)
 
 # Check inputs with tibble but allow column vectors (see #2609 and #2374)
 as_gg_data_frame <- function(x) {
@@ -734,7 +721,7 @@ is_column_vec <- function(x) {
 # #> expression(alpha, NA, gamma)
 #
 parse_safe <- function(text) {
-  check_character(text)
+  ggplot2:::check_character(text)
   out <- vector("expression", length(text))
   for (i in seq_along(text)) {
     expr <- parse(text = text[[i]])
@@ -744,6 +731,9 @@ parse_safe <- function(text) {
 }
 
 switch_orientation <- function(aesthetics) {
+
+  ggplot_global <- NULL
+
   # We should have these as globals somewhere
   x <- ggplot_global$x_aes
   y <- ggplot_global$y_aes
@@ -808,8 +798,8 @@ has_flipped_aes <- function(data, params = list(), main_is_orthogonal = NA,
   }
 
   # Is there a single actual discrete position
-  y_is_discrete <- is_mapped_discrete(y)
-  x_is_discrete <- is_mapped_discrete(x)
+  y_is_discrete <- ggplot2:::is_mapped_discrete(y)
+  x_is_discrete <- ggplot2:::is_mapped_discrete(x)
   if (xor(y_is_discrete, x_is_discrete)) {
     return(y_is_discrete != main_is_continuous)
   }
@@ -818,14 +808,14 @@ has_flipped_aes <- function(data, params = list(), main_is_orthogonal = NA,
   if (group_has_equal) {
     if (has_x) {
       if (length(x) == 1) return(FALSE)
-      x_groups <- vapply(split(data$x, data$group), vec_unique_count, integer(1))
+      x_groups <- vapply(split(data$x, data$group), ggplot2:::vec_unique_count, integer(1))
       if (all(x_groups == 1)) {
         return(FALSE)
       }
     }
     if (has_y) {
       if (length(y) == 1) return(TRUE)
-      y_groups <- vapply(split(data$y, data$group), vec_unique_count, integer(1))
+      y_groups <- vapply(split(data$y, data$group), ggplot2:::vec_unique_count, integer(1))
       if (all(y_groups == 1)) {
         return(TRUE)
       }
@@ -843,8 +833,10 @@ split_with_index <- function(x, f, n = max(f)) {
   unname(split(x, f))
 }
 
+
+
 is_bang <- function(x) {
-  is_call(x, "!", n = 1)
+  rlang::is_call(x, "!", n = 1)
 }
 
 is_triple_bang <- function(x) {
@@ -910,13 +902,13 @@ with_ordered_restart <- function(expr, .call) {
 
       # Don't recurse and let ptype2 error keep its course
       if (!restart) {
-        return(zap())
+        return(rlang::zap())
       }
 
       msg <- paste0("Combining variables of class <", class_x, "> and <", class_y, ">")
       desc <- paste0(
         "Please ensure your variables are compatible before plotting (location: ",
-        format_error_call(.call),
+        rlang::format_error_call(.call),
         ")"
       )
 
@@ -932,18 +924,18 @@ with_ordered_restart <- function(expr, .call) {
 
       # Recurse with factor methods and restart with the result
       if (inherits(cnd, "vctrs_error_ptype2")) {
-        out <- vec_ptype2(x, y, x_arg = x_arg, y_arg = y_arg, call = call)
+        out <- vctrs::vec_ptype2(x, y, x_arg = x_arg, y_arg = y_arg, call = call)
         restart <- "vctrs_restart_ptype2"
       } else if (inherits(cnd, "vctrs_error_cast")) {
-        out <- vec_cast(x, y, x_arg = x_arg, to_arg = y_arg, call = call)
+        out <- vctrs::vec_cast(x, y, x_arg = x_arg, to_arg = y_arg, call = call)
         restart <- "vctrs_restart_cast"
       } else {
-        return(zap())
+        return(rlang::zap())
       }
 
       # Old-R compat for `tryInvokeRestart()`
       try_restart <- function(restart, ...) {
-        if (!is_null(findRestart(restart))) {
+        if (!rlang::is_null(findRestart(restart))) {
           invokeRestart(restart, ...)
         }
       }
@@ -952,9 +944,9 @@ with_ordered_restart <- function(expr, .call) {
   )
 }
 
-vec_rbind0 <- function(..., .error_call = current_env(), .call = rlang::caller_env()) {
+vec_rbind0 <- function(..., .error_call = rlang::current_env(), .call = rlang::caller_env()) {
   with_ordered_restart(
-    vec_rbind(..., .error_call = .error_call),
+    vctrs::vec_rbind(..., .error_call = .error_call),
     .call
   )
 }
@@ -1099,6 +1091,7 @@ id_var <- function(x, drop = FALSE) {
 #' possible unique rows
 #'
 #' @keywords internal
+#' @importFrom rlang inject
 #' @noRd
 #'
 id <- function(.variables, drop = FALSE) {
@@ -1191,6 +1184,7 @@ join_keys <- function(x, y, by) {
 #' @param x A character or factor vector
 #' @param replace A named character vector with the names corresponding to the
 #' elements to replace and the values giving the replacement.
+#' @importFrom purrr simplify
 #'
 #' @return A vector of the same class as `x` with the given values replaced
 #'
@@ -1209,7 +1203,7 @@ revalue <- function(x, replace) {
     lev[match(names(replace), lev)] <- replace
     levels(x) <- lev
   } else if (!is.null(x)) {
-    stop_input_type(x, "a factor or character vector")
+    ggplot2:::stop_input_type(x, "a factor or character vector")
   }
   x
 }
@@ -1262,7 +1256,7 @@ as.quoted <- function(x, env = parent.frame()) {
 }
 # round a number to a given precision
 round_any <- function(x, accuracy, f = round) {
-  check_numeric(x)
+  ggplot2:::check_numeric(x)
   f(x/accuracy) * accuracy
 }
 
@@ -1332,40 +1326,36 @@ single_value.factor <- function(x, ...) {
 
 theme_tree <- function(bgcolor="white", ...) {
 
-  list(xlab(NULL),
-       ylab(NULL),
+  list(ggplot2::xlab(NULL),
+       ggplot2::ylab(NULL),
        theme_tree2_internal() +
-         theme(panel.background=element_rect(fill=bgcolor, colour=bgcolor),
-               axis.line.x = element_blank(),
-               axis.text.x = element_blank(),
-               axis.ticks.x = element_blank(),
+         theme(panel.background=ggplot2::element_rect(fill=bgcolor, colour=bgcolor),
+               axis.line.x = ggplot2::element_blank(),
+               axis.text.x = ggplot2::element_blank(),
+               axis.ticks.x = ggplot2::element_blank(),
                ...)
   )
 
-  ## theme_void() +
-  ##     theme(panel.background=element_rect(fill=bgcolor, colour=bgcolor),
-  ##           ...)
 }
 
 theme_tree2_internal <- function(bgcolor="white", fgcolor="black",
                                  legend.position="right",
-                                 panel.grid.minor=element_blank(),
-                                 panel.grid.major=element_blank(),
-                                 panel.border=element_blank(),
-                                 axis.line.y=element_blank(),
-                                 axis.ticks.y=element_blank(),
-                                 axis.text.y=element_blank(),...) {
+                                 panel.grid.minor=ggplot2::element_blank(),
+                                 panel.grid.major=ggplot2::element_blank(),
+                                 panel.border=ggplot2::element_blank(),
+                                 axis.line.y=ggplot2::element_blank(),
+                                 axis.ticks.y=ggplot2::element_blank(),
+                                 axis.text.y=ggplot2::element_blank(),...) {
   ## need to set axis.line otherwise the setting cannot be inherited.
   ## https://github.com/GuangchuangYu/ggtree/issues/218
 
-  theme_bw() +
+  ggplot2::theme_bw() +
     theme(legend.position=legend.position,
           panel.grid.minor=panel.grid.minor,
           panel.grid.major=panel.grid.major,
-          panel.background=element_rect(fill=bgcolor, colour=bgcolor),
+          panel.background=ggplot2::element_rect(fill=bgcolor, colour=bgcolor),
           panel.border=panel.border,
-          axis.line=element_line(color=fgcolor),
-          ##axis.line.x=element_line(color=fgcolor),
+          axis.line=ggplot2::element_line(color=fgcolor),
           axis.line.y=axis.line.y,
           axis.ticks.y=axis.ticks.y,
           axis.text.y=axis.text.y,

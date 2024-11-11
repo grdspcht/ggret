@@ -3,6 +3,7 @@
 \docType{package}
 \name{ggret-package}
 \alias{ggret-package}
+\alias{_PACKAGE}
 \alias{ggret-pkg}
 \title{ggret: Visualisation of Tree-based Phylogenetic Networks}
 \description{

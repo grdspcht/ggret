@@ -80,7 +80,7 @@ layoutEqualAngle <- function(model, branch.length = "branch.length") {
   ## Get number of tips for each node in tree.
   ## nb.sp <- sapply(1:N, function(i) length(get.offspring.tip(tree, i)))
   ## self_include = TRUE to return itself if the input node is a tip
-  nb.sp <- vapply(1:N, function(i) length(offspring(tree, i, tiponly = TRUE, self_include = TRUE)), numeric(1))
+  nb.sp <- vapply(1:N, function(i) length(tidytree::offspring(tree, i, tiponly = TRUE, self_include = TRUE)), numeric(1))
   ## Get list of node id's.
   nodes <- getNodes_by_postorder(tree)
 
@@ -454,7 +454,7 @@ rotateTreePoints.df <- function(df, pivot_node, nodes, angle) {
   pivot_y <- df$y[pivot_node]
   delta_x <- df$x - pivot_x
   delta_y <- df$y - pivot_y
-  df <- mutate.data.frame(df,
+  df <- dplyr:::mutate.data.frame(df,
     x = ifelse(.data$node %in% nodes, cospitheta * delta_x - sinpitheta * delta_y + pivot_x, .data$x),
     y = ifelse(.data$node %in% nodes, sinpitheta * delta_x + cospitheta * delta_y + pivot_y, .data$y)
   )
@@ -464,7 +464,7 @@ rotateTreePoints.df <- function(df, pivot_node, nodes, angle) {
   # angle is in range [0, 360]
   # Update label angle of tipnode if not root node.
   nodes <- nodes[!nodes %in% df$parent]
-  df %>% mutate.data.frame(
+  df %>% dplyr:::mutate.data.frame(
     angle = ifelse(.data$node %in% nodes,
       getNodeAngle.vector(x_parent, y_parent, .data$x, .data$y) %>%
         {
@@ -542,7 +542,7 @@ getSubtree.df <- function(df, node) {
   ## }
   ## subtree
   # tidytree:::offspring.tbl_tree(df, node, self_include = TRUE)$node
-  offspring.tbl_tree(df, node, self_include = TRUE)$node
+  tidytree:::offspring.tbl_tree(df, node, self_include = TRUE)$node
 }
 
 ##' Get all subtrees of specified node. This includes all ancestors and relatives of node and
@@ -600,7 +600,7 @@ getSubtreeUnrooted <- function(tree, node) {
 getSubtreeUnrooted.df <- function(df, node) {
   # get subtree for each child node.
   # children_ids <- getChild.df(df, node)
-  children_ids <- child.tbl_tree(df, node)$node
+  children_ids <- tidytree:::child.tbl_tree(df, node)$node
   if (length(children_ids) == 0L) {
     return(NULL)
   }
@@ -614,7 +614,7 @@ getSubtreeUnrooted.df <- function(df, node) {
 
   # The remaining nodes that are not found in the child subtrees are the remaining subtree nodes.
   # ie, parent node and all other nodes. We don't care how they are connected, just their id.
-  parent_id <- parent.tbl_tree(df, node)$node
+  parent_id <- tidytree:::parent.tbl_tree(df, node)$node
   # If node is not root.
   if ((length(parent_id) > 0) & (length(remaining_nodes) > 0)) {
     subtrees <- tibble::add_row(subtrees, node = parent_id, subtree = list(remaining_nodes))
@@ -795,7 +795,7 @@ getXcoord_no_length <- function(tr) {
 
   N <- getNodeNum(tr)
   x <- numeric(N)
-  ntip <- Ntip(tr)
+  ntip <- tidytree::Ntip(tr)
   currentNode <- 1:ntip
   x[-currentNode] <- NA
 
@@ -1211,7 +1211,7 @@ layoutApe <- function(model, branch.length = "branch.length") {
 
   # unrooted layout from cran/ape
   M <- ape::unrooted.xy(
-    Ntip(tree),
+    ape::Ntip(tree),
     Nnode(tree),
     tree$edge,
     tree$edge.length,
@@ -1222,7 +1222,7 @@ layoutApe <- function(model, branch.length = "branch.length") {
   yy <- M[, 2]
 
   M <- tibble::tibble(
-    node = 1:(Ntip(tree) + Nnode(tree)),
+    node = 1:(ape::Ntip(tree) + Nnode(tree)),
     x = xx - min(xx),
     y = yy - min(yy)
   )

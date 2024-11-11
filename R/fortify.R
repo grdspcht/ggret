@@ -13,6 +13,7 @@
 ##' @importFrom dplyr mutate
 ##' @importFrom tidytree as_tibble
 ##' @importFrom ggplot2 fortify
+##' @importFrom methods is
 ##'
 library(treeio)
 #' Fortify evonet objects

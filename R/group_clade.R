@@ -79,6 +79,8 @@ findRetLayer <- function(layer, rets){
 #' @param assignto  Reticulation color can be assigned to "donor" or "receiver"
 #'
 #' @return Modified ggplot object
+#' @importFrom ggplot2 ggplot_build
+#' @importFrom ggplot2 ggplot_gtable
 #' @export
 #'
 modify_ret <- function(plot, assignto="donor"){

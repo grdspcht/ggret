@@ -21,7 +21,8 @@
 #' @param layout.params  Layout parameters in list format
 
 #' @param ... additional parameter
-#'
+#' @importFrom ggplot2 aes_
+#
 #' @return reticulation network plot
 #' @export
 ggret <- function(data,
@@ -47,7 +48,7 @@ ggret <- function(data,
     if (is.null(mapping)) {
       mapping <- aes_(~x, ~y)
     } else {
-      mapping <- modifyList(aes_(~x, ~y), mapping)
+      mapping <- ggplot2:::modifyList(aes_(~x, ~y), mapping)
     }
     p <- ggplot(data           = data,
                 mapping        = mapping,

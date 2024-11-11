@@ -54,10 +54,14 @@ fix_nodeids <- function(phylo, nodesindex, phylonodes) {
 #' @importFrom dplyr everything
 #' @importFrom dplyr coalesce
 #' @importFrom ape write.evonet
+#' @importFrom utils type.convert
+#' @importFrom methods new
 #' @return treedata object
 #' @export
 
 read_beast_retnet <- function(file) {
+
+  node <- NULL
 
   file <- normalizePath(file)
   treefile <- readLines(file)
