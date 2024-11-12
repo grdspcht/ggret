@@ -85,7 +85,7 @@ retfile <- system.file("extdata", "retnet.nexus", package = "ggret")
 retnet <- ggret::read_beast_retnet(retfile)    
 ```
 
-`ggret` is the central function of this package. In a simple call without additional arguments it plots rudimentary tree-based network without labeling. Reticulated edges are drawn as black dashed lines by default, but `ggret` contains various arguments to change their aspects (e.g. colour, linetype, etc.) (\autoref{fig:arg1}).
+`ggret` is the central function of this package. In a simple call without additional arguments it plots a rudimentary tree-based network without labeling. Reticulated edges are drawn as black dashed lines by default, but `ggret` contains various arguments to change their aspects (e.g. colour, linetype, etc.) (\autoref{fig:arg1}).
 
 ``` r
 library(ggret)
@@ -143,7 +143,7 @@ p1 <- p1 +
 
 ```
 
-![Annotated phylogenetic network. Tip labels are marked with names ranging from "taxon_1" to "taxon_15" and internale nodes are labelled with the posterior probability for node position. Grey ranges on the nodes show the 95% HPD (highest probability density) intervalls. The x-axis represents a years before present (BP) timeline.\label{fig:arg3}](labels.png){width="100%"}
+![Annotated phylogenetic network. Tip labels are plotted and internal nodes are labelled with their posterior probability. The x-axis represents a timeline in years before present. The 95% highest probability density intervals of nodes' ages are indicated by grey bars. \label{fig:arg3}](labels.png){width="100%"}
 
 The `group_clade` can be used to define clades within a network and color them accordingly. `group_clade` assigns clade information to all nodes descending from the MRCA of tips specified in the `nodes` argument (\autoref{fig:arg4}).
 
@@ -163,7 +163,7 @@ ggret::ggret(retnet_clade, aes(color = clade))
 
 ```
 
-![Phylogenetic network with colored based on clade information. Towards the root of the tree no clade information is given anymore (NA).\label{fig:arg4}](colored.png){width="100%"}
+![Phylogenetic network with colored based on clade information. Deep branches not belonging to any defined clade are labelled as NA. \label{fig:arg4}](colored.png){width="100%"}
 
 For additional information, refer to `ggret's` internal documentation or to [https://github.com/grdspcht/ggret](https://github.com/grdspcht/ggret) which also gives users the opportunity to open issues, pull requests or report bugs. 
 
