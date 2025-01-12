@@ -36,6 +36,10 @@ effectively in the vignette. To access it call:
 vignette(topic = "intro_to_ggret", package = "ggret")
 ```
 
+
+## Contributing & Reporting bugs
+Make sure to check out our Contribution guidelines (see `CONTRIBUTING.md`) for instructions on how to report bugs, suggest improvements or contributing new features to ggret.
+
 ## Citing ggret
 
 If you use `ggret`, please cite the associated publication as well as
