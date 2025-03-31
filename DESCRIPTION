@@ -14,7 +14,7 @@ Description: Visualisation and annotation of Ancestral Recombination
     Graphs and other tree-based phylogenetic networks. It extends the
     functionality of 'ggtree' and 'ggplot2'.
 License: MIT + file LICENSE
-URL: https://github.com/grdspcht/ggret
+URL: https://github.com/grdspcht/ggret, https://grdspcht.github.io/ggret/
 BugReports: https://github.com/grdspcht/ggret/issues
 Depends: 
     ggplot2,
