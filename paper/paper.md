@@ -49,7 +49,7 @@ bibliography: paper.bib
 
 - A summary describing the high-level functionality and purpose of the software for a diverse, non-specialist audience.
 
-- A Statement of need section that clearly illustrates the research purpose of the software and places it in the context of related work.
+- A statement of need section that clearly illustrates the research purpose of the software and places it in the context of related work.
 
 - A list of key references, including to other software addressing related needs. Note that the references should include full names of venues, e.g., journals and conferences, not abbreviations only understood in the context of a specific discipline.
 
@@ -65,7 +65,7 @@ Evolutionary relationships of biological entities are most often modeled with ph
 
 # Statement of need
 
-Command-line tools are needed for the efficient, reproducible manipulation and plotting of phylogenetic networks. The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for handling and visualizing classic phylogenetic trees [@yu_ggtree_2017; @paradis_ape_2019]. `ggret` extends `ggtree` with methods for manipulating and plotting tree-based phylogenetic networks, where horizontal transfers of genetic material are represented by reticulation edges connecting the branches of a backbone phylogenetic tree. `ggret` enables the parsing of phylogenetic networks in extended Newick and NEXUS formats such as those produced by the popular *BEAST2* software [@bouckaert2019beast]. Importantly, it can handle associated metadata via `treedata` objects and maintains most `ggtree` annotation and visualisation methods.
+The R language is commonly used for phylogenetic analysis and visualisation with packages such as `ape` and `ggtree` providing important functionalities for handling and visualizing classic phylogenetic trees [@yu_ggtree_2017; @paradis_ape_2019]. In contrast, R packages for the manipulation and plotting of phylogenetic networks are largely lacking. The `ape` and `phangorn` packages [@paradis_ape_2019; @schliep_phangorn_2011] provide basic plotting functions for explicit networks and split networks. These have been extended in the `tanggle` package to allow more flexibility using the `ggplot2` syntax [@wickham_ggplot2_2016], building upon `ggtree`. The `ggret` package presented here complements these existing tools by providing alternative modes of visualization of explicit phylogenetic networks as well as additional functionalities. In particular, `ggret` enables the parsing of phylogenetic networks in NEXUS formats such as those produced by the popular *BEAST2* software [@bouckaert2019beast], and can handle associated metadata via `treedata` objects, allowing to leverage the versatile `ggtree` annotation and visualisation methods. 
 
 # Usage
 
