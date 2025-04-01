@@ -27,6 +27,12 @@ remotes::install_github("grdspcht/ggret", dependencies = TRUE, build_vignettes =
 ```
 
 ## Documentation
+### In the Web
+A website version of the documentation, containing function references and an in-depth vignette about customizing phylogenetic networks (see 'Articles') can be found on: https://grdspcht.github.io/ggret/
+
+
+
+### In R
 
 Function documentation can be accessed by typing `?function_name`.
 Additionally, you can find multiple examples on how to use `ggret`
