@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   intro_to_ggret: intro_to_ggret.html
-last_built: 2025-03-31T22:12Z
+last_built: 2025-04-01T16:10Z
 urls:
   reference: https://grdspcht.github.io/ggret/reference
   article: https://grdspcht.github.io/ggret/articles
