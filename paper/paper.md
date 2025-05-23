@@ -73,7 +73,7 @@ The R language is commonly used for phylogenetic analysis and visualisation with
 
 Below are some examples of phylogenetic network visualization with `ggret` (\autoref{fig:arg1}). The phylogenetic network was simulated with the *BEAST2* package *Bacter* [@vaughan2017inferring] and parsed together with node metadata using the `read_beast_retnet` function. The resulting retnet `treedata` object has been included in the package for the sake of reproducibility.
 
-![Example of plots generated with phylogenetic network visualization with *ggret*. **a.** Reticulation edges can be plotted in different shapes and colors. **b.** Annotated phylogenetic network. Tip labels are plotted and internal nodes are labelled with their posterior probability. The x-axis represents a timeline in years before present. The 95% highest probability density intervals of nodes’ ages are indicated by grey bars. **c.** Phylogenetic network with colored based on clade information. Deep branches not belonging to any defined clade are labelled as NA \label{fig:arg1}](combined_plot.png){width="100%"}
+![Examples of phylogenetic network visualization with *ggret*. **a.** Reticulation edges can be plotted in different shapes and colors. **b.** Annotated phylogenetic network. Tip labels are plotted and internal nodes are labelled with their posterior probability. The x-axis represents a timeline in years before present. The 95% highest probability density intervals of nodes’ ages are indicated by grey bars. **c.** Phylogenetic network with colored based on clade information. Deep branches not belonging to any defined clade are labelled as NA \label{fig:arg1}](combined_plot.png){width="100%"}
 
 
 # Acknowledgements
