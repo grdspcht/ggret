@@ -1,7 +1,11 @@
 # ggret
 
 <img align="right" width="113" height="130" src="man/figures/ggret_logo.png">
-<!-- badges: start --> <!-- badges: end -->
+<!-- badges: start -->
+<a style="border-width:0" href="https://doi.org/10.21105/joss.07773">
+  <img src="https://joss.theoj.org/papers/10.21105/joss.07773/status.svg" alt="DOI badge" >
+</a>
+<!-- badges: end -->
 
 ggret is an R package for the visualization and annotation of Ancestral
 Recombination Graphs (ARGs) and other tree-based phylogenetic networks.
@@ -51,7 +55,7 @@ Make sure to check out our Contribution guidelines (see `CONTRIBUTING.md`) for i
 If you use `ggret`, please cite the associated publication as well as
 the original `ggtree` and `ape` publication:
 
-1.  ggret publication to be added
+1.  **Specht G**, Schmid C, Kühnert D, Kocher A (2025). ggret: An R package for visualising and manipulating tree‑based phylogenetic networks. Journal of Open Source Software, 10(110), 7773, https://doi.org/10.21105/joss.07773
 2.  **G Yu**, DK Smith, H Zhu, Y Guan, TTY Lam<sup>\*</sup>. “ggtree: an
     R package for visualization and annotation of phylogenetic trees
     with their covariates and other associated data”. ***Methods in
